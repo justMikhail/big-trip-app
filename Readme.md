@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Mikhail Sitnikov](https://up.htmlacademy.ru/ecmascript/15/user/1537799).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Алипкин](https://htmlacademy.ru/profile/ealipkin).
 
 ---
 
