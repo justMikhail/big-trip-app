@@ -1,5 +1,12 @@
-export const createTripEventsItem = () => (
-  `<li class="trip-events__item">
+export const createEventsItem = (event) => {
+
+  const {basePrice, isFavorite} = event;
+
+  const favoriteClassName = isFavorite
+    ? 'event__favorite-btn  event__favorite-btn--active'
+    : 'event__favorite-btn';
+
+  return `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="2019-03-18">MAR 18</time>
       <div class="event__type">
@@ -15,7 +22,7 @@ export const createTripEventsItem = () => (
         <p class="event__duration">30M</p>
       </div>
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">20</span>
+        &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
@@ -25,7 +32,7 @@ export const createTripEventsItem = () => (
           <span class="event__offer-price">20</span>
         </li>
       </ul>
-      <button class="event__favorite-btn event__favorite-btn--active" type="button">
+      <button class=${favoriteClassName} type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
           <path
@@ -36,5 +43,5 @@ export const createTripEventsItem = () => (
         <span class="visually-hidden">Open event</span>
       </button>
     </div>
-  </li>`
-);
+  </li>`;
+};

@@ -2,10 +2,12 @@ import {createTripControls} from './view/trip-controls';
 import {createTripInfo} from './view/trip-info';
 import {createTripFilters} from './view/trip-filters';
 import {createEventsSort} from './view/events-sort';
-import {createTripEventsList} from './view/events-list';
-import {createTripEventsItem} from './view/events-item';
+import {createEventsList} from './view/events-list';
+import {createEventsItem} from './view/events-item';
 //import {createEditEventsItemForm} from './view/edit-event-item-form';
 import {createEventsItemForm} from './view/events-item-form';
+
+import {generateEvent} from './mock/mock-event-data';
 
 const EVENTS_ITEM_COUNT = 3;
 
@@ -24,14 +26,14 @@ render(tripMainContainer, createTripInfo(), 'afterBegin');
 render(tripControlsContainer, createTripControls(), 'beforeEnd');
 render(tripFiltersContainer, createTripFilters(), 'beforeEnd');
 render(EventsContainer, createEventsSort(), 'afterBegin');
-render(EventsContainer, createTripEventsList(), 'beforeEnd');
+render(EventsContainer, createEventsList(), 'beforeEnd');
 
-const tripEventsList = EventsContainer.querySelector('.trip-events__list');
+const eventsListContainer = EventsContainer.querySelector('.trip-events__list');
 
 for (let i = 0; i < EVENTS_ITEM_COUNT; i++) {
-  render(tripEventsList, createTripEventsItem(), 'beforeEnd');
+  render(eventsListContainer, createEventsItem(generateEvent()), 'beforeEnd');
 }
 
 //render(tripEventsList, createEditEventsItemForm(), 'beforeEnd');
-render(tripEventsList, createEventsItemForm(), 'afterBegin');
+render(eventsListContainer, createEventsItemForm(), 'afterBegin');
 
