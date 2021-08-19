@@ -1,11 +1,11 @@
-import {createSiteMenuTemplate} from './view/createSiteMenuTemplate';
-import {createTripInfoTemplate} from './view/createTripInfoTemplate';
-import {createTripFilters} from './view/createTripFilters';
-import {createTripSort} from './view/createTripSort';
-//import {createTripEventsList} from './view/createTripEventsList';
-import {createTripEventsItem} from './view/createTripEventsItem';
-import {createEditEventsItemForm} from './view/createEditEventsItemForm';
-import {createNewEvensItemForm} from './view/createNewEvensItemForm';
+import {createTripControls} from './view/trip-controls';
+import {createTripInfo} from './view/trip-info';
+import {createTripFilters} from './view/trip-filters';
+import {createEventsSort} from './view/events-sort';
+import {createTripEventsList} from './view/events-list';
+import {createTripEventsItem} from './view/events-item';
+//import {createEditEventsItemForm} from './view/edit-event-item-form';
+import {createEventsItemForm} from './view/events-item-form';
 
 const EVENTS_ITEM_COUNT = 3;
 
@@ -14,23 +14,24 @@ const render = (container, template, where) => {
 };
 
 const pageMain = document.querySelector('.page-main');
-const headerTripMain = document.querySelector('.trip-main');
-const headerMenuContainer = headerTripMain.querySelector('.trip-controls__navigation');
-const tripFiltersContainer = headerTripMain.querySelector('.trip-controls__filters');
+const pageHeaderContainer = document.querySelector('.page-header');
+const tripMainContainer = pageHeaderContainer.querySelector('.trip-main');
+const tripControlsContainer = pageHeaderContainer.querySelector('.trip-controls__navigation');
+const tripFiltersContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
 const tripEventsContainer = pageMain.querySelector('.trip-events');
-const tripEventsList = tripEventsContainer.querySelector('.trip-events__list');
 
-render(headerTripMain, createTripInfoTemplate(), 'afterBegin');
-render(headerMenuContainer, createSiteMenuTemplate(), 'beforeEnd');
+render(tripMainContainer, createTripInfo(), 'afterBegin');
+render(tripControlsContainer, createTripControls(), 'beforeEnd');
 render(tripFiltersContainer, createTripFilters(), 'beforeEnd');
-render(tripEventsContainer, createTripSort(), 'afterBegin');
-//render(tripEventsContainer, createTripEventsList(), 'beforeEnd');
+render(tripEventsContainer, createEventsSort(), 'afterBegin');
+render(tripEventsContainer, createTripEventsList(), 'beforeEnd');
+
+const tripEventsList = tripEventsContainer.querySelector('.trip-events__list');
 
 for (let i = 0; i < EVENTS_ITEM_COUNT; i++) {
   render(tripEventsList, createTripEventsItem(), 'beforeEnd');
 }
 
-render(tripEventsList, createEditEventsItemForm(), 'beforeEnd');
-render(tripEventsList, createNewEvensItemForm(), 'afterBegin');
-
+//render(tripEventsList, createEditEventsItemForm(), 'beforeEnd');
+render(tripEventsList, createEventsItemForm(), 'afterBegin');
 
