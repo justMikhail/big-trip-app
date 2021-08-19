@@ -5,5 +5,10 @@ const getRandomInteger = (min = 0, max = 1) => {
   return Math.floor(result);
 };
 
-export { getRandomInteger };
+const getRandomElFromArray = (array) => array[getRandomInteger(0, array.length - 1)];
+
+export {
+  getRandomInteger,
+  getRandomElFromArray
+};
 

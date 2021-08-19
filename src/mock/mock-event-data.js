@@ -1,4 +1,5 @@
-import {getRandomInteger} from '../utils/utils';
+import {getRandomInteger, getRandomElFromArray} from '../utils/utils';
+import {TYPES} from '../const/const';
 
 const generateEvent = () => ({
   basePrice: '1500',
@@ -8,7 +9,7 @@ const generateEvent = () => ({
   id: '0',
   isFavorite: Boolean(getRandomInteger()),
   offers: [],
-  type: 'Taxi',
+  type: getRandomElFromArray(TYPES),
 });
 
 export {generateEvent};
