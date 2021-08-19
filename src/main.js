@@ -18,15 +18,15 @@ const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainContainer = pageHeaderContainer.querySelector('.trip-main');
 const tripControlsContainer = pageHeaderContainer.querySelector('.trip-controls__navigation');
 const tripFiltersContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
-const tripEventsContainer = pageMain.querySelector('.trip-events');
+const EventsContainer = pageMain.querySelector('.trip-events');
 
 render(tripMainContainer, createTripInfo(), 'afterBegin');
 render(tripControlsContainer, createTripControls(), 'beforeEnd');
 render(tripFiltersContainer, createTripFilters(), 'beforeEnd');
-render(tripEventsContainer, createEventsSort(), 'afterBegin');
-render(tripEventsContainer, createTripEventsList(), 'beforeEnd');
+render(EventsContainer, createEventsSort(), 'afterBegin');
+render(EventsContainer, createTripEventsList(), 'beforeEnd');
 
-const tripEventsList = tripEventsContainer.querySelector('.trip-events__list');
+const tripEventsList = EventsContainer.querySelector('.trip-events__list');
 
 for (let i = 0; i < EVENTS_ITEM_COUNT; i++) {
   render(tripEventsList, createTripEventsItem(), 'beforeEnd');
