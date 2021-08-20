@@ -9,7 +9,10 @@ import {createEventsItemForm} from './view/events-item-form';
 
 import {generateEvent} from './mock/mock-event-data';
 
-const EVENTS_ITEM_COUNT = 3;
+const EVENTS_ITEM_COUNT = 5;
+
+const eventsItems = new Array(EVENTS_ITEM_COUNT).fill().map(generateEvent);
+console.log(eventsItems);
 
 const render = (container, template, where) => {
   container.insertAdjacentHTML(where, template);
@@ -31,7 +34,7 @@ render(EventsContainer, createEventsList(), 'beforeEnd');
 const eventsListContainer = EventsContainer.querySelector('.trip-events__list');
 
 for (let i = 0; i < EVENTS_ITEM_COUNT; i++) {
-  render(eventsListContainer, createEventsItem(generateEvent()), 'beforeEnd');
+  render(eventsListContainer, createEventsItem(eventsItems[i]), 'beforeEnd');
 }
 
 //render(tripEventsList, createEditEventsItemForm(), 'beforeEnd');

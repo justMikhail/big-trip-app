@@ -1,6 +1,6 @@
 export const createEventsItem = (event) => {
 
-  const {basePrice, isFavorite, type} = event;
+  const {basePrice, destination, isFavorite, type} = event;
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn  event__favorite-btn--active'
@@ -12,7 +12,7 @@ export const createEventsItem = (event) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type} Amsterdam</h3>
+      <h3 class="event__title">${type} ${destination.place}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
@@ -32,7 +32,7 @@ export const createEventsItem = (event) => {
           <span class="event__offer-price">20</span>
         </li>
       </ul>
-      <button class=${favoriteClassName} type="button">
+      <button class="${favoriteClassName}" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
           <path
