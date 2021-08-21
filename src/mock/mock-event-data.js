@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {getRandomElFromArray, getRandomInteger, getShuffleArray, randomizeArray} from '../utils/utils';
 import {PLACES, TYPES, OFFERS} from './mock-const';
 
@@ -20,9 +21,6 @@ const generateDescription = (placeName) => {
     'In rutrum ac purus sit amet tempus.',
   ];
 
-  // Fisher–Yates Shuffle
-
-
   const generateTextFromFragments = () => getShuffleArray(fragments).slice(0, randomFragmentsCount).join();
   const description = `${placeName} ${generateTextFromFragments()}`;
 
@@ -38,8 +36,17 @@ const generatePhotos = () => new Array(getRandomInteger(1, 5)).fill().map(() => 
   `http://picsum.photos/248/152?r=${Math.random()}`;
 });
 
+//==================
+const MAX_MINUTES_GAP = 7 * 24 * 60;
+const MIN_EVENT_DURATION = 10;
+const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
+const getDate = (from, gap) => dayjs(from).add (gap, 'minute');
+//==================
+
 const generateEvent = () => {
 
+  const randomDateFrom = getDate(dayjs(), getRandomInteger(-MAX_MINUTES_GAP, MAX_MINUTES_GAP));
+  const randomDateTo = getDate(randomDateFrom, getRandomInteger(MIN_EVENT_DURATION, MAX_MINUTES_GAP));
   const randomPlace = getRandomPlaceName(PLACES);
   const randomDescription = generateDescription(randomPlace);
   const randomPictures = generatePhotos();
@@ -48,8 +55,8 @@ const generateEvent = () => {
 
   return {
     basePrice: '1500',
-    dateForm: '2019-07-10T22:55:56.845Z',
-    dateTo: '2019-07-11T11:22:13.375Z',
+    dateForm: randomDateFrom.format(DATE_FORMAT),
+    dateTo: randomDateTo.format(DATE_FORMAT),
     destination: {
       place: randomPlace,
       description: randomDescription,

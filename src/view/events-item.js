@@ -1,6 +1,38 @@
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
+
+const getEventDuration = (dateStart, dateEnd) => {
+  const eventDuration = dayjs(dateStart) - dayjs(dateEnd);
+
+  let days = dayjs.duration(eventDuration).days();
+  days = days < 10
+    ? `0${days}`
+    : days;
+  let hours = dayjs.duration(eventDuration).hours();
+  hours = hours < 10
+    ? `0${hours}`
+    : hours;
+  let minutes = dayjs.duration(eventDuration).minutes();
+  minutes = minutes < 0
+    ? Math.abs(minutes)
+    : minutes; // todo временное решение (артефакт с отрицательным значением)
+  minutes = minutes < 10
+    ? `0${minutes}`
+    : minutes;
+
+  // todo возможно можно прописать данную логику лаконичней?
+  if (days > 0) {
+    return `${days}D ${hours}H ${minutes}M`;
+  } else if (hours > 0) {
+    return `${hours}H ${minutes}M`;
+  }
+  return `${minutes}M`;
+};
+
 export const createEventsItem = (event) => {
 
-  const {basePrice, destination, isFavorite, offers, type} = event;
+  const {basePrice, dateFrom, dateTo, destination, isFavorite, offers, type} = event;
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn  event__favorite-btn--active'
@@ -28,11 +60,15 @@ export const createEventsItem = (event) => {
       <h3 class="event__title">${type} ${destination.place}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+          <time class="event__start-time" datetime="${dayjs(dateFrom).format('YYYY-MM-DDTHH:mm')}">
+            ${dayjs(dateFrom).format('HH:mm')}
+          </time>
           &mdash;
-          <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+          <time class="event__end-time" datetime="${dayjs(dateTo).format('YYYY-MM-DDTHH:mm')}">
+            ${dayjs(dateTo).format('HH:mm')}
+          </time>
         </p>
-        <p class="event__duration">30M</p>
+        <p class="event__duration">${getEventDuration(dateFrom, dateTo)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
