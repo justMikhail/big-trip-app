@@ -9,7 +9,7 @@ import {createEventsItemForm} from './view/events-item-form';
 
 import {generateEvent} from './mock/mock-event-data';
 
-const EVENTS_ITEM_COUNT = 5;
+const EVENTS_ITEM_COUNT = 20;
 
 const eventsItems = new Array(EVENTS_ITEM_COUNT).fill().map(generateEvent);
 console.log(eventsItems);

@@ -1,10 +1,23 @@
 export const createEventsItem = (event) => {
 
-  const {basePrice, destination, isFavorite, type} = event;
+  const {basePrice, destination, isFavorite, offers, type} = event;
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn  event__favorite-btn--active'
     : 'event__favorite-btn';
+
+  const generateOffers = () => {
+    let offersMarkup = '';
+
+    offers.forEach((offer) => {
+      offersMarkup += `<li class="event__offer">
+         <span class="event__offer-title">${offer.title}</span>
+           &plus;&euro;&nbsp;
+         <span class="event__offer-price">${offer.price}</span>
+         </li>`;
+    });
+    return offersMarkup;
+  };
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -26,11 +39,7 @@ export const createEventsItem = (event) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        <li class="event__offer">
-          <span class="event__offer-title">Order Uber</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">20</span>
-        </li>
+        ${generateOffers()}
       </ul>
       <button class="${favoriteClassName}" type="button">
         <span class="visually-hidden">Add to favorite</span>

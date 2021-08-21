@@ -1,7 +1,5 @@
-import {getRandomInteger, getRandomElFromArray} from '../utils/utils';
-import {TYPES} from '../const/const';
-
-const PLACES = ['Тайпока-Сити', 'Джеда-Сити', 'Облачный город', 'Храм Джедаев', 'Корусант', 'Коррибан '];
+import {getRandomElFromArray, getRandomInteger, getShuffleArray, randomizeArray} from '../utils/utils';
+import {PLACES, TYPES, OFFERS} from './mock-const';
 
 const generateDescription = (placeName) => {
   const MIN_FRAGMENTS_COUNT = 1;
@@ -23,23 +21,7 @@ const generateDescription = (placeName) => {
   ];
 
   // Fisher–Yates Shuffle
-  const getShuffleArray = (originalArray) => {
-    let currentIndex = originalArray.length, temporaryValue, randomIndex;
 
-    while (0 !== currentIndex) {
-
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      temporaryValue = originalArray[currentIndex];
-      originalArray[currentIndex] = originalArray[randomIndex];
-      originalArray[randomIndex] = temporaryValue;
-    }
-
-    const arrayAfterShuffle = originalArray;
-
-    return arrayAfterShuffle;
-  };
 
   const generateTextFromFragments = () => getShuffleArray(fragments).slice(0, randomFragmentsCount).join();
   const description = `${placeName} ${generateTextFromFragments()}`;
@@ -52,12 +34,17 @@ const getRandomPlaceName = (places) => {
   return randomPlace;
 };
 
+const generatePhotos = () => new Array(getRandomInteger(1, 5)).fill().map(() => {
+  `http://picsum.photos/248/152?r=${Math.random()}`;
+});
+
 const generateEvent = () => {
 
   const randomPlace = getRandomPlaceName(PLACES);
   const randomDescription = generateDescription(randomPlace);
-  //const randomPictures = generatePhotos();
+  const randomPictures = generatePhotos();
   const randomType = getRandomElFromArray(TYPES);
+  const randomOffers = randomizeArray(OFFERS);
 
   return {
     basePrice: '1500',
@@ -66,11 +53,11 @@ const generateEvent = () => {
     destination: {
       place: randomPlace,
       description: randomDescription,
-      //randomPictures,
+      picture: randomPictures,
     },
     id: '0',
     isFavorite: Boolean(getRandomInteger()),
-    offers: [],
+    offers: randomOffers,
     type: randomType,
   };
 };
