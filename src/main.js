@@ -4,12 +4,11 @@ import {createTripFilters} from './view/trip-filters';
 import {createEventsSort} from './view/events-sort';
 import {createEventsList} from './view/events-list';
 import {createEventsItem} from './view/events-item';
-//import {createEditEventsItemForm} from './view/edit-event-item-form';
 import {createEventsItemForm} from './view/events-item-form';
 
 import {generateEvent} from './mock/mock-event-data';
 
-const EVENTS_ITEM_COUNT = 20;
+const EVENTS_ITEM_COUNT = 15;
 
 const eventsItems = new Array(EVENTS_ITEM_COUNT).fill().map(generateEvent);
 
@@ -36,6 +35,5 @@ for (let i = 0; i < EVENTS_ITEM_COUNT; i++) {
   render(eventsListContainer, createEventsItem(eventsItems[i]), 'beforeEnd');
 }
 
-//render(tripEventsList, createEditEventsItemForm(), 'beforeEnd');
 render(eventsListContainer, createEventsItemForm(), 'afterBegin');
 

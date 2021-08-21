@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import {getRandomElFromArray, getRandomInteger, getShuffleArray, randomizeArray} from '../utils/utils';
-import {PLACES, TYPES, OFFERS} from './mock-const';
+import {PLACES, TYPES, OFFERS, EVENT_MAX_PRICE, EVENT_MIN_PRICE, MAX_MINUTES_GAP, MIN_EVENT_DURATION, DATE_FORMAT} from './mock-const';
 
-const generateDescription = (placeName) => {
+const getRandomDescription = (placeName) => {
   const MIN_FRAGMENTS_COUNT = 1;
   const MAX_FRAGMENTS_COUNT = 5;
 
@@ -36,25 +36,25 @@ const generatePhotos = () => new Array(getRandomInteger(1, 5)).fill().map(() => 
   `http://picsum.photos/248/152?r=${Math.random()}`;
 });
 
-//==================
-const MAX_MINUTES_GAP = 7 * 24 * 60;
-const MIN_EVENT_DURATION = 10;
-const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
 const getDate = (from, gap) => dayjs(from).add (gap, 'minute');
-//==================
+
+const getRandomPrice = (min, max) => {
+  return Math.round((getRandomInteger(min, max) / 10) * 10);
+};
 
 const generateEvent = () => {
 
+  const randomBasePrice = getRandomPrice(EVENT_MIN_PRICE, EVENT_MAX_PRICE);
   const randomDateFrom = getDate(dayjs(), getRandomInteger(-MAX_MINUTES_GAP, MAX_MINUTES_GAP));
   const randomDateTo = getDate(randomDateFrom, getRandomInteger(MIN_EVENT_DURATION, MAX_MINUTES_GAP));
   const randomPlace = getRandomPlaceName(PLACES);
-  const randomDescription = generateDescription(randomPlace);
+  const randomDescription = getRandomDescription(randomPlace);
   const randomPictures = generatePhotos();
   const randomType = getRandomElFromArray(TYPES);
   const randomOffers = randomizeArray(OFFERS);
 
   return {
-    basePrice: '1500',
+    basePrice: randomBasePrice,
     dateForm: randomDateFrom.format(DATE_FORMAT),
     dateTo: randomDateTo.format(DATE_FORMAT),
     destination: {

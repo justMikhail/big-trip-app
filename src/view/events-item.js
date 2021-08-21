@@ -1,15 +1,22 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
+import {humanizeToTime, humanizeToMonthDay, humanizeToFullDate} from '../utils/utils';
 
 const getEventDuration = (dateStart, dateEnd) => {
   const eventDuration = dayjs(dateStart) - dayjs(dateEnd);
 
   let days = dayjs.duration(eventDuration).days();
+  days = days < 0
+    ? Math.abs(days)
+    : days; // todo временное решение (артефакт с отрицательным значением)
   days = days < 10
     ? `0${days}`
     : days;
   let hours = dayjs.duration(eventDuration).hours();
+  hours = hours < 0
+    ? Math.abs(hours)
+    : hours; // todo временное решение (артефакт с отрицательным значением)
   hours = hours < 10
     ? `0${hours}`
     : hours;
@@ -53,19 +60,21 @@ export const createEventsItem = (event) => {
 
   return `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="2019-03-18">MAR 18</time>
+      <time class="event__date" datetime="2019-03-18">
+        ${humanizeToMonthDay(dateFrom)}
+      </time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${type} ${destination.place}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${dayjs(dateFrom).format('YYYY-MM-DDTHH:mm')}">
-            ${dayjs(dateFrom).format('HH:mm')}
+          <time class="event__start-time" datetime="${humanizeToFullDate(dateFrom)}">
+            ${humanizeToTime(dateFrom)}
           </time>
           &mdash;
-          <time class="event__end-time" datetime="${dayjs(dateTo).format('YYYY-MM-DDTHH:mm')}">
-            ${dayjs(dateTo).format('HH:mm')}
+          <time class="event__end-time" datetime="${humanizeToFullDate(dateTo)}">
+            ${humanizeToTime(dateTo)}
           </time>
         </p>
         <p class="event__duration">${getEventDuration(dateFrom, dateTo)}</p>
