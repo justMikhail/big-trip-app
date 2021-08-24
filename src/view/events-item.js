@@ -1,29 +1,20 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import {humanizeDateToType1, humanizeDateToType2, humanizeDateToType3} from '../utils/utils';
 dayjs.extend(duration);
-import {humanizeToTime, humanizeToMonthDay, humanizeToFullDate} from '../utils/utils';
 
 const getEventDuration = (dateStart, dateEnd) => {
   const eventDuration = dayjs(dateStart) - dayjs(dateEnd);
 
   let days = dayjs.duration(eventDuration).days();
-  days = days < 0
-    ? Math.abs(days)
-    : days; // todo временное решение (артефакт с отрицательным значением)
   days = days < 10
     ? `0${days}`
     : days;
   let hours = dayjs.duration(eventDuration).hours();
-  hours = hours < 0
-    ? Math.abs(hours)
-    : hours; // todo временное решение (артефакт с отрицательным значением)
   hours = hours < 10
     ? `0${hours}`
     : hours;
   let minutes = dayjs.duration(eventDuration).minutes();
-  minutes = minutes < 0
-    ? Math.abs(minutes)
-    : minutes; // todo временное решение (артефакт с отрицательным значением)
   minutes = minutes < 10
     ? `0${minutes}`
     : minutes;
@@ -39,7 +30,15 @@ const getEventDuration = (dateStart, dateEnd) => {
 
 export const createEventsItem = (event) => {
 
-  const {basePrice, dateFrom, dateTo, destination, isFavorite, offers, type} = event;
+  const {
+    basePrice,
+    dateFrom,
+    dateTo,
+    destination,
+    isFavorite,
+    offers,
+    type,
+  } = event;
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn  event__favorite-btn--active'
@@ -61,7 +60,7 @@ export const createEventsItem = (event) => {
   return `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="2019-03-18">
-        ${humanizeToMonthDay(dateFrom)}
+        ${humanizeDateToType2(dateFrom)}
       </time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
@@ -69,15 +68,15 @@ export const createEventsItem = (event) => {
       <h3 class="event__title">${type} ${destination.place}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${humanizeToFullDate(dateFrom)}">
-            ${humanizeToTime(dateFrom)}
+          <time class="event__start-time" datetime="${humanizeDateToType3(dateFrom)}">
+            ${humanizeDateToType1(dateFrom)}
           </time>
           &mdash;
-          <time class="event__end-time" datetime="${humanizeToFullDate(dateTo)}">
-            ${humanizeToTime(dateTo)}
+          <time class="event__end-time" datetime="${humanizeDateToType3(dateTo)}">
+            ${humanizeDateToType1(dateTo)}
           </time>
         </p>
-        <p class="event__duration">${getEventDuration(dateFrom, dateTo)}</p>
+        <p class="event__duration">${getEventDuration(dateTo, dateFrom)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>

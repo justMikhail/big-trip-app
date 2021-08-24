@@ -30,16 +30,25 @@ const getShuffleArray = (originalArray) => {
 
 const randomizeArray = (arr) => arr.filter(() => Math.random() > 0.5);
 
-export const humanizeToTime = (dueDate) => dayjs(dueDate).format('HH:mm');
+const humanizeDateToType1 = (dueDate) => dayjs(dueDate).format('HH:mm');
 
-export const humanizeToMonthDay = (dueDate) => dayjs(dueDate).format('MMM DD');
+const humanizeDateToType2 = (dueDate) => dayjs(dueDate).format('MMM DD');
 
-export const humanizeToFullDate = (dueDate) => dayjs(dueDate).format('YY/MM/DD HH:mm');
+const humanizeDateToType3 = (dueDate) => dayjs(dueDate).format('YY/MM/DD HH:mm');
+
+const ucFirst = (str) => {
+  if (!str) {return str;}
+  return str[0].toUpperCase() + str.slice(1);
+};
 
 export {
   getRandomInteger,
   getRandomElFromArray,
   getShuffleArray,
-  randomizeArray
+  randomizeArray,
+  humanizeDateToType1,
+  humanizeDateToType2,
+  humanizeDateToType3,
+  ucFirst
 };
 

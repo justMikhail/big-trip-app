@@ -1,4 +1,4 @@
-import {humanizeToFullDate} from '../utils/utils';
+import {humanizeDateToType3, ucFirst} from '../utils/utils';
 import {TYPES} from '../mock/mock-const';
 
 const offersList = (offers, id) => {
@@ -60,7 +60,7 @@ const eventTypes = (currentType, allTypes) => {
           ${currentType === type ? 'checked' : ''}
         >
         <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">
-          ${type}
+          ${ucFirst(type)}
         </label>
       </div>`;
   });
@@ -75,12 +75,10 @@ export const createEventsItemForm = (event) => {
     dateFrom,
     dateTo,
     destination,
-    //isFavorite,
     id,
     offers,
     type,
   } = event;
-
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -122,11 +120,11 @@ export const createEventsItemForm = (event) => {
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time"
-                 value="${humanizeToFullDate(dateFrom)}">
+                 value="${humanizeDateToType3(dateFrom)}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
             <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time"
-                   value="${humanizeToFullDate(dateTo)}">
+                   value="${humanizeDateToType3(dateTo)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -156,9 +154,7 @@ export const createEventsItemForm = (event) => {
             expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic
             Mont Blanc.
           </p>
-
           ${photoListContainer(destination)}
-
         </section>
       </section>
     </form>

@@ -8,10 +8,9 @@ import {createEventsItemForm} from './view/events-item-form';
 
 import {getMockEvents} from './mock/mock-event-data';
 
-const EVENTS_ITEM_COUNT = 7;
+const EVENTS_ITEM_COUNT = 15;
 
 const eventsItems = new Array(EVENTS_ITEM_COUNT).fill(null).map(getMockEvents);
-console.log(eventsItems);
 
 const render = (container, template, where) => {
   container.insertAdjacentHTML(where, template);

@@ -62,19 +62,20 @@ const getMockEvents = () => {
   const randomPlace = getRandomPlaceName(PLACES);
   const randomDescription = getRandomDescription(randomPlace);
   const randomPictures = getRandomPhotos();
-  const randomType = getRandomElFromArray(TYPES);
+  const randomIndex = eventIndex++;
   const randomOffers = randomizeArray(OFFERS);
+  const randomType = getRandomElFromArray(TYPES);
 
   return {
     basePrice: randomBasePrice,
-    dateForm: randomDateFrom.format(DATE_FORMAT),
+    dateFrom: randomDateFrom.format(DATE_FORMAT),
     dateTo: randomDateTo.format(DATE_FORMAT),
     destination: {
       place: randomPlace,
       description: randomDescription,
       pictures: randomPictures,
     },
-    id: eventIndex++,
+    id: randomIndex,
     isFavorite: Boolean(getRandomInteger()),
     offers: randomOffers,
     type: randomType,
