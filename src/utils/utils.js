@@ -34,7 +34,7 @@ export const humanizeToTime = (dueDate) => dayjs(dueDate).format('HH:mm');
 
 export const humanizeToMonthDay = (dueDate) => dayjs(dueDate).format('MMM DD');
 
-export const humanizeToFullDate = (dueDate) => dayjs(dueDate).format('YYYY-MM-DDTHH:mm');
+export const humanizeToFullDate = (dueDate) => dayjs(dueDate).format('YY/MM/DD HH:mm');
 
 export {
   getRandomInteger,

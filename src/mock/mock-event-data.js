@@ -54,7 +54,7 @@ const getRandomPrice = (min, max) => Math.round((getRandomInteger(min, max) / 10
 
 let eventIndex = 0;
 
-const generateEvent = () => {
+const getMockEvents = () => {
 
   const randomBasePrice = getRandomPrice(EVENT_MIN_PRICE, EVENT_MAX_PRICE);
   const randomDateFrom = getDate(dayjs(), getRandomInteger(-MAX_MINUTES_GAP, MAX_MINUTES_GAP));
@@ -81,4 +81,4 @@ const generateEvent = () => {
   };
 };
 
-export {generateEvent};
+export {getMockEvents};
