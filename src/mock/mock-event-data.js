@@ -1,6 +1,16 @@
 import dayjs from 'dayjs';
 import {getRandomElFromArray, getRandomInteger, getShuffleArray, randomizeArray} from '../utils/utils';
-import {PLACES, TYPES, OFFERS, EVENT_MAX_PRICE, EVENT_MIN_PRICE, MAX_MINUTES_GAP, MIN_EVENT_DURATION, DATE_FORMAT} from './mock-const';
+import {
+  PLACES,
+  TYPES,
+  OFFERS,
+  EVENT_MAX_PRICE,
+  EVENT_MIN_PRICE,
+  MAX_MINUTES_GAP,
+  MIN_EVENT_DURATION,
+  DATE_FORMAT,
+  MAX_PHOTOS_COUNT
+} from './mock-const';
 
 const getRandomDescription = (placeName) => {
   const MIN_FRAGMENTS_COUNT = 1;
@@ -32,15 +42,17 @@ const getRandomPlaceName = (places) => {
   return randomPlace;
 };
 
-const generatePhotos = () => new Array(getRandomInteger(1, 5)).fill().map(() => {
-  `http://picsum.photos/248/152?r=${Math.random()}`;
-});
+const getRandomPhotos = () => new Array(getRandomInteger(0, MAX_PHOTOS_COUNT)).fill(null).map(() => ({
+  src: `https://picsum.photos/300/200?r=${Math.random()}`,
+  description: 'Photo description',
+}));
+
 
 const getDate = (from, gap) => dayjs(from).add (gap, 'minute');
 
-const getRandomPrice = (min, max) => {
-  return Math.round((getRandomInteger(min, max) / 10) * 10);
-};
+const getRandomPrice = (min, max) => Math.round((getRandomInteger(min, max) / 10) * 10);
+
+let eventIndex = 0;
 
 const generateEvent = () => {
 
@@ -49,7 +61,7 @@ const generateEvent = () => {
   const randomDateTo = getDate(randomDateFrom, getRandomInteger(MIN_EVENT_DURATION, MAX_MINUTES_GAP));
   const randomPlace = getRandomPlaceName(PLACES);
   const randomDescription = getRandomDescription(randomPlace);
-  const randomPictures = generatePhotos();
+  const randomPictures = getRandomPhotos();
   const randomType = getRandomElFromArray(TYPES);
   const randomOffers = randomizeArray(OFFERS);
 
@@ -60,9 +72,9 @@ const generateEvent = () => {
     destination: {
       place: randomPlace,
       description: randomDescription,
-      picture: randomPictures,
+      pictures: randomPictures,
     },
-    id: '0',
+    id: eventIndex++,
     isFavorite: Boolean(getRandomInteger()),
     offers: randomOffers,
     type: randomType,

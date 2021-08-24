@@ -8,9 +8,13 @@ import {createEventsItemForm} from './view/events-item-form';
 
 import {generateEvent} from './mock/mock-event-data';
 
-const EVENTS_ITEM_COUNT = 15;
+const EVENTS_ITEM_COUNT = 7;
 
-const eventsItems = new Array(EVENTS_ITEM_COUNT).fill().map(generateEvent);
+const eventsItems = new Array(EVENTS_ITEM_COUNT).fill(null).map(generateEvent);
+console.log(eventsItems)
+//const editedEventElement = createEventEditTemplate(events[0]);
+//const eventElements = events.slice(1).map(createEventTemplate);
+//const newEventElement = createEventEditTemplate();
 
 const render = (container, template, where) => {
   container.insertAdjacentHTML(where, template);
@@ -31,9 +35,9 @@ render(EventsContainer, createEventsList(), 'beforeEnd');
 
 const eventsListContainer = EventsContainer.querySelector('.trip-events__list');
 
-for (let i = 0; i < EVENTS_ITEM_COUNT; i++) {
+for (let i = 1; i < EVENTS_ITEM_COUNT; i++) {
   render(eventsListContainer, createEventsItem(eventsItems[i]), 'beforeEnd');
 }
 
-render(eventsListContainer, createEventsItemForm(), 'afterBegin');
+render(eventsListContainer, createEventsItemForm(eventsItems[0]), 'afterBegin');
 
