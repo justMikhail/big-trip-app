@@ -2,15 +2,18 @@ import dayjs from 'dayjs';
 import {getRandomElFromArray, getRandomInteger, getShuffleArray, randomizeArray} from '../utils/utils';
 import {
   PLACES,
-  TYPES,
   OFFERS,
   EVENT_MAX_PRICE,
   EVENT_MIN_PRICE,
-  MAX_MINUTES_GAP,
-  MIN_EVENT_DURATION,
-  DATE_FORMAT,
   MAX_PHOTOS_COUNT
 } from './mock-const';
+
+import {
+  TYPES,
+  MAX_MINUTES_GAP,
+  MIN_EVENT_DURATION,
+  DATE_FORMAT
+} from '../const/const';
 
 const getRandomDescription = (placeName) => {
   const MIN_FRAGMENTS_COUNT = 1;
