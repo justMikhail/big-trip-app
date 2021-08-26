@@ -1,34 +1,49 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {humanizeDateToType1, humanizeDateToType2, humanizeDateToType3} from '../utils/utils';
+import {formatDate} from '../utils/utils';
+import {dateFormat} from '../const/const';
 dayjs.extend(duration);
 
 const getEventDuration = (dateStart, dateEnd) => {
   const eventDuration = dayjs(dateStart) - dayjs(dateEnd);
-
+  // todo Нужно еще вернуться к этой логике
   let days = dayjs.duration(eventDuration).days();
   days = days < 10
-    ? `0${days}`
+    ? days.toString().padStart(2, '0')
     : days;
   let hours = dayjs.duration(eventDuration).hours();
   hours = hours < 10
-    ? `0${hours}`
+    ? hours.toString().padStart(2, '0')
     : hours;
   let minutes = dayjs.duration(eventDuration).minutes();
   minutes = minutes < 10
-    ? `0${minutes}`
+    ? minutes.toString().padStart(2, '0')
     : minutes;
 
-  // todo возможно можно прописать данную логику лаконичней?
+  let dateString = `${minutes}M`;
   if (days > 0) {
-    return `${days}D ${hours}H ${minutes}M`;
+    dateString = `${days}D ${hours}H ${minutes}M`;
   } else if (hours > 0) {
-    return `${hours}H ${minutes}M`;
+    dateString = `${hours}H ${minutes}M`;
   }
-  return `${minutes}M`;
+
+  return dateString;
 };
 
-export const createEventsItem = (event) => {
+const generateOffers = (offers) => {
+  let offersMarkup = '';
+
+  offers.forEach((offer) => {
+    offersMarkup += `<li class="event__offer">
+         <span class="event__offer-title">${offer.title}</span>
+           &plus;&euro;&nbsp;
+         <span class="event__offer-price">${offer.price}</span>
+         </li>`;
+  });
+  return offersMarkup;
+};
+
+export const createEventsItemTemplate = (event) => {
 
   const {
     basePrice,
@@ -44,23 +59,10 @@ export const createEventsItem = (event) => {
     ? 'event__favorite-btn  event__favorite-btn--active'
     : 'event__favorite-btn';
 
-  const generateOffers = () => {
-    let offersMarkup = '';
-
-    offers.forEach((offer) => {
-      offersMarkup += `<li class="event__offer">
-         <span class="event__offer-title">${offer.title}</span>
-           &plus;&euro;&nbsp;
-         <span class="event__offer-price">${offer.price}</span>
-         </li>`;
-    });
-    return offersMarkup;
-  };
-
   return `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="2019-03-18">
-        ${humanizeDateToType2(dateFrom)}
+        ${formatDate(dateFrom, dateFormat.MONTH_DAY)}
       </time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
@@ -68,12 +70,12 @@ export const createEventsItem = (event) => {
       <h3 class="event__title">${type} ${destination.place}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${humanizeDateToType3(dateFrom)}">
-            ${humanizeDateToType1(dateFrom)}
+          <time class="event__start-time" datetime="${formatDate(dateFrom, dateFormat.FULL)}">
+            ${formatDate(dateFrom, dateFormat.HOURS_MINUTES)}
           </time>
           &mdash;
-          <time class="event__end-time" datetime="${humanizeDateToType3(dateTo)}">
-            ${humanizeDateToType1(dateTo)}
+          <time class="event__end-time" datetime="${formatDate(dateTo, dateFormat.FULL)}">
+            ${formatDate(dateTo, dateFormat.HOURS_MINUTES)}
           </time>
         </p>
         <p class="event__duration">${getEventDuration(dateTo, dateFrom)}</p>
@@ -83,7 +85,7 @@ export const createEventsItem = (event) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${generateOffers()}
+        ${generateOffers(offers)}
       </ul>
       <button class="${favoriteClassName}" type="button">
         <span class="visually-hidden">Add to favorite</span>

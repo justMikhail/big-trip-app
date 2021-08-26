@@ -1,39 +1,40 @@
-import {createTripControls} from './view/trip-controls';
-import {createTripInfo} from './view/trip-info';
-import {createTripFilters} from './view/trip-filters';
-import {createEventsSort} from './view/events-sort';
-import {createEventsList} from './view/events-list';
-import {createEventsItem} from './view/events-item';
-import {createEventsItemForm} from './view/events-item-form';
+import {createTripControlsTemplate} from './view/trip-controls';
+import {createTripInfoTemplate} from './view/trip-info';
+import {createTripFiltersTemplate} from './view/trip-filters';
+import {createEventsSortTemplate} from './view/events-sort';
+import {createEventsListTemplate} from './view/events-list';
+import {createEventsItemTemplate} from './view/event-item';
+import {createEventsItemEditTemplate} from './view/event-item-edit';
 
-import {getMockEvents} from './mock/mock-event-data';
+import {getMockEvent} from './mock/mock-event-data';
 
 const EVENTS_ITEM_COUNT = 15;
 
-const eventsItems = new Array(EVENTS_ITEM_COUNT).fill(null).map(getMockEvents);
+const getMockEvents = () => new Array(EVENTS_ITEM_COUNT).fill(null).map((event, index) => getMockEvent(index));
+const eventsItems = getMockEvents();
 
 const render = (container, template, where) => {
   container.insertAdjacentHTML(where, template);
 };
 
-const pageMain = document.querySelector('.page-main');
+const pageMainContainer = document.querySelector('.page-main');
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainContainer = pageHeaderContainer.querySelector('.trip-main');
 const tripControlsContainer = pageHeaderContainer.querySelector('.trip-controls__navigation');
 const tripFiltersContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
-const EventsContainer = pageMain.querySelector('.trip-events');
+const eventsContainer = pageMainContainer.querySelector('.trip-events');
 
-render(tripMainContainer, createTripInfo(), 'afterBegin');
-render(tripControlsContainer, createTripControls(), 'beforeEnd');
-render(tripFiltersContainer, createTripFilters(), 'beforeEnd');
-render(EventsContainer, createEventsSort(), 'afterBegin');
-render(EventsContainer, createEventsList(), 'beforeEnd');
+render(tripMainContainer, createTripInfoTemplate(), 'afterBegin');
+render(tripControlsContainer, createTripControlsTemplate(), 'beforeEnd');
+render(tripFiltersContainer, createTripFiltersTemplate(), 'beforeEnd');
+render(eventsContainer, createEventsSortTemplate(), 'afterBegin');
+render(eventsContainer, createEventsListTemplate(), 'beforeEnd');
 
-const eventsListContainer = EventsContainer.querySelector('.trip-events__list');
+const eventsListContainer = eventsContainer.querySelector('.trip-events__list');
 
 for (let i = 1; i < EVENTS_ITEM_COUNT; i++) {
-  render(eventsListContainer, createEventsItem(eventsItems[i]), 'beforeEnd');
+  render(eventsListContainer, createEventsItemTemplate(eventsItems[i]), 'beforeEnd');
 }
 
-render(eventsListContainer, createEventsItemForm(eventsItems[0]), 'afterBegin');
+render(eventsListContainer, createEventsItemEditTemplate(eventsItems[0]), 'afterBegin');
 

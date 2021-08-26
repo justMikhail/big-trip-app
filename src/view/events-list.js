@@ -1,4 +1,4 @@
-export const createEventsList = () => (
+export const createEventsListTemplate = () => (
   `<ul class="trip-events__list">
     <!--Events-->
   </ul>`
