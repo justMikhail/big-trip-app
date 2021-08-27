@@ -4,9 +4,7 @@ import TripFiltersView from './view/trip-filters';
 import EventsSortView from './view/events-sort';
 import EventsListView from './view/events-list';
 import EventItemView from './view/event-item';
-
 import EventItemEditView from './view/event-item-edit';
-
 
 import {render, RenderPosition} from './utils/render';
 
@@ -14,6 +12,40 @@ import {mockEventsItems} from './mock/mock-event-data';
 import {EVENTS_ITEM_COUNT} from './mock/mock-const';
 
 const eventsItems = mockEventsItems;
+
+const renderEvent = (container, event) => {
+  const eventComponent = new EventItemView(event);
+  const eventEditComponent = new EventItemEditView(event);
+
+  const replaceCardToForm = () => {
+    container.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceFormToCard = () => {
+    container.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
+  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceCardToForm();
+    document.addEventListener('keydown', onEscKeyDown);
+  });
+
+  eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToCard();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  render(container, eventComponent.getElement(), RenderPosition.BEFORE_END);
+};
 
 const pageMainContainer = document.querySelector('.page-main');
 const pageHeaderContainer = document.querySelector('.page-header');
@@ -30,9 +62,9 @@ render(eventsContainer, new EventsListView().getElement(), RenderPosition.BEFORE
 
 const eventsListContainer = eventsContainer.querySelector('.trip-events__list');
 
-render(eventsListContainer, new EventItemEditView(eventsItems[0]).getElement(), RenderPosition.BEFORE_END);
+//render(eventsListContainer, new EventItemEditView(eventsItems[0]).getElement(), RenderPosition.BEFORE_END);
 
-for (let i = 1; i < EVENTS_ITEM_COUNT; i++) {
-  render(eventsListContainer, new EventItemView(eventsItems[i]).getElement(), RenderPosition.BEFORE_END);
+for (let i = 0; i < EVENTS_ITEM_COUNT; i++) {
+  renderEvent(eventsListContainer, eventsItems[i]);
 }
 
