@@ -6,14 +6,12 @@ import {createEventsListTemplate} from './view/events-list';
 import {createEventsItemTemplate} from './view/event-item';
 import {createEventsItemEditTemplate} from './view/event-item-edit';
 
+import {renderTemplate} from './utils/render';
+
 import {mockEventsItems} from './mock/mock-event-data';
 import {EVENTS_ITEM_COUNT} from './mock/mock-const';
 
 const eventsItems = mockEventsItems;
-
-const render = (container, template, where) => {
-  container.insertAdjacentHTML(where, template);
-};
 
 const pageMainContainer = document.querySelector('.page-main');
 const pageHeaderContainer = document.querySelector('.page-header');
@@ -22,17 +20,17 @@ const tripControlsContainer = pageHeaderContainer.querySelector('.trip-controls_
 const tripFiltersContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
 const eventsContainer = pageMainContainer.querySelector('.trip-events');
 
-render(tripMainContainer, createTripInfoTemplate(), 'afterBegin');
-render(tripControlsContainer, createTripControlsTemplate(), 'beforeEnd');
-render(tripFiltersContainer, createTripFiltersTemplate(), 'beforeEnd');
-render(eventsContainer, createEventsSortTemplate(), 'afterBegin');
-render(eventsContainer, createEventsListTemplate(), 'beforeEnd');
+renderTemplate(tripMainContainer, createTripInfoTemplate(), 'afterBegin');
+renderTemplate(tripControlsContainer, createTripControlsTemplate(), 'beforeEnd');
+renderTemplate(tripFiltersContainer, createTripFiltersTemplate(), 'beforeEnd');
+renderTemplate(eventsContainer, createEventsSortTemplate(), 'afterBegin');
+renderTemplate(eventsContainer, createEventsListTemplate(), 'beforeEnd');
 
 const eventsListContainer = eventsContainer.querySelector('.trip-events__list');
 
 for (let i = 1; i < EVENTS_ITEM_COUNT; i++) {
-  render(eventsListContainer, createEventsItemTemplate(eventsItems[i]), 'beforeEnd');
+  renderTemplate(eventsListContainer, createEventsItemTemplate(eventsItems[i]), 'beforeEnd');
 }
 
-render(eventsListContainer, createEventsItemEditTemplate(eventsItems[0]), 'afterBegin');
+renderTemplate(eventsListContainer, createEventsItemEditTemplate(eventsItems[0]), 'afterBegin');
 
