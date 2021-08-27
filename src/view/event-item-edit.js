@@ -1,3 +1,4 @@
+import {createElement} from '../utils/render';
 import {formatDate, capitalizeString, replaceSpaceToUnderscore} from '../utils/utils';
 import {TYPES, dateFormat} from '../const/const';
 
@@ -67,7 +68,7 @@ const eventTypes = (currentType, allTypes) => {
   return eventTypesTemplate;
 };
 
-export const createEventsItemEditTemplate = (event) => {
+const createEventsItemEditTemplate = (event) => {
 
   const {
     basePrice,
@@ -157,3 +158,26 @@ export const createEventsItemEditTemplate = (event) => {
     </form>
   </li>`;
 };
+
+export default class EventItemEdit {
+  constructor(event) {
+    this._element = null;
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createEventsItemEditTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
