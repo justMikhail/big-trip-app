@@ -1,12 +1,13 @@
-import {createTripControlsTemplate} from './view/trip-controls';
-import {createTripInfoTemplate} from './view/trip-info';
-import {createTripFiltersTemplate} from './view/trip-filters';
-import {createEventsSortTemplate} from './view/events-sort';
-import {createEventsListTemplate} from './view/events-list';
+import TripInfoView from './view/trip-info';
+import TripControlsView from './view/trip-controls';
+import TripFiltersView from './view/trip-filters';
+import EventsSortView from './view/events-sort';
+//import {createEventsListTemplate} from './view/events-list';
+import EventsListView from './view/events-list';
 import {createEventsItemTemplate} from './view/event-item';
 import {createEventsItemEditTemplate} from './view/event-item-edit';
 
-import {renderTemplate} from './utils/render';
+import {renderTemplate, renderElement, RenderPosition} from './utils/render';
 
 import {mockEventsItems} from './mock/mock-event-data';
 import {EVENTS_ITEM_COUNT} from './mock/mock-const';
@@ -20,11 +21,11 @@ const tripControlsContainer = pageHeaderContainer.querySelector('.trip-controls_
 const tripFiltersContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
 const eventsContainer = pageMainContainer.querySelector('.trip-events');
 
-renderTemplate(tripMainContainer, createTripInfoTemplate(), 'afterBegin');
-renderTemplate(tripControlsContainer, createTripControlsTemplate(), 'beforeEnd');
-renderTemplate(tripFiltersContainer, createTripFiltersTemplate(), 'beforeEnd');
-renderTemplate(eventsContainer, createEventsSortTemplate(), 'afterBegin');
-renderTemplate(eventsContainer, createEventsListTemplate(), 'beforeEnd');
+renderElement(tripMainContainer, new TripInfoView().getElement(), RenderPosition.AFTER_BEGIN);
+renderElement(tripControlsContainer, new TripControlsView().getElement(), RenderPosition.BEFORE_END);
+renderElement(tripFiltersContainer, new TripFiltersView().getElement(), RenderPosition.BEFORE_END);
+renderElement(eventsContainer, new EventsSortView().getElement(), RenderPosition.AFTER_BEGIN);
+renderElement(eventsContainer, new EventsListView().getElement(), RenderPosition.BEFORE_END);
 
 const eventsListContainer = eventsContainer.querySelector('.trip-events__list');
 
