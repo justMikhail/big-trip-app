@@ -1,5 +1,6 @@
-export const PLACES = ['Coruscant', 'Cloud City', 'Gungan City', 'Mos Eisely', 'Hosnian Prime', 'Tatooine '];
+export const EVENTS_ITEM_COUNT = 15;
 
+export const PLACES = ['Coruscant', 'Cloud City', 'Gungan City', 'Mos Eisely', 'Hosnian Prime', 'Tatooine '];
 export const EVENT_MIN_PRICE = 20;
 export const EVENT_MAX_PRICE = 1000;
 export const MAX_PHOTOS_COUNT = 5;

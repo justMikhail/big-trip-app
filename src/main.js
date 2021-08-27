@@ -6,12 +6,10 @@ import {createEventsListTemplate} from './view/events-list';
 import {createEventsItemTemplate} from './view/event-item';
 import {createEventsItemEditTemplate} from './view/event-item-edit';
 
-import {getMockEvent} from './mock/mock-event-data';
+import {mockEventsItems} from './mock/mock-event-data';
+import {EVENTS_ITEM_COUNT} from './mock/mock-const';
 
-const EVENTS_ITEM_COUNT = 15;
-
-const getMockEvents = () => new Array(EVENTS_ITEM_COUNT).fill(null).map((event, index) => getMockEvent(index));
-const eventsItems = getMockEvents();
+const eventsItems = mockEventsItems;
 
 const render = (container, template, where) => {
   container.insertAdjacentHTML(where, template);

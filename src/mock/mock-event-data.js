@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {getRandomElementFromArray, getRandomInteger, getShuffleArray, randomizeArray} from '../utils/utils';
 import {
+  EVENTS_ITEM_COUNT,
   PLACES,
   OFFERS,
   EVENT_MAX_PRICE,
@@ -33,7 +34,7 @@ const getDate = (from, gap) => dayjs(from).add (gap, 'minute');
 
 const getRandomPrice = (min, max) => Math.round((getRandomInteger(min, max) / 10) * 10);
 
-export const getMockEvent = (index) => {
+const getMockEvent = (index) => {
 
   const randomBasePrice = getRandomPrice(EVENT_MIN_PRICE, EVENT_MAX_PRICE);
   const randomDateFrom = getDate(dayjs(), getRandomInteger(-MAX_MINUTES_GAP, MAX_MINUTES_GAP));
@@ -60,3 +61,6 @@ export const getMockEvent = (index) => {
     type: randomType,
   };
 };
+
+const getMockEvents = () => new Array(EVENTS_ITEM_COUNT).fill(null).map((event, index) => getMockEvent(index));
+export const mockEventsItems = getMockEvents();
