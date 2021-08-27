@@ -1,39 +1,79 @@
-import {createTripControls} from './view/trip-controls';
-import {createTripInfo} from './view/trip-info';
-import {createTripFilters} from './view/trip-filters';
-import {createEventsSort} from './view/events-sort';
-import {createEventsList} from './view/events-list';
-import {createEventsItem} from './view/events-item';
-import {createEventsItemForm} from './view/events-item-form';
+import TripInfoView from './view/trip-info';
+import TripControlsView from './view/trip-controls';
+import TripFiltersView from './view/trip-filters';
+import EventsSortView from './view/events-sort';
+import EventsListView from './view/events-list';
+import EventItemView from './view/event-item';
+import EventItemEditView from './view/event-item-edit';
+import NoEventView from './view/no-events';
 
-import {getMockEvents} from './mock/mock-event-data';
+import {render, RenderPosition} from './utils/render';
 
-const EVENTS_ITEM_COUNT = 15;
+import {mockEventsItems} from './mock/mock-event-data';
 
-const eventsItems = new Array(EVENTS_ITEM_COUNT).fill(null).map(getMockEvents);
+const eventsItems = mockEventsItems;
 
-const render = (container, template, where) => {
-  container.insertAdjacentHTML(where, template);
+const renderEvent = (container, event) => {
+  const eventComponent = new EventItemView(event);
+  const eventEditComponent = new EventItemEditView(event);
+
+  const replaceCardToForm = () => {
+    container.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const replaceFormToCard = () => {
+    container.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
+  eventComponent
+    .getElement()
+    .querySelector('.event__rollup-btn')
+    .addEventListener('click', () => {
+      replaceCardToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+  eventEditComponent
+    .getElement()
+    .querySelector('form')
+    .addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+  render(container, eventComponent.getElement(), RenderPosition.BEFORE_END);
 };
 
-const pageMain = document.querySelector('.page-main');
+const pageMainContainer = document.querySelector('.page-main');
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainContainer = pageHeaderContainer.querySelector('.trip-main');
 const tripControlsContainer = pageHeaderContainer.querySelector('.trip-controls__navigation');
 const tripFiltersContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
-const EventsContainer = pageMain.querySelector('.trip-events');
+const eventsContainer = pageMainContainer.querySelector('.trip-events');
 
-render(tripMainContainer, createTripInfo(), 'afterBegin');
-render(tripControlsContainer, createTripControls(), 'beforeEnd');
-render(tripFiltersContainer, createTripFilters(), 'beforeEnd');
-render(EventsContainer, createEventsSort(), 'afterBegin');
-render(EventsContainer, createEventsList(), 'beforeEnd');
+render(tripMainContainer, new TripInfoView().getElement(), RenderPosition.AFTER_BEGIN);
+render(tripControlsContainer, new TripControlsView().getElement(), RenderPosition.BEFORE_END);
+render(tripFiltersContainer, new TripFiltersView().getElement(), RenderPosition.BEFORE_END);
+render(eventsContainer, new EventsSortView().getElement(), RenderPosition.AFTER_BEGIN);
+render(eventsContainer, new EventsListView().getElement(), RenderPosition.BEFORE_END);
 
-const eventsListContainer = EventsContainer.querySelector('.trip-events__list');
+const eventsListContainer = eventsContainer.querySelector('.trip-events__list');
 
-for (let i = 1; i < EVENTS_ITEM_COUNT; i++) {
-  render(eventsListContainer, createEventsItem(eventsItems[i]), 'beforeEnd');
+if (!eventsItems.length) {
+  render(eventsListContainer, new NoEventView().getElement(), RenderPosition.BEFORE_END);
+} else {
+  for (let i = 0; i < eventsItems.length; i++) {
+    renderEvent(eventsListContainer, eventsItems[i]);
+  }
 }
 
-render(eventsListContainer, createEventsItemForm(eventsItems[0]), 'afterBegin');
 

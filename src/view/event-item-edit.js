@@ -1,14 +1,21 @@
-import {humanizeDateToType3, ucFirst} from '../utils/utils';
-import {TYPES} from '../const/const';
+import {createElement} from '../utils/render';
+import {formatDate, capitalizeString, replaceSpaceToUnderscore} from '../utils/utils';
+import {TYPES, dateFormat} from '../const/const';
 
 const offersList = (offers, id) => {
   let offerTemplate = '';
 
   offers.forEach((offer) => {
+    const offerName = replaceSpaceToUnderscore(offer.title);
     offerTemplate +=
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-${id}" type="checkbox" name="event-offer-${offer.type}">
-          <label class="event__offer-label" for="event-offer-${offer.type}-${id}">
+        <input
+          class="event__offer-checkbox  visually-hidden"
+          id="event-offer-${offerName}-${id}"
+          type="checkbox"
+          name="event-offer-${offerName}"
+        >
+          <label class="event__offer-label" for="event-offer-${offerName}-${id}">
             <span class="event__offer-title">${offer.title}</span>
             &plus;&euro;&nbsp;
             <span class="event__offer-price">${offer.price}</span>
@@ -19,27 +26,20 @@ const offersList = (offers, id) => {
   return offerTemplate;
 };
 
-const photoListContainer = (destination) => {
+const photosList = (destination) => {
   const photosCount = destination.pictures.length;
+  const photosArray = destination.pictures;
+  let photosTemplate = '';
 
-  const photosList = () => {
-    let photosTemplate = '';
-    const photosArray = destination.pictures;
-
-    if (photosCount) {
-      photosArray.forEach((photo) => {
-        photosTemplate +=
-          `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
-      });
-    }
-
-    return photosTemplate;
-  };
+  photosArray.forEach((photo) => {
+    photosTemplate +=
+      `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
+  });
 
   return photosCount
     ? `<div class="event__photos-container">
           <div class="event__photos-tape">
-            ${photosList(destination)}
+            ${photosTemplate}
           </div>
         </div>`
     : '';
@@ -60,7 +60,7 @@ const eventTypes = (currentType, allTypes) => {
           ${currentType === type ? 'checked' : ''}
         >
         <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">
-          ${ucFirst(type)}
+          ${capitalizeString(type)}
         </label>
       </div>`;
   });
@@ -68,7 +68,7 @@ const eventTypes = (currentType, allTypes) => {
   return eventTypesTemplate;
 };
 
-export const createEventsItemForm = (event) => {
+const createEventsItemEditTemplate = (event) => {
 
   const {
     basePrice,
@@ -120,11 +120,11 @@ export const createEventsItemForm = (event) => {
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time"
-                 value="${humanizeDateToType3(dateFrom)}">
+                 value="${formatDate(dateFrom, dateFormat.FULL)}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
             <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time"
-                   value="${humanizeDateToType3(dateTo)}">
+                   value="${formatDate(dateTo, dateFormat.FULL)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -152,9 +152,32 @@ export const createEventsItemForm = (event) => {
           <p class="event__destination-description">
             ${destination.description}
           </p>
-          ${photoListContainer(destination)}
+          ${photosList(destination)}
         </section>
       </section>
     </form>
   </li>`;
 };
+
+export default class EventItemEdit {
+  constructor(event) {
+    this._element = null;
+    this._event = event;
+  }
+
+  getTemplate() {
+    return createEventsItemEditTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

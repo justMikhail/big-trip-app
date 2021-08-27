@@ -7,7 +7,7 @@ export const getRandomInteger = (min = 0, max = 1) => {
   return Math.floor(result);
 };
 
-export const getRandomElFromArray = (array) => array[getRandomInteger(0, array.length - 1)];
+export const getRandomElementFromArray = (array) => array[getRandomInteger(0, array.length - 1)];
 
 // Fisher–Yates Shuffle
 export const getShuffleArray = (originalArray) => {
@@ -30,14 +30,11 @@ export const getShuffleArray = (originalArray) => {
 
 export const randomizeArray = (arr) => arr.filter(() => Math.random() > 0.5);
 
-export const humanizeDateToType1 = (dueDate) => dayjs(dueDate).format('HH:mm');
+export const formatDate = (dueDate, format) => dayjs(dueDate).format(format);
 
-export const humanizeDateToType2 = (dueDate) => dayjs(dueDate).format('MMM DD');
-
-export const humanizeDateToType3 = (dueDate) => dayjs(dueDate).format('YY/MM/DD HH:mm');
-
-export const ucFirst = (str) => {
+export const capitalizeString = (str) => {
   if (!str) {return str;}
   return str[0].toUpperCase() + str.slice(1);
 };
 
+export const replaceSpaceToUnderscore = (str) => str.replace(/\s+/g, '_');
