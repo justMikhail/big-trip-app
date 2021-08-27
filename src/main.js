@@ -5,11 +5,11 @@ import EventsSortView from './view/events-sort';
 import EventsListView from './view/events-list';
 import EventItemView from './view/event-item';
 import EventItemEditView from './view/event-item-edit';
+import NoEventView from './view/no-events';
 
 import {render, RenderPosition} from './utils/render';
 
 import {mockEventsItems} from './mock/mock-event-data';
-import {EVENTS_ITEM_COUNT} from './mock/mock-const';
 
 const eventsItems = mockEventsItems;
 
@@ -33,16 +33,22 @@ const renderEvent = (container, event) => {
     }
   };
 
-  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
-    replaceCardToForm();
-    document.addEventListener('keydown', onEscKeyDown);
-  });
+  eventComponent
+    .getElement()
+    .querySelector('.event__rollup-btn')
+    .addEventListener('click', () => {
+      replaceCardToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
 
-  eventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    replaceFormToCard();
-    document.removeEventListener('keydown', onEscKeyDown);
-  });
+  eventEditComponent
+    .getElement()
+    .querySelector('form')
+    .addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
 
   render(container, eventComponent.getElement(), RenderPosition.BEFORE_END);
 };
@@ -62,9 +68,12 @@ render(eventsContainer, new EventsListView().getElement(), RenderPosition.BEFORE
 
 const eventsListContainer = eventsContainer.querySelector('.trip-events__list');
 
-//render(eventsListContainer, new EventItemEditView(eventsItems[0]).getElement(), RenderPosition.BEFORE_END);
-
-for (let i = 0; i < EVENTS_ITEM_COUNT; i++) {
-  renderEvent(eventsListContainer, eventsItems[i]);
+if (!eventsItems.length) {
+  render(eventsListContainer, new NoEventView().getElement(), RenderPosition.BEFORE_END);
+} else {
+  for (let i = 0; i < eventsItems.length; i++) {
+    renderEvent(eventsListContainer, eventsItems[i]);
+  }
 }
+
 
