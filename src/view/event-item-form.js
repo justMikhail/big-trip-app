@@ -159,7 +159,7 @@ const createEventsItemEditTemplate = (event) => {
   </li>`;
 };
 
-export default class EventItemEdit {
+export default class EventItemForm {
   constructor(event) {
     this._element = null;
     this._event = event;

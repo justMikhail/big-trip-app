@@ -4,7 +4,7 @@ import TripFiltersView from './view/trip-filters';
 import EventsSortView from './view/events-sort';
 import EventsListView from './view/events-list';
 import EventItemView from './view/event-item';
-import EventItemEditView from './view/event-item-edit';
+import EventItemFormView from './view/event-item-form';
 import NoEventView from './view/no-events';
 
 import {render, RenderPosition} from './utils/render';
@@ -15,7 +15,7 @@ const eventsItems = mockEventsItems;
 
 const renderEvent = (container, event) => {
   const eventComponent = new EventItemView(event);
-  const eventEditComponent = new EventItemEditView(event);
+  const eventEditComponent = new EventItemFormView(event);
 
   const replaceCardToForm = () => {
     container.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
