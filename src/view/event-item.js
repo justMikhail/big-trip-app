@@ -8,19 +8,10 @@ dayjs.extend(duration);
 
 const getEventDuration = (dateStart, dateEnd) => {
   const eventDuration = dayjs(dateStart) - dayjs(dateEnd);
-  // todo Нужно еще вернуться к этой логике
-  let days = dayjs.duration(eventDuration).days();
-  days = days < 10
-    ? days.toString().padStart(2, '0')
-    : days;
-  let hours = dayjs.duration(eventDuration).hours();
-  hours = hours < 10
-    ? hours.toString().padStart(2, '0')
-    : hours;
-  let minutes = dayjs.duration(eventDuration).minutes();
-  minutes = minutes < 10
-    ? minutes.toString().padStart(2, '0')
-    : minutes;
+
+  const days = dayjs.duration(eventDuration).days().toString().padStart(2, '0');
+  const hours = dayjs.duration(eventDuration).hours().toString().padStart(2, '0');
+  const minutes = dayjs.duration(eventDuration).minutes().toString().padStart(2, '0');
 
   let dateString = `${minutes}M`;
   if (days > 0) {
