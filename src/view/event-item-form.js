@@ -1,4 +1,4 @@
-import {createElement} from '../utils/render';
+import AbstractView from './abstract';
 import {formatDate, capitalizeString, replaceSpaceToUnderscore} from '../utils/utils';
 import {TYPES, dateFormat} from '../const/const';
 
@@ -68,7 +68,7 @@ const eventTypes = (currentType, allTypes) => {
   return eventTypesTemplate;
 };
 
-const createEventsItemEditTemplate = (event) => {
+const createEventItemFormTemplate = (event) => {
 
   const {
     basePrice,
@@ -159,25 +159,13 @@ const createEventsItemEditTemplate = (event) => {
   </li>`;
 };
 
-export default class EventItemForm {
+export default class EventItemForm extends AbstractView {
   constructor(event) {
-    this._element = null;
+    super();
     this._event = event;
   }
 
   getTemplate() {
-    return createEventsItemEditTemplate(this._event);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return createEventItemFormTemplate(this._event);
   }
 }

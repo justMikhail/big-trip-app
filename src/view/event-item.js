@@ -1,7 +1,7 @@
+import AbstractView from './abstract';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import {formatDate} from '../utils/utils';
-import {createElement} from '../utils/render';
 import {dateFormat} from '../const/const';
 
 dayjs.extend(duration);
@@ -36,7 +36,7 @@ const generateOffers = (offers) => {
   return offersMarkup;
 };
 
-const createEventsItemTemplate = (event) => {
+const createEventItemTemplate = (event) => {
 
   const {
     basePrice,
@@ -94,25 +94,13 @@ const createEventsItemTemplate = (event) => {
   </li>`;
 };
 
-export default class EventItem {
+export default class EventItem extends AbstractView {
   constructor(event) {
-    this._element = null;
+    super();
     this._event = event;
   }
 
   getTemplate() {
-    return createEventsItemTemplate(this._event);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return createEventItemTemplate(this._event);
   }
 }
