@@ -34,18 +34,13 @@ const renderEvent = (container, event) => {
   };
 
   eventComponent
-    .getElement()
-    .querySelector('.event__rollup-btn')
-    .addEventListener('click', () => {
+    .setEditClickHandler(() => {
       replaceCardToForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
   eventEditComponent
-    .getElement()
-    .querySelector('form')
-    .addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    .setFormSubmitHandler(() => {
       replaceFormToCard();
       document.removeEventListener('keydown', onEscKeyDown);
     });
