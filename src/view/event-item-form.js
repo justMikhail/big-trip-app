@@ -1,5 +1,6 @@
-import {createElement} from '../utils/render';
-import {formatDate, capitalizeString, replaceSpaceToUnderscore} from '../utils/utils';
+import AbstractView from './abstract';
+import {capitalizeString, replaceSpaceToUnderscore} from '../utils/utils';
+import {formatDate} from '../utils/date';
 import {TYPES, dateFormat} from '../const/const';
 
 const offersList = (offers, id) => {
@@ -68,7 +69,7 @@ const eventTypes = (currentType, allTypes) => {
   return eventTypesTemplate;
 };
 
-const createEventsItemEditTemplate = (event) => {
+const createEventItemFormTemplate = (event) => {
 
   const {
     basePrice,
@@ -159,25 +160,24 @@ const createEventsItemEditTemplate = (event) => {
   </li>`;
 };
 
-export default class EventItemEdit {
+export default class EventItemForm extends AbstractView {
   constructor(event) {
-    this._element = null;
+    super();
     this._event = event;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
-    return createEventsItemEditTemplate(this._event);
+    return createEventItemFormTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 }

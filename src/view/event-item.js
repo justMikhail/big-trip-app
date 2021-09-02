@@ -1,26 +1,17 @@
+import AbstractView from './abstract';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {formatDate} from '../utils/utils';
-import {createElement} from '../utils/render';
+import {formatDate} from '../utils/date';
 import {dateFormat} from '../const/const';
 
 dayjs.extend(duration);
 
 const getEventDuration = (dateStart, dateEnd) => {
   const eventDuration = dayjs(dateStart) - dayjs(dateEnd);
-  // todo Нужно еще вернуться к этой логике
-  let days = dayjs.duration(eventDuration).days();
-  days = days < 10
-    ? days.toString().padStart(2, '0')
-    : days;
-  let hours = dayjs.duration(eventDuration).hours();
-  hours = hours < 10
-    ? hours.toString().padStart(2, '0')
-    : hours;
-  let minutes = dayjs.duration(eventDuration).minutes();
-  minutes = minutes < 10
-    ? minutes.toString().padStart(2, '0')
-    : minutes;
+
+  const days = dayjs.duration(eventDuration).days().toString().padStart(2, '0');
+  const hours = dayjs.duration(eventDuration).hours().toString().padStart(2, '0');
+  const minutes = dayjs.duration(eventDuration).minutes().toString().padStart(2, '0');
 
   let dateString = `${minutes}M`;
   if (days > 0) {
@@ -45,7 +36,7 @@ const generateOffers = (offers) => {
   return offersMarkup;
 };
 
-const createEventsItemTemplate = (event) => {
+const createEventItemTemplate = (event) => {
 
   const {
     basePrice,
@@ -103,25 +94,24 @@ const createEventsItemTemplate = (event) => {
   </li>`;
 };
 
-export default class EventItem {
+export default class EventItem extends AbstractView {
   constructor(event) {
-    this._element = null;
+    super();
     this._event = event;
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createEventsItemTemplate(this._event);
+    return createEventItemTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }
