@@ -1,5 +1,6 @@
 import AbstractView from './abstract';
-import {formatDate, capitalizeString, replaceSpaceToUnderscore} from '../utils/utils';
+import {capitalizeString, replaceSpaceToUnderscore} from '../utils/utils';
+import {formatDate} from '../utils/date';
 import {TYPES, dateFormat} from '../const/const';
 
 const offersList = (offers, id) => {

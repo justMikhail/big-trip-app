@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 export const getRandomInteger = (min = 0, max = 1) => {
   const lower = Math.ceil(Math.min(min, max));
   const upper = Math.floor(Math.max(min, max));
@@ -29,8 +27,6 @@ export const getShuffleArray = (originalArray) => {
 };
 
 export const randomizeArray = (arr) => arr.filter(() => Math.random() > 0.5);
-
-export const formatDate = (dueDate, format) => dayjs(dueDate).format(format);
 
 export const capitalizeString = (str) => {
   if (!str) {return str;}

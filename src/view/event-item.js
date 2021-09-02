@@ -1,7 +1,7 @@
 import AbstractView from './abstract';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {formatDate} from '../utils/utils';
+import {formatDate} from '../utils/date';
 import {dateFormat} from '../const/const';
 
 dayjs.extend(duration);
