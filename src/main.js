@@ -1,24 +1,32 @@
 import TripInfoView from './view/trip-info';
 import TripControlsView from './view/trip-controls';
-import TripFiltersView from './view/trip-filters';
+import EventsFilterView from './view/events-filter';
 import EventsSortView from './view/events-sort';
 import EventsListView from './view/events-list';
 import EventItemView from './view/event-item';
 import EventItemFormView from './view/event-item-form';
-import NoEventView from './view/no-events';
+import EmptyEventsList from './view/empty-events-list';
 
 import {render, RenderPosition, replace} from './utils/render';
 
-import {mockEventsItems} from './mock/mock-event-data';
+import {mockEventItems} from './mock/mock-event-data';
 
-const eventItems = mockEventsItems;
+const eventItems = mockEventItems;
 
 const pageMainContainer = document.querySelector('.page-main');
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainContainer = pageHeaderContainer.querySelector('.trip-main');
 const tripControlsContainer = pageHeaderContainer.querySelector('.trip-controls__navigation');
-const tripFiltersContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
+const eventsFilterContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
 const eventsContainer = pageMainContainer.querySelector('.trip-events');
+
+const renderUI = () => {
+  render(tripMainContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
+  render(tripControlsContainer, new TripControlsView(), RenderPosition.BEFORE_END);
+  render(eventsFilterContainer, new EventsFilterView(), RenderPosition.BEFORE_END);
+  render(eventsContainer, new EventsSortView(), RenderPosition.AFTER_BEGIN);
+  render(eventsContainer, new EventsListView(), RenderPosition.BEFORE_END);
+};
 
 const renderEvent = (container, event) => {
   const eventComponent = new EventItemView(event);
@@ -55,22 +63,20 @@ const renderEvent = (container, event) => {
   render(container, eventComponent, RenderPosition.BEFORE_END);
 };
 
-render(tripMainContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
-render(tripControlsContainer, new TripControlsView().getElement(), RenderPosition.BEFORE_END);
-render(tripFiltersContainer, new TripFiltersView().getElement(), RenderPosition.BEFORE_END);
-render(eventsContainer, new EventsSortView().getElement(), RenderPosition.AFTER_BEGIN);
-render(eventsContainer, new EventsListView().getElement(), RenderPosition.BEFORE_END);
+const renderEventsList = () => {
+  const eventsListContainer = eventsContainer.querySelector('.trip-events__list');
 
-// todo Как можно решить проблему с возможностью объявление(точнее обращения к) "eventsListContainer"
-// todo только после рендера компонента с разметкой с необходимым селектором "trip-events__list"?
-const eventsListContainer = eventsContainer.querySelector('.trip-events__list');
 
-if (!eventItems.length) {
-  render(eventsListContainer, new NoEventView().getElement(), RenderPosition.BEFORE_END);
-} else {
-  for (let i = 0; i < eventItems.length; i++) {
-    renderEvent(eventsListContainer, eventItems[i]);
+  if (!eventItems.length) {
+    render(eventsListContainer, new EmptyEventsList(), RenderPosition.BEFORE_END);
+  } else {
+    for (let i = 0; i < eventItems.length; i++) {
+      renderEvent(eventsListContainer, eventItems[i]);
+    }
   }
-}
+};
+
+renderUI();
+renderEventsList();
 
 
