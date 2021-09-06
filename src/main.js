@@ -5,7 +5,7 @@ import EventsSortView from './view/events-sort';
 import EventsListView from './view/events-list';
 import EventItemView from './view/event-item';
 import EventItemFormView from './view/event-item-form';
-import EmptyEventsList from './view/empty-events-list';
+import EmptyEventsListView from './view/empty-events-list';
 
 import {render, RenderPosition, replace} from './utils/render';
 
@@ -15,17 +15,15 @@ const eventItems = mockEventItems;
 
 const pageMainContainer = document.querySelector('.page-main');
 const pageHeaderContainer = document.querySelector('.page-header');
-const tripMainContainer = pageHeaderContainer.querySelector('.trip-main');
+const tripMainInfoContainer = pageHeaderContainer.querySelector('.trip-main');
 const tripControlsContainer = pageHeaderContainer.querySelector('.trip-controls__navigation');
 const eventsFilterContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
 const eventsContainer = pageMainContainer.querySelector('.trip-events');
 
 const renderUI = () => {
-  render(tripMainContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
+  render(tripMainInfoContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
   render(tripControlsContainer, new TripControlsView(), RenderPosition.BEFORE_END);
   render(eventsFilterContainer, new EventsFilterView(), RenderPosition.BEFORE_END);
-  render(eventsContainer, new EventsSortView(), RenderPosition.AFTER_BEGIN);
-  render(eventsContainer, new EventsListView(), RenderPosition.BEFORE_END);
 };
 
 const renderEvent = (container, event) => {
@@ -63,20 +61,22 @@ const renderEvent = (container, event) => {
   render(container, eventComponent, RenderPosition.BEFORE_END);
 };
 
-const renderEventsList = () => {
-  const eventsListContainer = eventsContainer.querySelector('.trip-events__list');
+const renderTripEvents = (container, eventsList) => {
+  const eventsListComponent = new EventsListView();
+  const emptyEventsListComponent = new EmptyEventsListView();
+
+  render(container, eventsListComponent, RenderPosition.BEFORE_END);
 
 
   if (!eventItems.length) {
-    render(eventsListContainer, new EmptyEventsList(), RenderPosition.BEFORE_END);
-  } else {
-    for (let i = 0; i < eventItems.length; i++) {
-      renderEvent(eventsListContainer, eventItems[i]);
-    }
+    render(eventsListComponent, emptyEventsListComponent, RenderPosition.BEFORE_END);
+    return;
   }
+
+  render(container, new EventsSortView(), RenderPosition.AFTER_BEGIN);
+
+  eventsList.forEach((event) => renderEvent(eventsListComponent, event));
 };
 
 renderUI();
-renderEventsList();
-
-
+renderTripEvents(eventsContainer, eventItems);

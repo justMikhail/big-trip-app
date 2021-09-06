@@ -1,4 +1,4 @@
-export const EVENTS_ITEM_COUNT = 15;
+export const EVENTS_ITEM_COUNT = 5;
 
 export const PLACES = ['Coruscant', 'Cloud City', 'Gungan City', 'Mos Eisely', 'Hosnian Prime', 'Tatooine '];
 export const EVENT_MIN_PRICE = 20;

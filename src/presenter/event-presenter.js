@@ -1,8 +1,12 @@
+import EventItemView from './view/event-item';
+import EventItemFormView from './view/event-item-form';
+
 export default class EventPresenter {
   constructor() {
   }
 
-  init() {
+  init(event) {
+    this._event = event;
   }
 
   destroy() {
