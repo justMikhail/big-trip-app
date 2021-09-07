@@ -67,7 +67,6 @@ const renderTripEvents = (container, eventsList) => {
 
   render(container, eventsListComponent, RenderPosition.BEFORE_END);
 
-
   if (!eventItems.length) {
     render(eventsListComponent, emptyEventsListComponent, RenderPosition.BEFORE_END);
     return;
