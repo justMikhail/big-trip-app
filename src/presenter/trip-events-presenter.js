@@ -1,7 +1,7 @@
 import EventsSortView from '../view/events-sort';
 import EventsListView from '../view/events-list';
 import EmptyEventsListView from '../view/empty-events-list';
-import {render, RenderPosition} from '../utils/render';
+import {render, RenderPosition, updateItem} from '../utils/render';
 import EventPresenter from './event-presenter';
 
 export default class TripEventsPresenter {
@@ -10,11 +10,18 @@ export default class TripEventsPresenter {
     this._eventsSortComponent = new EventsSortView();
     this._eventsListComponent = new EventsListView();
     this._emptyEventsListComponent = new EmptyEventsListView();
+    this._eventItemPresenter = new Map();
+    this._handleEventItemChange = this._handleEventItemChange.bind(this);
   }
 
   init(eventItems) {
     this._eventItems = eventItems.slice();
     this._renderTripEvents();
+  }
+
+  _handleEventItemChange(updatedEventItem) {
+    this._eventItems = updateItem(this._eventItems, updatedEventItem);
+    this._eventItemPresenter.get(updatedEventItem.id).init(updatedEventItem);
   }
 
   _renderEmptyEventsList() {
@@ -29,9 +36,15 @@ export default class TripEventsPresenter {
     render(this._tripEventsContainer, this._eventsListComponent, RenderPosition.BEFORE_END);
   }
 
+  _clearEventsList() {
+    this._eventItemPresenter.forEach((presenter) => presenter.destroy());
+    this._eventItemPresenter.clear();
+  }
+
   _renderEventItem(event) {
     const eventPresenter = new EventPresenter(this._eventsListComponent);
     eventPresenter.init(event);
+    this._eventItemPresenter.set(event.id, eventPresenter);
   }
 
   _renderEventItems() {

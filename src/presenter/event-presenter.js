@@ -20,8 +20,8 @@ export default class EventPresenter {
     const prevEventItemComponent = this._eventItemComponent;
     const prevEventItemFormComponent = this._eventItemFormComponent;
 
-    this._eventItemComponent = new EventItemView(event);
-    this._eventItemFormComponent = new EventItemFormView(event);
+    this._eventItemComponent = new EventItemView(this._event);
+    this._eventItemFormComponent = new EventItemFormView(this._event);
     this._eventItemComponent.setEditClickHandler(this._handleShowEventFormButtonClick);
     this._eventItemFormComponent.setFormSubmitHandler(this._handleEventFormSubmit);
 
