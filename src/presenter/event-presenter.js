@@ -1,6 +1,6 @@
 import EventItemView from '../view/event-item';
 import EventItemFormView from '../view/event-item-form';
-import {render, RenderPosition, replace} from '../utils/render';
+import {render, RenderPosition, replace, remove} from '../utils/render';
 import {isEscEvent} from '../utils/utils';
 
 export default class EventPresenter {
@@ -16,11 +16,35 @@ export default class EventPresenter {
 
   init(event) {
     this._event = event;
+
+    const prevEventItemComponent = this._eventItemComponent;
+    const prevEventItemFormComponent = this._eventItemFormComponent;
+
     this._eventItemComponent = new EventItemView(event);
     this._eventItemFormComponent = new EventItemFormView(event);
-    this._renderEventItem();
     this._eventItemComponent.setEditClickHandler(this._handleShowEventFormButtonClick);
     this._eventItemFormComponent.setFormSubmitHandler(this._handleEventFormSubmit);
+
+    if (prevEventItemComponent === null || prevEventItemFormComponent === null) {
+      this._renderEventItem();
+      return;
+    }
+
+    if (this._eventListContainer.getElement().contains(this.prevEventItemComponent.getElement())) {
+      replace(this._eventItemComponent, prevEventItemComponent);
+    }
+
+    if (this._eventListContainer.getElement().contains(this.prevEventItemFormComponent.getElement())) {
+      replace(this._eventItemFormComponent, prevEventItemFormComponent);
+    }
+
+    remove(prevEventItemComponent);
+    remove(prevEventItemFormComponent);
+  }
+
+  destroy() {
+    remove(this._eventItemComponent);
+    remove(this._eventItemFormComponent);
   }
 
   _replacePointToForm() {
@@ -34,7 +58,7 @@ export default class EventPresenter {
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscEvent(evt)) {
       evt.preventDefault();
       this._replaceFormToPont();
     }
