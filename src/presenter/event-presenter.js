@@ -1,35 +1,51 @@
-import EventItemView from './view/event-item';
-import EventItemFormView from './view/event-item-form';
+import EventItemView from '../view/event-item';
+import EventItemFormView from '../view/event-item-form';
+import {render, RenderPosition, replace} from '../utils/render';
 
 export default class EventPresenter {
-  constructor() {
+  constructor(eventListContainer) {
+    this._eventListContainer = eventListContainer;
+    this._eventItemComponent = null;
+    this._eventItemFormComponent = null;
   }
 
   init(event) {
     this._event = event;
+    this._eventItemComponent = new EventItemView(event);
+    this._eventItemFormComponent = new EventItemFormView(event);
+    this._renderEventItem();
   }
 
-  destroy() {
-  }
+  _renderEventItem() {
 
-  resetView() {
-  }
+    const replaceItemToItemForm = () => {
+      replace(this._eventItemFormComponent, this._eventItemComponent);
+    };
 
-  _showEditEvent() {
-  }
+    const replaceItemFormToItem = () => {
+      replace(this._eventItemComponent, this._eventItemFormComponent);
+    };
 
-  _hideEditEvent() {
-  }
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        replaceItemFormToItem();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
 
-  _escKeyDownHandler() {
-  }
+    this._eventItemComponent
+      .setEditClickHandler(() => {
+        replaceItemToItemForm();
+        document.addEventListener('keydown', onEscKeyDown);
+      });
 
-  _handleOpenEditClick() {
-  }
+    this._eventItemFormComponent
+      .setFormSubmitHandler(() => {
+        replaceItemFormToItem();
+        document.removeEventListener('keydown', onEscKeyDown);
+      });
 
-  _handleHideEditClick() {
-  }
-
-  _handleFavoriteClick() {
+    render(this._eventListContainer, this._eventItemComponent, RenderPosition.BEFORE_END);
   }
 }
