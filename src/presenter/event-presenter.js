@@ -3,12 +3,20 @@ import EventItemFormView from '../view/event-item-form';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {isEscEvent} from '../utils/utils';
 
+const ViewMode = {
+  DEFAULT: 'DEFAULT',
+  SHOWING_FORM: 'SHOWING_FORM',
+};
+
 export default class EventPresenter {
-  constructor(eventListContainer, changeData) {
+  constructor(eventListContainer, changeData, changeMode) {
     this._eventListContainer = eventListContainer;
     this._changeData = changeData;
+    this._changeMode = changeMode;
+
     this._eventItemComponent = null;
     this._eventItemFormComponent = null;
+    this._viewMode = ViewMode.DEFAULT;
 
     this._handleShowEventFormButtonClick = this._handleShowEventFormButtonClick.bind(this);
     this._handleEventFormSubmit = this._handleEventFormSubmit.bind(this);
@@ -24,7 +32,7 @@ export default class EventPresenter {
 
     this._eventItemComponent = new EventItemView(this._eventItem);
     this._eventItemFormComponent = new EventItemFormView(this._eventItem);
-    this._eventItemComponent.setEditClickHandler(this._handleShowEventFormButtonClick);
+    this._eventItemComponent.setShowFormClickHandler(this._handleShowEventFormButtonClick);
     this._eventItemFormComponent.setFormSubmitHandler(this._handleEventFormSubmit);
     this._eventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
@@ -33,16 +41,22 @@ export default class EventPresenter {
       return;
     }
 
-    if (this._eventListContainer.getElement().contains(prevEventItemComponent.getElement())) {
+    if (this._viewMode === ViewMode.DEFAULT) {
       replace(this._eventItemComponent, prevEventItemComponent);
     }
 
-    if (this._eventListContainer.getElement().contains(prevEventItemFormComponent.getElement())) {
+    if (this._viewMode === ViewMode.SHOWING_FORM) {
       replace(this._eventItemFormComponent, prevEventItemFormComponent);
     }
 
     remove(prevEventItemComponent);
     remove(prevEventItemFormComponent);
+  }
+
+  resetViewMode() {
+    if (this._viewMode !== ViewMode.DEFAULT) {
+      this._replaceFormToPont();
+    }
   }
 
   destroy() {
@@ -53,11 +67,14 @@ export default class EventPresenter {
   _replacePointToForm() {
     replace(this._eventItemFormComponent, this._eventItemComponent);
     document.addEventListener('keydown', this._escKeyDownHandler);
+    this._changeMode();
+    this._viewMode = ViewMode.SHOWING_FORM;
   }
 
   _replaceFormToPont() {
     replace(this._eventItemComponent, this._eventItemFormComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
+    this._viewMode = ViewMode.DEFAULT;
   }
 
   _escKeyDownHandler(evt) {

@@ -12,6 +12,7 @@ export default class TripEventsPresenter {
     this._emptyEventsListComponent = new EmptyEventsListView();
     this._eventItemPresenter = new Map();
     this._handleEventItemChange = this._handleEventItemChange.bind(this);
+    this._handleViewModeChange = this._handleViewModeChange.bind(this);
   }
 
   init(eventItems) {
@@ -22,6 +23,10 @@ export default class TripEventsPresenter {
   _handleEventItemChange(updatedEventItem) {
     this._eventItems = updateItem(this._eventItems, updatedEventItem);
     this._eventItemPresenter.get(updatedEventItem.id).init(updatedEventItem);
+  }
+
+  _handleViewModeChange() {
+    this._eventItemPresenter.forEach((presenter) => presenter.resetViewMode());
   }
 
   _renderEmptyEventsList() {
@@ -42,9 +47,9 @@ export default class TripEventsPresenter {
   }
 
   _renderEventItem(event) {
-    const eventPresenter = new EventPresenter(this._eventsListComponent, this._handleEventItemChange);
-    eventPresenter.init(event);
-    this._eventItemPresenter.set(event.id, eventPresenter);
+    const eventItemPresenter = new EventPresenter(this._eventsListComponent, this._handleEventItemChange, this._handleViewModeChange);
+    eventItemPresenter.init(event);
+    this._eventItemPresenter.set(event.id, eventItemPresenter);
   }
 
   _renderEventItems() {
