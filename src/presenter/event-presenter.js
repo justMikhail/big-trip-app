@@ -4,37 +4,40 @@ import {render, RenderPosition, replace, remove} from '../utils/render';
 import {isEscEvent} from '../utils/utils';
 
 export default class EventPresenter {
-  constructor(eventListContainer) {
+  constructor(eventListContainer, changeData) {
     this._eventListContainer = eventListContainer;
+    this._changeData = changeData;
     this._eventItemComponent = null;
     this._eventItemFormComponent = null;
 
     this._handleShowEventFormButtonClick = this._handleShowEventFormButtonClick.bind(this);
     this._handleEventFormSubmit = this._handleEventFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
-  init(event) {
-    this._event = event;
+  init(eventItem) {
+    this._eventItem = eventItem;
 
     const prevEventItemComponent = this._eventItemComponent;
     const prevEventItemFormComponent = this._eventItemFormComponent;
 
-    this._eventItemComponent = new EventItemView(this._event);
-    this._eventItemFormComponent = new EventItemFormView(this._event);
+    this._eventItemComponent = new EventItemView(this._eventItem);
+    this._eventItemFormComponent = new EventItemFormView(this._eventItem);
     this._eventItemComponent.setEditClickHandler(this._handleShowEventFormButtonClick);
     this._eventItemFormComponent.setFormSubmitHandler(this._handleEventFormSubmit);
+    this._eventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     if (prevEventItemComponent === null || prevEventItemFormComponent === null) {
       this._renderEventItem();
       return;
     }
 
-    if (this._eventListContainer.getElement().contains(this.prevEventItemComponent.getElement())) {
+    if (this._eventListContainer.getElement().contains(prevEventItemComponent.getElement())) {
       replace(this._eventItemComponent, prevEventItemComponent);
     }
 
-    if (this._eventListContainer.getElement().contains(this.prevEventItemFormComponent.getElement())) {
+    if (this._eventListContainer.getElement().contains(prevEventItemFormComponent.getElement())) {
       replace(this._eventItemFormComponent, prevEventItemFormComponent);
     }
 
@@ -68,8 +71,21 @@ export default class EventPresenter {
     this._replacePointToForm();
   }
 
-  _handleEventFormSubmit() {
+  _handleEventFormSubmit(eventItem) {
+    this._changeData(eventItem);
     this._replaceFormToPont();
+  }
+
+  _handleFavoriteClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._eventItem,
+        {
+          isFavorite: !this._eventItem.isFavorite,
+        },
+      ),
+    );
   }
 
   _renderEventItem() {

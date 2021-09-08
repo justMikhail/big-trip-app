@@ -42,7 +42,7 @@ export default class TripEventsPresenter {
   }
 
   _renderEventItem(event) {
-    const eventPresenter = new EventPresenter(this._eventsListComponent);
+    const eventPresenter = new EventPresenter(this._eventsListComponent, this._handleEventItemChange);
     eventPresenter.init(event);
     this._eventItemPresenter.set(event.id, eventPresenter);
   }

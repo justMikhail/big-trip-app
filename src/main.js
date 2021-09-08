@@ -8,7 +8,6 @@ import {mockEventItems} from './mock/mock-event-data';
 import TripEventsPresenter from './presenter/trip-events-presenter';
 
 const eventItems = mockEventItems;
-console.log(eventItems);
 
 const pageMainContainer = document.querySelector('.page-main');
 const pageHeaderContainer = document.querySelector('.page-header');
