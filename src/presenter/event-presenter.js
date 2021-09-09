@@ -2,11 +2,7 @@ import EventItemView from '../view/event-item';
 import EventItemFormView from '../view/event-item-form';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {isEscEvent} from '../utils/utils';
-
-const ViewMode = {
-  DEFAULT: 'DEFAULT',
-  SHOWING_FORM: 'SHOWING_FORM',
-};
+import {ViewMode} from '../const/const';
 
 export default class EventPresenter {
   constructor(eventListContainer, changeData, changeMode) {

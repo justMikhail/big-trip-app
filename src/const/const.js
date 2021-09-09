@@ -6,3 +6,14 @@ export const dateFormat = {
   MONTH_DAY: 'MMM DD',
   FULL: 'YY/MM/DD HH:mm',
 };
+
+export const ViewMode = {
+  DEFAULT: 'DEFAULT',
+  SHOWING_FORM: 'SHOWING_FORM',
+};
+
+export const SortType = {
+  DEFAULT: 'day-down',
+  PRICE_DOWN: 'price-down',
+  DURATION_DOWN: 'duration-down',
+};
