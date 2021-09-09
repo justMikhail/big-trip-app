@@ -34,3 +34,5 @@ export const capitalizeString = (str) => {
 };
 
 export const replaceSpaceToUnderscore = (str) => str.replace(/\s+/g, '_');
+
+export const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';

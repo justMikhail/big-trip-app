@@ -63,4 +63,4 @@ const getMockEvent = (index) => {
 };
 
 const getMockEvents = () => new Array(EVENTS_ITEM_COUNT).fill(null).map((event, index) => getMockEvent(index));
-export const mockEventsItems = getMockEvents();
+export const mockEventItems = getMockEvents();

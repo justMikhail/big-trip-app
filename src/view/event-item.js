@@ -1,13 +1,13 @@
 import AbstractView from './abstract';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {formatDate} from '../utils/date';
+import {formatDate, getDateDuration} from '../utils/date';
 import {dateFormat} from '../const/const';
 
 dayjs.extend(duration);
 
 const getEventDuration = (dateStart, dateEnd) => {
-  const eventDuration = dayjs(dateStart) - dayjs(dateEnd);
+  const eventDuration = getDateDuration(dateStart, dateEnd);
 
   const days = dayjs.duration(eventDuration).days().toString().padStart(2, '0');
   const hours = dayjs.duration(eventDuration).hours().toString().padStart(2, '0');
@@ -98,20 +98,31 @@ export default class EventItem extends AbstractView {
   constructor(event) {
     super();
     this._event = event;
-    this._editClickHandler = this._editClickHandler.bind(this);
+    this._showFormClickHandler = this._showFormClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventItemTemplate(this._event);
   }
 
-  _editClickHandler(evt) {
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  _showFormClickHandler(evt) {
     evt.preventDefault();
     this._callback.editClick();
   }
 
-  setEditClickHandler(callback) {
+  setShowFormClickHandler(callback) {
     this._callback.editClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._showFormClickHandler);
   }
 }
