@@ -1,13 +1,13 @@
 import AbstractView from './abstract';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {formatDate} from '../utils/date';
+import {formatDate, getDateDuration} from '../utils/date';
 import {dateFormat} from '../const/const';
 
 dayjs.extend(duration);
 
 const getEventDuration = (dateStart, dateEnd) => {
-  const eventDuration = dayjs(dateStart) - dayjs(dateEnd);
+  const eventDuration = getDateDuration(dateStart, dateEnd);
 
   const days = dayjs.duration(eventDuration).days().toString().padStart(2, '0');
   const hours = dayjs.duration(eventDuration).hours().toString().padStart(2, '0');
