@@ -69,7 +69,7 @@ const eventTypes = (currentType, allTypes) => {
   return eventTypesTemplate;
 };
 
-const createEventItemFormTemplate = (event) => {
+const createEventFormTemplate = (event) => {
 
   const {
     basePrice,
@@ -160,7 +160,7 @@ const createEventItemFormTemplate = (event) => {
   </li>`;
 };
 
-export default class EventItemForm extends AbstractView {
+export default class EventForm extends AbstractView {
   constructor(event) {
     super();
     this._event = event;
@@ -168,7 +168,7 @@ export default class EventItemForm extends AbstractView {
   }
 
   getTemplate() {
-    return createEventItemFormTemplate(this._event);
+    return createEventFormTemplate(this._event);
   }
 
   _formSubmitHandler(evt) {

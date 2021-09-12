@@ -36,7 +36,7 @@ const generateOffers = (offers) => {
   return offersMarkup;
 };
 
-const createEventItemTemplate = (event) => {
+const createEventPointTemplate = (event) => {
 
   const {
     basePrice,
@@ -94,7 +94,7 @@ const createEventItemTemplate = (event) => {
   </li>`;
 };
 
-export default class EventItem extends AbstractView {
+export default class EventPoint extends AbstractView {
   constructor(event) {
     super();
     this._event = event;
@@ -103,7 +103,7 @@ export default class EventItem extends AbstractView {
   }
 
   getTemplate() {
-    return createEventItemTemplate(this._event);
+    return createEventPointTemplate(this._event);
   }
 
   _favoriteClickHandler(evt) {

@@ -1,5 +1,5 @@
-import EventItemView from '../view/event-item';
-import EventItemFormView from '../view/event-item-form';
+import EventPointView from '../view/event-point';
+import EventFormView from '../view/event-form';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {isEscEvent} from '../utils/utils';
 import {ViewMode} from '../const/const';
@@ -10,8 +10,8 @@ export default class EventPresenter {
     this._changeData = changeData;
     this._changeMode = changeMode;
 
-    this._eventItemComponent = null;
-    this._eventItemFormComponent = null;
+    this._eventPointComponent = null;
+    this._eventFormComponent = null;
     this._viewMode = ViewMode.DEFAULT;
 
     this._handleShowEventFormButtonClick = this._handleShowEventFormButtonClick.bind(this);
@@ -20,33 +20,33 @@ export default class EventPresenter {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
-  init(eventItem) {
-    this._eventItem = eventItem;
+  init(event) {
+    this._event = event;
 
-    const prevEventItemComponent = this._eventItemComponent;
-    const prevEventItemFormComponent = this._eventItemFormComponent;
+    const prevEventPointComponent = this._eventPointComponent;
+    const prevEventFormComponent = this._eventFormComponent;
 
-    this._eventItemComponent = new EventItemView(this._eventItem);
-    this._eventItemFormComponent = new EventItemFormView(this._eventItem);
-    this._eventItemComponent.setShowFormClickHandler(this._handleShowEventFormButtonClick);
-    this._eventItemFormComponent.setFormSubmitHandler(this._handleEventFormSubmit);
-    this._eventItemComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._eventPointComponent = new EventPointView(this._event);
+    this._eventFormComponent = new EventFormView(this._event);
+    this._eventPointComponent.setShowFormClickHandler(this._handleShowEventFormButtonClick);
+    this._eventFormComponent.setFormSubmitHandler(this._handleEventFormSubmit);
+    this._eventPointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
-    if (prevEventItemComponent === null || prevEventItemFormComponent === null) {
-      this._renderEventItem();
+    if (prevEventPointComponent === null || prevEventFormComponent === null) {
+      this._renderEventPoint();
       return;
     }
 
     if (this._viewMode === ViewMode.DEFAULT) {
-      replace(this._eventItemComponent, prevEventItemComponent);
+      replace(this._eventPointComponent, prevEventPointComponent);
     }
 
     if (this._viewMode === ViewMode.SHOWING_FORM) {
-      replace(this._eventItemFormComponent, prevEventItemFormComponent);
+      replace(this._eventFormComponent, prevEventFormComponent);
     }
 
-    remove(prevEventItemComponent);
-    remove(prevEventItemFormComponent);
+    remove(prevEventPointComponent);
+    remove(prevEventFormComponent);
   }
 
   resetViewMode() {
@@ -56,19 +56,19 @@ export default class EventPresenter {
   }
 
   destroy() {
-    remove(this._eventItemComponent);
-    remove(this._eventItemFormComponent);
+    remove(this._eventPointComponent);
+    remove(this._eventFormComponent);
   }
 
   _replacePointToForm() {
-    replace(this._eventItemFormComponent, this._eventItemComponent);
+    replace(this._eventFormComponent, this._eventPointComponent);
     document.addEventListener('keydown', this._escKeyDownHandler);
     this._changeMode();
     this._viewMode = ViewMode.SHOWING_FORM;
   }
 
   _replaceFormToPont() {
-    replace(this._eventItemComponent, this._eventItemFormComponent);
+    replace(this._eventPointComponent, this._eventFormComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
     this._viewMode = ViewMode.DEFAULT;
   }
@@ -84,8 +84,8 @@ export default class EventPresenter {
     this._replacePointToForm();
   }
 
-  _handleEventFormSubmit(eventItem) {
-    this._changeData(eventItem);
+  _handleEventFormSubmit(event) {
+    this._changeData(event);
     this._replaceFormToPont();
   }
 
@@ -93,15 +93,15 @@ export default class EventPresenter {
     this._changeData(
       Object.assign(
         {},
-        this._eventItem,
+        this._event,
         {
-          isFavorite: !this._eventItem.isFavorite,
+          isFavorite: !this._event.isFavorite,
         },
       ),
     );
   }
 
-  _renderEventItem() {
-    render(this._eventListContainer, this._eventItemComponent, RenderPosition.BEFORE_END);
+  _renderEventPoint() {
+    render(this._eventListContainer, this._eventPointComponent, RenderPosition.BEFORE_END);
   }
 }
