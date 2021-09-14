@@ -3,7 +3,7 @@ import {capitalizeString, replaceSpaceToUnderscore} from '../utils/utils';
 import {formatDate} from '../utils/date';
 import {TYPES, dateFormat} from '../const/const';
 
-const offersList = (offers, id) => {
+const createOffersList = (offers, id) => {
   let offerTemplate = '';
 
   offers.forEach((offer) => {
@@ -27,7 +27,7 @@ const offersList = (offers, id) => {
   return offerTemplate;
 };
 
-const photosList = (destination) => {
+const createPhotosList = (destination) => {
   const photosCount = destination.pictures.length;
   const photosArray = destination.pictures;
   let photosTemplate = '';
@@ -46,7 +46,7 @@ const photosList = (destination) => {
     : '';
 };
 
-const eventTypes = (currentType, allTypes) => {
+const createEventTypes = (currentType, allTypes) => {
   let eventTypesTemplate = '';
 
   allTypes.map((type) => {
@@ -81,6 +81,10 @@ const createEventFormTemplate = (event) => {
     type,
   } = event;
 
+  const eventTypes = createEventTypes(type, TYPES);
+  const offersList = createOffersList(offers, id);
+  const photosList = createPhotosList(destination);
+
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -94,7 +98,7 @@ const createEventFormTemplate = (event) => {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${eventTypes(type, TYPES)}
+                ${eventTypes}
               </fieldset>
             </div>
         </div>
@@ -144,7 +148,7 @@ const createEventFormTemplate = (event) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${offersList(offers, id)}
+            ${offersList}
           </div>
         </section>
 
@@ -153,7 +157,7 @@ const createEventFormTemplate = (event) => {
           <p class="event__destination-description">
             ${destination.description}
           </p>
-          ${photosList(destination)}
+          ${photosList}
         </section>
       </section>
     </form>
