@@ -1,7 +1,8 @@
-import AbstractView from './abstract';
+import {nanoid} from 'nanoid';
 import {capitalizeString, replaceSpaceToUnderscore} from '../utils/utils';
-import {formatDate} from '../utils/date';
+import {formatDate, getRecentDate} from '../utils/date';
 import {Types, dateFormat} from '../const/const';
+import AbstractView from './abstract';
 
 const createOffersList = (offers, id) => {
   let offerTemplate = '';
@@ -69,16 +70,31 @@ const createEventTypes = (currentType, allTypes) => {
   return eventTypesTemplate;
 };
 
+const BLANK_EVENT = {
+  type: Types.TAXI,
+  destination: {
+    name: '',
+    description: '',
+    pictures: [],
+  },
+  offers: [],
+  dateFrom: getRecentDate(),
+  dateTo: getRecentDate(),
+  basePrice: 0,
+  isFavorite: false,
+  id: nanoid(),
+};
+
 const createEventFormTemplate = (event) => {
 
   const {
+    type,
     basePrice,
     dateFrom,
     dateTo,
     destination,
     id,
     offers,
-    type,
   } = event;
 
   const arrayOfTypes = Object.values(Types);
@@ -167,7 +183,7 @@ const createEventFormTemplate = (event) => {
 };
 
 export default class EventForm extends AbstractView {
-  constructor(event) {
+  constructor(event = BLANK_EVENT) {
     super();
     this._event = event;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
