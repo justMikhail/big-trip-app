@@ -6,7 +6,7 @@ import AbstractView from './abstract';
 
 dayjs.extend(duration);
 
-const getEventDuration = (dateStart, dateEnd) => {
+const createEventDuration = (dateStart, dateEnd) => {
   const eventDuration = getDateDuration(dateStart, dateEnd);
 
   const days = dayjs.duration(eventDuration).days().toString().padStart(2, '0');
@@ -23,18 +23,18 @@ const getEventDuration = (dateStart, dateEnd) => {
   return dateString;
 };
 
-const generateOffers = (offers) => {
-  let offersMarkup = '';
+const createOneCheckedOffer = (offer) => (
+  `<li class="event__offer">
+    <span class="event__offer-title">${offer.title}</span>
+    &plus;&euro;&nbsp;
+    <span class="event__offer-price">${offer.price}</span>
+  </li>`);
 
-  offers.forEach((offer) => {
-    offersMarkup += `<li class="event__offer">
-         <span class="event__offer-title">${offer.title}</span>
-           &plus;&euro;&nbsp;
-         <span class="event__offer-price">${offer.price}</span>
-         </li>`;
-  });
-  return offersMarkup;
-};
+const createCheckedOffers = (offers) => (
+  `<ul class="event__selected-offers">
+    ${offers.map(createOneCheckedOffer).join('')}
+  </ul>`
+);
 
 const createEventPointTemplate = (event) => {
 
@@ -47,6 +47,9 @@ const createEventPointTemplate = (event) => {
     offers,
     type,
   } = event;
+
+  const checkedOffers = createCheckedOffers(offers);
+  const eventDuration = createEventDuration(dateTo, dateFrom);
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn  event__favorite-btn--active'
@@ -71,15 +74,13 @@ const createEventPointTemplate = (event) => {
             ${formatDate(dateTo, dateFormat.HOURS_MINUTES)}
           </time>
         </p>
-        <p class="event__duration">${getEventDuration(dateTo, dateFrom)}</p>
+        <p class="event__duration">${eventDuration}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
-      <ul class="event__selected-offers">
-        ${generateOffers(offers)}
-      </ul>
+      ${checkedOffers}
       <button class="${favoriteClassName}" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">

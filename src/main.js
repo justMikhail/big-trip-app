@@ -10,20 +10,20 @@ import TripEventsPresenter from './presenter/trip-events-presenter';
 const events = mockEventItems;
 console.log(events);
 
-const pageMainContainer = document.querySelector('.page-main');
+// HeaderUI
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainInfoContainer = pageHeaderContainer.querySelector('.trip-main');
 const tripNavMenuContainer = pageHeaderContainer.querySelector('.trip-controls__navigation');
 const eventsNavFilterContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
-const eventsContainer = pageMainContainer.querySelector('.trip-events');
-
 const renderUI = () => {
   render(tripMainInfoContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
   render(tripNavMenuContainer, new TripControlsView(), RenderPosition.BEFORE_END);
   render(eventsNavFilterContainer, new EventsFilterView(), RenderPosition.BEFORE_END);
 };
-
-const tripEventsPresenter = new TripEventsPresenter(eventsContainer);
-
 renderUI();
+
+// MainPage
+const pageMainContainer = document.querySelector('.page-main');
+const eventsContainer = pageMainContainer.querySelector('.trip-events');
+const tripEventsPresenter = new TripEventsPresenter(eventsContainer);
 tripEventsPresenter.init(events);
