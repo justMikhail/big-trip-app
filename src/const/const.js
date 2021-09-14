@@ -1,4 +1,17 @@
-export const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+//export const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+export const Types = {
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
+  TRANSPORT: 'transport',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECK_IN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTAURANT: 'restaurant',
+};
+
 export const MIN_EVENT_DURATION = 10;
 
 export const dateFormat = {

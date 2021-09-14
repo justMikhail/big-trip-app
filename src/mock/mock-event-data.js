@@ -15,7 +15,7 @@ import {
   MAX_FRAGMENTS_COUNT
 } from './mock-const';
 
-import {TYPES, MIN_EVENT_DURATION} from '../const/const';
+import {Types, MIN_EVENT_DURATION} from '../const/const';
 
 const getRandomDescription = (placeName) => {
   const randomFragmentsCount = getRandomInteger(MIN_FRAGMENTS_COUNT, MAX_FRAGMENTS_COUNT);
@@ -38,7 +38,7 @@ const getRandomPrice = (min, max) => Math.round((getRandomInteger(min, max) / 10
 const getMockEvent = () => {
 
   const randomOffers = randomizeArray(OFFERS);
-  const randomType = getRandomElementFromArray(TYPES);
+  const randomType = getRandomElementFromArray(Object.values(Types));
   const randomBasePrice = getRandomPrice(EVENT_MIN_PRICE, EVENT_MAX_PRICE);
   const randomDateFrom = getDate(dayjs(), getRandomInteger(-MAX_MINUTES_GAP, MAX_MINUTES_GAP));
   const randomDateTo = getDate(randomDateFrom, getRandomInteger(MIN_EVENT_DURATION, MAX_MINUTES_GAP));

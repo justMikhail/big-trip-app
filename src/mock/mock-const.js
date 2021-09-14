@@ -48,3 +48,7 @@ export const OFFERS = [
     price: 1000,
   },
 ];
+
+export const MOCK_OFFERS = [
+
+]

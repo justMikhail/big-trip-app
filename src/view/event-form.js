@@ -1,7 +1,7 @@
 import AbstractView from './abstract';
 import {capitalizeString, replaceSpaceToUnderscore} from '../utils/utils';
 import {formatDate} from '../utils/date';
-import {TYPES, dateFormat} from '../const/const';
+import {Types, dateFormat} from '../const/const';
 
 const createOffersList = (offers, id) => {
   let offerTemplate = '';
@@ -81,7 +81,9 @@ const createEventFormTemplate = (event) => {
     type,
   } = event;
 
-  const eventTypes = createEventTypes(type, TYPES);
+  const arrayOfTypes = Object.values(Types);
+
+  const eventTypes = createEventTypes(type, arrayOfTypes);
   const offersList = createOffersList(offers, id);
   const photosList = createPhotosList(destination);
 
