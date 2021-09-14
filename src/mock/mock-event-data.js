@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import {getRandomElementFromArray, getRandomInteger, getShuffleArray, randomizeArray} from '../utils/utils';
 import {
   EVENTS_ITEM_COUNT,
@@ -34,19 +35,20 @@ const getDate = (from, gap) => dayjs(from).add (gap, 'minute');
 
 const getRandomPrice = (min, max) => Math.round((getRandomInteger(min, max) / 10) * 10);
 
-const getMockEvent = (index) => {
+const getMockEvent = () => {
 
+  const randomOffers = randomizeArray(OFFERS);
+  const randomType = getRandomElementFromArray(TYPES);
   const randomBasePrice = getRandomPrice(EVENT_MIN_PRICE, EVENT_MAX_PRICE);
   const randomDateFrom = getDate(dayjs(), getRandomInteger(-MAX_MINUTES_GAP, MAX_MINUTES_GAP));
   const randomDateTo = getDate(randomDateFrom, getRandomInteger(MIN_EVENT_DURATION, MAX_MINUTES_GAP));
   const randomPlace = getRandomElementFromArray(PLACES);
   const randomDescription = getRandomDescription(randomPlace);
   const randomPictures = getRandomPhotos();
-  const randomIndex = index++;
-  const randomOffers = randomizeArray(OFFERS);
-  const randomType = getRandomElementFromArray(TYPES);
+  const randomIndex = nanoid();
 
   return {
+    type: randomType,
     basePrice: randomBasePrice,
     dateFrom: randomDateFrom.format(DATE_FORMAT),
     dateTo: randomDateTo.format(DATE_FORMAT),
@@ -58,9 +60,8 @@ const getMockEvent = (index) => {
     id: randomIndex,
     isFavorite: Boolean(getRandomInteger()),
     offers: randomOffers,
-    type: randomType,
   };
 };
 
-const getMockEvents = () => new Array(EVENTS_ITEM_COUNT).fill(null).map((event, index) => getMockEvent(index));
+const getMockEvents = () => new Array(EVENTS_ITEM_COUNT).fill(null).map(getMockEvent);
 export const mockEventItems = getMockEvents();
