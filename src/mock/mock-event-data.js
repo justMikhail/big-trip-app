@@ -12,7 +12,8 @@ import {
   DATE_FORMAT,
   FRAGMENTS,
   MIN_FRAGMENTS_COUNT,
-  MAX_FRAGMENTS_COUNT
+  MAX_FRAGMENTS_COUNT,
+  MOCK_OFFERS,
 } from './mock-const';
 
 import {Types, MIN_EVENT_DURATION} from '../const/const';
@@ -29,7 +30,7 @@ const getRandomPhotos = () => new Array(getRandomInteger(0, MAX_PHOTOS_COUNT)).f
   src: `https://picsum.photos/300/200?r=${Math.random()}`,
   description: 'Photo description',
 }));
-
+console.log(MOCK_OFFERS)
 
 const getDate = (from, gap) => dayjs(from).add (gap, 'minute');
 

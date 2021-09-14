@@ -51,8 +51,8 @@ export const OFFERS = [
 
 export const MOCK_OFFERS = [
   {
-    'type': 'taxi',
-    'offers': [
+    type: 'taxi',
+    offers: [
       {title: 'Upgrade to a business class', price: 190},
       {title: 'Choose the radio station', price: 30},
       {title: 'Choose temperature', price: 170},
@@ -77,31 +77,6 @@ export const MOCK_OFFERS = [
     ],
   },
   {
-    type: 'flight',
-    offers: [
-      {title: 'Choose meal', price: 120},
-      {title: 'Choose seats', price: 90},
-      {title: 'Upgrade to comfort class', price: 120},
-      {title: 'Upgrade to business class', price: 120},
-      {title: 'Add luggage', price: 170},
-      {title: 'Business lounge', price: 160},
-    ],
-  },
-  {
-    'type': 'check-in',
-    'offers': [
-      {title: 'Choose the time of check-in', price: 70},
-      {title: 'Choose the time of check-out', price: 190},
-      {title: 'Add breakfast', price: 110},
-      {title: 'Laundry', price: 140},
-      {title: 'Order a meal from the restaurant', price: 30},
-    ],
-  },
-  {
-    type: 'sightseeing',
-    offers: [],
-  },
-  {
     type: 'ship',
     offers: [
       {title: 'Choose meal', price: 130},
@@ -118,6 +93,31 @@ export const MOCK_OFFERS = [
       {title: 'Choose comfort class', price: 110},
       {title: 'Choose business class', price: 180},
     ],
+  },
+  {
+    type: 'flight',
+    offers: [
+      {title: 'Choose meal', price: 120},
+      {title: 'Choose seats', price: 90},
+      {title: 'Upgrade to comfort class', price: 120},
+      {title: 'Upgrade to business class', price: 120},
+      {title: 'Add luggage', price: 170},
+      {title: 'Business lounge', price: 160},
+    ],
+  },
+  {
+    type: 'check-in',
+    offers: [
+      {title: 'Choose the time of check-in', price: 70},
+      {title: 'Choose the time of check-out', price: 190},
+      {title: 'Add breakfast', price: 110},
+      {title: 'Laundry', price: 140},
+      {title: 'Order a meal from the restaurant', price: 30},
+    ],
+  },
+  {
+    type: 'sightseeing',
+    offers: [],
   },
   {
     type: 'restaurant',

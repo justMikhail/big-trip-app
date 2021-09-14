@@ -47,7 +47,7 @@ const createPhotosList = (destination) => {
     : '';
 };
 
-const createEventTypes = (currentType, allTypes) => {
+const createEventTypesList = (currentType, allTypes) => {
   let eventTypesTemplate = '';
 
   allTypes.map((type) => {
@@ -99,7 +99,7 @@ const createEventFormTemplate = (event) => {
 
   const arrayOfTypes = Object.values(Types);
 
-  const eventTypes = createEventTypes(type, arrayOfTypes);
+  const eventTypesList = createEventTypesList(type, arrayOfTypes);
   const offersList = createOffersList(offers, id);
   const photosList = createPhotosList(destination);
 
@@ -116,7 +116,7 @@ const createEventFormTemplate = (event) => {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${eventTypes}
+                ${eventTypesList}
               </fieldset>
             </div>
         </div>
