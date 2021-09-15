@@ -36,3 +36,8 @@ export const capitalizeString = (str) => {
 export const replaceSpaceToUnderscore = (str) => str.replace(/\s+/g, '_');
 
 export const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
+export const getOffersByType = (type, offers) => {
+  const currentOffers = offers.find((offer) => offer.type === type);
+  return currentOffers.offers.length ? currentOffers.offers : [];
+};
