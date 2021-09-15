@@ -1,8 +1,8 @@
 import EventsSortView from '../view/events-sort';
 import EventsListView from '../view/events-list';
 import EmptyEventsListView from '../view/empty-events-list';
-import {render, RenderPosition, updateItem} from '../utils/render';
 import EventPresenter from './event-presenter';
+import {render, RenderPosition, updateItem} from '../utils/render';
 import {sortByDate, sortByDuration, sortByPrice} from '../utils/sort';
 import {SortType} from '../const/const';
 
@@ -10,37 +10,37 @@ export default class TripEventsPresenter {
   constructor(tripEventsContainer) {
     this._tripEventsContainer = tripEventsContainer;
     this._eventsSortComponent = new EventsSortView();
-    this._currentSortType = SortType.DEFAULT;
     this._eventsListComponent = new EventsListView();
     this._emptyEventsListComponent = new EmptyEventsListView();
-    this._eventItemPresenter = new Map();
-    this._handleEventItemChange = this._handleEventItemChange.bind(this);
-    this._handleViewModeChange = this._handleViewModeChange.bind(this);
+    this._eventPresenter = new Map();
+    this._currentSortType = SortType.DEFAULT;
+    this._handleEventPointChange = this._handleEventPointChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleViewModeChange = this._handleViewModeChange.bind(this);
   }
 
-  init(eventItems) {
-    this._eventItems = eventItems.slice();
-    this._sourcedEventItems = eventItems.slice();
+  init(events) {
+    this._events = events.slice();
+    this._sourcedEvents = events.slice();
     this._renderTripEvents();
   }
 
-  _handleEventItemChange(updatedEventItem) {
-    this._eventItems = updateItem(this._eventItems, updatedEventItem);
-    this._eventItemPresenter.get(updatedEventItem.id).init(updatedEventItem);
+  _handleEventPointChange(updatedEvent) {
+    this._events = updateItem(this._events, updatedEvent);
+    this._eventPresenter.get(updatedEvent.id).init(updatedEvent);
   }
 
   _handleViewModeChange() {
-    this._eventItemPresenter.forEach((presenter) => presenter.resetViewMode());
+    this._eventPresenter.forEach((presenter) => presenter.resetViewMode());
   }
 
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {
       return;
     }
-    this._sortEventItems(sortType);
-    this._clearAllEventItems();
-    this._renderAllEventItems();
+    this._sortEvents(sortType);
+    this._clearAllEvent();
+    this._renderAllEvents();
   }
 
   _renderEmptyEventsList() {
@@ -52,19 +52,19 @@ export default class TripEventsPresenter {
     this._eventsSortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
-  _sortEventItems(sortType) {
+  _sortEvents(sortType) {
     switch (sortType) {
       case SortType.DEFAULT:
-        this._eventItems.sort(sortByDate);
+        this._events.sort(sortByDate);
         break;
       case SortType.DURATION_DOWN:
-        this._eventItems.sort(sortByDuration);
+        this._events.sort(sortByDuration);
         break;
       case SortType.PRICE_DOWN:
-        this._eventItems.sort(sortByPrice);
+        this._events.sort(sortByPrice);
         break;
       default:
-        this._eventItems = this._sourcedEventItems.slice();
+        this._events = this._sourcedEvents.slice();
     }
 
     this._currentSortType = sortType;
@@ -74,30 +74,30 @@ export default class TripEventsPresenter {
     render(this._tripEventsContainer, this._eventsListComponent, RenderPosition.BEFORE_END);
   }
 
-  _clearAllEventItems() {
-    this._eventItemPresenter.forEach((presenter) => presenter.destroy());
-    this._eventItemPresenter.clear();
+  _clearAllEvent() {
+    this._eventPresenter.forEach((presenter) => presenter.destroy());
+    this._eventPresenter.clear();
   }
 
-  _renderEventItem(event) {
-    const eventItemPresenter = new EventPresenter(this._eventsListComponent, this._handleEventItemChange, this._handleViewModeChange);
-    eventItemPresenter.init(event);
-    this._eventItemPresenter.set(event.id, eventItemPresenter);
+  _renderEvent(event) {
+    const eventPresenter = new EventPresenter(this._eventsListComponent, this._handleEventPointChange, this._handleViewModeChange);
+    eventPresenter.init(event);
+    this._eventPresenter.set(event.id, eventPresenter);
   }
 
-  _renderAllEventItems() {
-    this._sortEventItems(this._currentSortType);
-    this._eventItems.forEach((eventItem) => this._renderEventItem(eventItem));
+  _renderAllEvents() {
+    this._sortEvents(this._currentSortType);
+    this._events.forEach((eventItem) => this._renderEvent(eventItem));
   }
 
   _renderTripEvents() {
-    if (!this._eventItems.length) {
+    if (!this._events.length) {
       this._renderEmptyEventsList();
       return;
     }
 
     this._renderEventsSort();
     this._renderEventsList();
-    this._renderAllEventItems();
+    this._renderAllEvents();
   }
 }

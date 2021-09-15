@@ -1,4 +1,15 @@
-export const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+export const Types = {
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECK_IN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTAURANT: 'restaurant',
+};
+
 export const MIN_EVENT_DURATION = 10;
 
 export const dateFormat = {
@@ -16,4 +27,12 @@ export const SortType = {
   DEFAULT: 'day-down',
   PRICE_DOWN: 'price-down',
   DURATION_DOWN: 'duration-down',
+};
+
+export const CALENDAR_SETTINGS = {
+  altInput: true,
+  altFormat: 'd/m/y H:i',
+  dateFormat: 'm/d/y H:i',
+  enableTime: true,
+  'time_24hr': true,
 };
