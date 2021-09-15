@@ -107,8 +107,7 @@ const createEventTypesList = (currentType, allTypes) => {
   return eventTypesTemplate;
 };
 
-const createOptionTemplate = (city) => `<option value="${city}"></option>`;
-const createDestinations = (destinationsList) => Object.values(Destinations).map((destination) => `<option value="${destination}"></option>`).join('');
+const createDestinationsList = (destinationsList) => Object.values(destinationsList).map((destination) => `<option value="${destination}"></option>`).join('');
 
 const createEventFormTemplate = (event) => {
 
@@ -128,7 +127,7 @@ const createEventFormTemplate = (event) => {
   const arrayOfTypes = Object.values(Types);
 
   const eventTypesList = createEventTypesList(type, arrayOfTypes);
-  const destinationList = createDestinations(Destinations);
+  const destinationList = createDestinationsList(Destinations);
   const offersForCurrentEventType = createOffers(type, MOCK_OFFERS, offers, isOffers);
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
 
@@ -213,6 +212,10 @@ export default class EventForm extends SmartView {
     return createEventFormTemplate(this._state);
   }
 
+  reset(event) {
+    this.updateState(EventForm.parsEventToState(event));
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
     this._formSubmitHandler(this._callback.formSubmit);
@@ -227,7 +230,7 @@ export default class EventForm extends SmartView {
       .addEventListener('change', this._changeDestinationHandler);
     this.getElement()
       .querySelector('.event__input--price')
-      .addEventListener('change', this._changePriceHandler);
+      .addEventListener('input', this._changePriceHandler);
   }
 
   _changeTypeHandler(evt) {
@@ -236,7 +239,7 @@ export default class EventForm extends SmartView {
       type: evt.target.value,
       offers: [],
       isOffers: Boolean(getOffersByType(evt.target.value, MOCK_OFFERS).length),
-    }, false);
+    });
   }
 
   _changeDestinationHandler(evt) {
@@ -245,7 +248,7 @@ export default class EventForm extends SmartView {
       destination: getDestination(evt.target.value, allDestinationInfo),
       isDescription: getIsDescription(evt.target.value, allDestinationInfo),
       isPhotos: getIsPictures(evt.target.value, allDestinationInfo),
-    }, false);
+    });
   }
 
   _changePriceHandler(evt) {

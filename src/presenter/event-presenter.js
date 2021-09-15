@@ -76,6 +76,7 @@ export default class EventPresenter {
   _escKeyDownHandler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
+      this._eventFormComponent.reset(this._event);
       this._replaceFormToPont();
     }
   }
