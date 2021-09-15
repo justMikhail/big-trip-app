@@ -198,11 +198,34 @@ export default class EventForm extends SmartView {
   constructor(event = BLANK_EVENT) {
     super();
     this._state = EventForm.parsEventToState(event);
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._changeTypeHandler = this._changeTypeHandler.bind(this);
+    this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
+    this._changePriceHandler = this._changePriceHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
     return createEventFormTemplate(this._state);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this._formSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.event__type-group')
+      .addEventListener('change', this._changeTypeHandler);
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._changeDestinationHandler);
+    this.getElement()
+      .querySelector('.event__input--price')
+      .addEventListener('change', this._changePriceHandler);
   }
 
   _changeTypeHandler(evt) {
