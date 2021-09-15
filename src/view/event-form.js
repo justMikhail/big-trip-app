@@ -62,9 +62,9 @@ const createDestinationInfo = (destination, isDescription, isPhotos) => (
   `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination ${isDescription || isPhotos ? '' : 'visually-hidden'}">Destination</h3>
       <p class="event__destination-description">
-        ${destination.description}
+        ${isDescription ? destination.description : ''}
       </p>
-      ${createPhotosList(destination)}
+      ${isPhotos ? createPhotosList(destination) : ''}
   </section>`
 );
 
@@ -116,6 +116,9 @@ const createEventFormTemplate = (event) => {
     destination,
     //id,
     offers,
+    isOffers,
+    isPhotos,
+    isDescription,
   } = event;
 
   const arrayOfTypes = Object.values(Types);
@@ -210,4 +213,25 @@ export default class EventForm extends AbstractView {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
+
+  //===================
+  static parsEventToState(event) {
+    return {
+      ...event,
+      isOffers: Boolean(event.offers.length),
+      isPhotos: Boolean(event.destination.pictures.length),
+      isDescription: Boolean(event.destination.description),
+    };
+  }
+
+  static parseStateToEvent(state) {
+    state = {...state};
+    delete state.isOffers;
+    delete state.isPhotos;
+    delete state.isDescription;
+
+    return state;
+  }
+  //=================
 }
+
