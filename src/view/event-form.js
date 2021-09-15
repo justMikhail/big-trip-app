@@ -4,28 +4,35 @@ import {formatDate, getRecentDate} from '../utils/date';
 import {Types, dateFormat} from '../const/const';
 import AbstractView from './abstract';
 
-const createOffersList = (offers, id) => {
-  let offerTemplate = '';
+import {MOCK_OFFERS} from '../mock/mock-const';
 
-  offers.forEach((offer) => {
-    const offerName = replaceSpaceToUnderscore(offer.title);
-    offerTemplate +=
-      `<div class="event__offer-selector">
-        <input
-          class="event__offer-checkbox  visually-hidden"
-          id="event-offer-${offerName}-${id}"
-          type="checkbox"
-          name="event-offer-${offerName}"
-        >
-          <label class="event__offer-label" for="event-offer-${offerName}-${id}">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.price}</span>
-          </label>
-       </div>`;
+export const getOffersByType = (type, offers) => {
+  const currentOffers = offers.find((offer) => offer.type === type);
+  return currentOffers.offers.length ? currentOffers.offers : [];
+};
+
+const createOffersList = (currentType, allOffers, checkedOffers) => {
+  const offersByCurrentType = getOffersByType(currentType, allOffers);
+
+  return offersByCurrentType.map((offerByCurrentType, index) => {
+    const isOfferSelected = checkedOffers.some((checkedOffer) => offerByCurrentType.title === checkedOffer.title);
+    const offerTitleWithoutSpace = replaceSpaceToUnderscore(offerByCurrentType.title);
+
+    return `<div class="event__offer-selector">
+      <input
+        class="event__offer-checkbox  visually-hidden"
+        id="event-offer-${offerTitleWithoutSpace}-${index}"
+        type="checkbox"
+        name="event-offer-${offerTitleWithoutSpace}"
+        ${isOfferSelected ? 'checked' : ''}
+      >
+      <label class="event__offer-label" for="event-offer-${offerTitleWithoutSpace}-${index}">
+        <span class="event__offer-title">${offerByCurrentType.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offerByCurrentType.price}</span>
+      </label>
+    </div>`;
   });
-
-  return offerTemplate;
 };
 
 const createPhotosList = (destination) => {
@@ -93,14 +100,14 @@ const createEventFormTemplate = (event) => {
     dateFrom,
     dateTo,
     destination,
-    id,
+    //id,
     offers,
   } = event;
 
   const arrayOfTypes = Object.values(Types);
 
   const eventTypesList = createEventTypesList(type, arrayOfTypes);
-  const offersList = createOffersList(offers, id);
+  const offersList = createOffersList(type, MOCK_OFFERS, offers);
   const photosList = createPhotosList(destination);
 
   return `<li class="trip-events__item">
