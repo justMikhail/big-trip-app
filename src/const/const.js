@@ -28,3 +28,11 @@ export const SortType = {
   PRICE_DOWN: 'price-down',
   DURATION_DOWN: 'duration-down',
 };
+
+export const CALENDAR_SETTINGS = {
+  altInput: true,
+  altFormat: 'd/m/y H:i',
+  dateFormat: 'm/d/y H:i',
+  enableTime: true,
+  'time_24hr': true,
+};

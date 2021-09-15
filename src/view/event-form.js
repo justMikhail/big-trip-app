@@ -1,7 +1,9 @@
 import {nanoid} from 'nanoid';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {capitalizeString, replaceSpaceToUnderscore, getOffersByType, getDestination, getIsDescription, getIsPictures} from '../utils/utils';
 import {formatDate, getRecentDate} from '../utils/date';
-import {Types, dateFormat} from '../const/const';
+import {Types, dateFormat, CALENDAR_SETTINGS} from '../const/const';
 import SmartView from './smart';
 
 import {MOCK_OFFERS, Destinations} from '../mock/mock-const';
@@ -200,10 +202,17 @@ export default class EventForm extends SmartView {
     super();
     this._state = EventForm.parsEventToState(event);
 
+    this._datepickerStart = null;
+    this._datepickerEnd = null;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._changeTypeHandler = this._changeTypeHandler.bind(this);
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._changePriceHandler = this._changePriceHandler.bind(this);
+
+    this._timeFromHandler = this._timeFromHandler.bind(this);
+    this._timeToHandler = this._timeToHandler.bind(this);
+    this._setDatePicker = this._setDatePicker.bind(this);
 
     this._setInnerHandlers();
   }
@@ -231,6 +240,7 @@ export default class EventForm extends SmartView {
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('input', this._changePriceHandler);
+    this._setDatePicker();
   }
 
   _changeTypeHandler(evt) {
@@ -239,7 +249,7 @@ export default class EventForm extends SmartView {
       type: evt.target.value,
       offers: [],
       isOffers: Boolean(getOffersByType(evt.target.value, MOCK_OFFERS).length),
-    });
+    }, false);
   }
 
   _changeDestinationHandler(evt) {
@@ -248,6 +258,49 @@ export default class EventForm extends SmartView {
       destination: getDestination(evt.target.value, allDestinationInfo),
       isDescription: getIsDescription(evt.target.value, allDestinationInfo),
       isPhotos: getIsPictures(evt.target.value, allDestinationInfo),
+    }, false);
+  }
+
+  _checkResetDatePicker() {
+    if (this._datepickerStart) {
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
+    }
+    if (this._datepickerEnd) {
+      this._datepickerEnd.destroy();
+      this._datepickerEnd = null;
+    }
+  }
+
+  _setDatePicker() {
+    this._checkResetDatePicker();
+
+    this._datepickerStart = flatpickr(
+      this.getElement().querySelector('[name = "event-start-time"]'),
+      {
+        ...CALENDAR_SETTINGS,
+        onChange: this._timeFromHandler,
+      },
+    ),
+    this._datepickerEnd = flatpickr(
+      this.getElement().querySelector('[name = "event-end-time"]'),
+      {
+        ...CALENDAR_SETTINGS,
+        minDate: this._datepickerStart.input.value,
+        onChange: this._timeToHandler,
+      },
+    );
+  }
+
+  _timeFromHandler([userDate]) {
+    this.updateState({
+      dateFrom: userDate,
+    });
+  }
+
+  _timeToHandler([userDate]) {
+    this.updateState({
+      dateTo: userDate,
     });
   }
 
