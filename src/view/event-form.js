@@ -4,8 +4,23 @@ import {formatDate, getRecentDate} from '../utils/date';
 import {Types, dateFormat} from '../const/const';
 import SmartView from './smart';
 
-import {MOCK_OFFERS} from '../mock/mock-const';
+import {MOCK_OFFERS, Destinations} from '../mock/mock-const';
 import {allDestinationInfo} from '../mock/mock-event-data';
+
+const BLANK_EVENT = {
+  type: Types.TAXI,
+  destination: {
+    name: '',
+    description: '',
+    pictures: [],
+  },
+  offers: [],
+  dateFrom: getRecentDate(),
+  dateTo: getRecentDate(),
+  basePrice: 0,
+  isFavorite: false,
+  id: nanoid(),
+};
 
 const createOffersList = (currentType, allOffers, checkedOffers) => {
   const offersByCurrentType = getOffersByType(currentType, allOffers);
@@ -92,20 +107,8 @@ const createEventTypesList = (currentType, allTypes) => {
   return eventTypesTemplate;
 };
 
-const BLANK_EVENT = {
-  type: Types.TAXI,
-  destination: {
-    name: '',
-    description: '',
-    pictures: [],
-  },
-  offers: [],
-  dateFrom: getRecentDate(),
-  dateTo: getRecentDate(),
-  basePrice: 0,
-  isFavorite: false,
-  id: nanoid(),
-};
+const createOptionTemplate = (city) => `<option value="${city}"></option>`;
+const createDestinations = (destinationsList) => Object.values(Destinations).map((destination) => `<option value="${destination}"></option>`).join('');
 
 const createEventFormTemplate = (event) => {
 
@@ -125,8 +128,9 @@ const createEventFormTemplate = (event) => {
   const arrayOfTypes = Object.values(Types);
 
   const eventTypesList = createEventTypesList(type, arrayOfTypes);
-  const offersForCurrentEventType = createOffers(type, MOCK_OFFERS, offers, true);
-  const infoAboutCurrentDestination = createDestinationInfo(destination, true, true);
+  const destinationList = createDestinations(Destinations);
+  const offersForCurrentEventType = createOffers(type, MOCK_OFFERS, offers, isOffers);
+  const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -159,9 +163,7 @@ const createEventFormTemplate = (event) => {
             list="destination-list-1"
           >
             <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
+              ${destinationList}
             </datalist>
         </div>
 
@@ -234,7 +236,7 @@ export default class EventForm extends SmartView {
       type: evt.target.value,
       offers: [],
       isOffers: Boolean(getOffersByType(evt.target.value, MOCK_OFFERS).length),
-    });
+    }, false);
   }
 
   _changeDestinationHandler(evt) {
@@ -243,7 +245,7 @@ export default class EventForm extends SmartView {
       destination: getDestination(evt.target.value, allDestinationInfo),
       isDescription: getIsDescription(evt.target.value, allDestinationInfo),
       isPhotos: getIsPictures(evt.target.value, allDestinationInfo),
-    });
+    }, false);
   }
 
   _changePriceHandler(evt) {
