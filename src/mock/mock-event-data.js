@@ -1,9 +1,8 @@
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
-import {getRandomElementFromArray, getRandomInteger, getShuffleArray, randomizeArray, getOffersByType} from '../utils/utils';
+import {getRandomElementFromArray, getRandomInteger, getShuffleArray, getOffersByType} from '../utils/utils';
 import {
   EVENTS_ITEM_COUNT,
-  PLACES,
   MOCK_OFFERS,
   EVENT_MAX_PRICE,
   EVENT_MIN_PRICE,
@@ -12,7 +11,8 @@ import {
   DATE_FORMAT,
   FRAGMENTS,
   MIN_FRAGMENTS_COUNT,
-  MAX_FRAGMENTS_COUNT
+  MAX_FRAGMENTS_COUNT,
+  Destinations
 } from './mock-const';
 
 import {Types, MIN_EVENT_DURATION} from '../const/const';
@@ -42,15 +42,33 @@ const getRandomCheckedOffers = (allOffers, currentType) => {
     : [];
 };
 
+const getRandomDestinationsInfo = (destinationsList) => {
+  const destinationNames = Object.values(destinationsList);
+  return destinationNames.map((destination) => ({
+    description: getRandomDescription(destination),
+    name: destination,
+    pictures: getRandomPhotos(),
+  }));
+};
+
+export const allDestinationInfo = getRandomDestinationsInfo(Destinations);
+
+const getRandomInfoForOneDestination = (destinationName, allDestination) => {
+  for (const destination of allDestination) {
+    if (destination.name === destinationName) {
+      return destination;
+    }
+  }
+};
+
 const getMockEvent = () => {
 
   const randomType = getRandomElementFromArray(Object.values(Types));
   const randomBasePrice = getRandomPrice(EVENT_MIN_PRICE, EVENT_MAX_PRICE);
   const randomDateFrom = getDate(dayjs(), getRandomInteger(-MAX_MINUTES_GAP, MAX_MINUTES_GAP));
   const randomDateTo = getDate(randomDateFrom, getRandomInteger(MIN_EVENT_DURATION, MAX_MINUTES_GAP));
-  const randomPlace = getRandomElementFromArray(PLACES);
-  const randomDescription = getRandomDescription(randomPlace);
-  const randomPictures = getRandomPhotos();
+  const randomPlace = getRandomElementFromArray(Object.values(Destinations));
+  const randomDestinationInfo = getRandomInfoForOneDestination(randomPlace, allDestinationInfo);
   const randomIndex = nanoid();
   const randomCheckedOffers = getRandomCheckedOffers(MOCK_OFFERS, randomType);
 
@@ -59,11 +77,7 @@ const getMockEvent = () => {
     basePrice: randomBasePrice,
     dateFrom: randomDateFrom.format(DATE_FORMAT),
     dateTo: randomDateTo.format(DATE_FORMAT),
-    destination: {
-      place: randomPlace,
-      description: randomDescription,
-      pictures: randomPictures,
-    },
+    destination: randomDestinationInfo,
     id: randomIndex,
     isFavorite: Boolean(getRandomInteger()),
     offers: randomCheckedOffers,

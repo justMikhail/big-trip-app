@@ -1,10 +1,11 @@
 import {nanoid} from 'nanoid';
-import {capitalizeString, replaceSpaceToUnderscore, getOffersByType} from '../utils/utils';
+import {capitalizeString, replaceSpaceToUnderscore, getOffersByType, getDestination, getIsDescription, getIsPictures} from '../utils/utils';
 import {formatDate, getRecentDate} from '../utils/date';
 import {Types, dateFormat} from '../const/const';
-import AbstractView from './abstract';
+import SmartView from './smart';
 
 import {MOCK_OFFERS} from '../mock/mock-const';
+import {allDestinationInfo} from '../mock/mock-event-data';
 
 const createOffersList = (currentType, allOffers, checkedOffers) => {
   const offersByCurrentType = getOffersByType(currentType, allOffers);
@@ -117,8 +118,8 @@ const createEventFormTemplate = (event) => {
     //id,
     offers,
     isOffers,
-    isPhotos,
     isDescription,
+    isPhotos,
   } = event;
 
   const arrayOfTypes = Object.values(Types);
@@ -154,7 +155,7 @@ const createEventFormTemplate = (event) => {
             id="event-destination-1"
             type="text"
             name="event-destination"
-            value="${destination.place}"
+            value="${destination.name}"
             list="destination-list-1"
           >
             <datalist id="destination-list-1">
@@ -193,20 +194,43 @@ const createEventFormTemplate = (event) => {
   </li>`;
 };
 
-export default class EventForm extends AbstractView {
+export default class EventForm extends SmartView {
   constructor(event = BLANK_EVENT) {
     super();
-    this._event = event;
+    this._state = EventForm.parsEventToState(event);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
-    return createEventFormTemplate(this._event);
+    return createEventFormTemplate(this._state);
+  }
+
+  _changeTypeHandler(evt) {
+    evt.preventDefault();
+    this.updateState({
+      type: evt.target.value,
+      offers: [],
+      isOffers: Boolean(getOffersByType(evt.target.value, MOCK_OFFERS).length),
+    });
+  }
+
+  _changeDestinationHandler(evt) {
+    evt.preventDefault();
+    this.updateState({
+      destination: getDestination(evt.target.value, allDestinationInfo),
+      isDescription: getIsDescription(evt.target.value, allDestinationInfo),
+      isPhotos: getIsPictures(evt.target.value, allDestinationInfo),
+    });
+  }
+
+  _changePriceHandler(evt) {
+    evt.preventDefault();
+    this.updateState({basePrice: evt.target.value}, true);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._event);
+    this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
   }
 
   setFormSubmitHandler(callback) {
@@ -214,7 +238,6 @@ export default class EventForm extends AbstractView {
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
-  //===================
   static parsEventToState(event) {
     return {
       ...event,
@@ -232,6 +255,5 @@ export default class EventForm extends AbstractView {
 
     return state;
   }
-  //=================
 }
 

@@ -41,3 +41,15 @@ export const getOffersByType = (type, offers) => {
   const currentOffers = offers.find((offer) => offer.type === type);
   return currentOffers.offers.length ? currentOffers.offers : [];
 };
+
+export const getDestination = (currentDestination, allDestination) => allDestination.find((item) => item.name === currentDestination);
+
+export const getIsDescription = (currentDestination, allDestination) => {
+  const currentDestinationInfo = allDestination.find((item) => item.name === currentDestination);
+  return Boolean(currentDestinationInfo.description);
+};
+
+export const getIsPictures = (currentDestination, allDestination) => {
+  const currentDestinationInfo = allDestination.find((item) => item.name === currentDestination);
+  return Boolean(currentDestinationInfo.pictures.length);
+};
