@@ -30,6 +30,15 @@ const createOffersList = (currentType, allOffers, checkedOffers) => {
   });
 };
 
+const createOffers = (currentType, allOffers, checkedOffers, isOffers) => (
+  `<section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers ${isOffers ? '' : 'visually-hidden'}">Offers</h3>
+    <div class="event__available-offers">
+      ${createOffersList(currentType, allOffers, checkedOffers)}
+    </div>
+  </section>`
+);
+
 const createPhotosList = (destination) => {
   const photosCount = destination.pictures.length;
   const photosArray = destination.pictures;
@@ -48,6 +57,16 @@ const createPhotosList = (destination) => {
         </div>`
     : '';
 };
+
+const createDestinationInfo = (destination, isDescription, isPhotos) => (
+  `<section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination ${isDescription || isPhotos ? '' : 'visually-hidden'}">Destination</h3>
+      <p class="event__destination-description">
+        ${destination.description}
+      </p>
+      ${createPhotosList(destination)}
+  </section>`
+);
 
 const createEventTypesList = (currentType, allTypes) => {
   let eventTypesTemplate = '';
@@ -102,8 +121,8 @@ const createEventFormTemplate = (event) => {
   const arrayOfTypes = Object.values(Types);
 
   const eventTypesList = createEventTypesList(type, arrayOfTypes);
-  const offersList = createOffersList(type, MOCK_OFFERS, offers);
-  const photosList = createPhotosList(destination);
+  const offersForCurrentEventType = createOffers(type, MOCK_OFFERS, offers, true);
+  const infoAboutCurrentDestination = createDestinationInfo(destination, true, true);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -164,20 +183,8 @@ const createEventFormTemplate = (event) => {
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          <div class="event__available-offers">
-            ${offersList}
-          </div>
-        </section>
-
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">
-            ${destination.description}
-          </p>
-          ${photosList}
-        </section>
+        ${offersForCurrentEventType}
+        ${infoAboutCurrentDestination}
       </section>
     </form>
   </li>`;
