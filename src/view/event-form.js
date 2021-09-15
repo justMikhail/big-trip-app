@@ -1,7 +1,7 @@
 import {nanoid} from 'nanoid';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-import {capitalizeString, replaceSpaceToUnderscore, getOffersByType, getDestination, getIsDescription, getIsPictures} from '../utils/utils';
+import {capitalizeString, replaceSpaceToUnderscore, getOffersByType, findDestination, checkDescriptionExist, checkPhotosExist} from '../utils/utils';
 import {formatDate, getRecentDate} from '../utils/date';
 import {Types, dateFormat, CALENDAR_SETTINGS} from '../const/const';
 import SmartView from './smart';
@@ -29,17 +29,17 @@ const createOffersList = (currentType, allOffers, checkedOffers) => {
 
   return offersByCurrentType.map((offerByCurrentType, index) => {
     const isOfferSelected = checkedOffers.some((checkedOffer) => offerByCurrentType.title === checkedOffer.title);
-    const offerTitleWithoutSpace = replaceSpaceToUnderscore(offerByCurrentType.title);
+    const underscoredOfferTitle = replaceSpaceToUnderscore(offerByCurrentType.title);
 
     return `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox  visually-hidden"
-        id="event-offer-${offerTitleWithoutSpace}-${index}"
+        id="event-offer-${underscoredOfferTitle}-${index}"
         type="checkbox"
-        name="event-offer-${offerTitleWithoutSpace}"
+        name="event-offer-${underscoredOfferTitle}"
         ${isOfferSelected ? 'checked' : ''}
       >
-      <label class="event__offer-label" for="event-offer-${offerTitleWithoutSpace}-${index}">
+      <label class="event__offer-label" for="event-offer-${underscoredOfferTitle}-${index}">
         <span class="event__offer-title">${offerByCurrentType.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offerByCurrentType.price}</span>
@@ -58,11 +58,12 @@ const createOffers = (currentType, allOffers, checkedOffers, isOffers) => (
 );
 
 const createPhotosList = (destination) => {
-  const photosCount = destination.pictures.length;
-  const photosArray = destination.pictures;
+  const photos = destination.pictures;
+  const photosCount = photos.length;
+
   let photosTemplate = '';
 
-  photosArray.forEach((photo) => {
+  photos.forEach((photo) => {
     photosTemplate +=
       `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   });
@@ -255,9 +256,9 @@ export default class EventForm extends SmartView {
   _changeDestinationHandler(evt) {
     evt.preventDefault();
     this.updateState({
-      destination: getDestination(evt.target.value, allDestinationInfo),
-      isDescription: getIsDescription(evt.target.value, allDestinationInfo),
-      isPhotos: getIsPictures(evt.target.value, allDestinationInfo),
+      destination: findDestination(evt.target.value, allDestinationInfo),
+      isDescription: checkDescriptionExist(evt.target.value, allDestinationInfo),
+      isPhotos: checkPhotosExist(evt.target.value, allDestinationInfo),
     }, false);
   }
 
@@ -323,16 +324,16 @@ export default class EventForm extends SmartView {
     return {
       ...event,
       isOffers: Boolean(event.offers.length),
-      isPhotos: Boolean(event.destination.pictures.length),
       isDescription: Boolean(event.destination.description),
+      isPhotos: Boolean(event.destination.pictures.length),
     };
   }
 
   static parseStateToEvent(state) {
     state = {...state};
     delete state.isOffers;
-    delete state.isPhotos;
     delete state.isDescription;
+    delete state.isPhotos;
 
     return state;
   }

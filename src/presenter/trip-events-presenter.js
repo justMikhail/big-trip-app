@@ -12,7 +12,7 @@ export default class TripEventsPresenter {
     this._eventsSortComponent = new EventsSortView();
     this._eventsListComponent = new EventsListView();
     this._emptyEventsListComponent = new EmptyEventsListView();
-    this._eventPresenter = new Map();
+    this._eventPresenters = new Map();
     this._currentSortType = SortType.DEFAULT;
     this._handleEventPointChange = this._handleEventPointChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -27,11 +27,11 @@ export default class TripEventsPresenter {
 
   _handleEventPointChange(updatedEvent) {
     this._events = updateItem(this._events, updatedEvent);
-    this._eventPresenter.get(updatedEvent.id).init(updatedEvent);
+    this._eventPresenters.get(updatedEvent.id).init(updatedEvent);
   }
 
   _handleViewModeChange() {
-    this._eventPresenter.forEach((presenter) => presenter.resetViewMode());
+    this._eventPresenters.forEach((presenter) => presenter.resetViewMode());
   }
 
   _handleSortTypeChange(sortType) {
@@ -39,7 +39,7 @@ export default class TripEventsPresenter {
       return;
     }
     this._sortEvents(sortType);
-    this._clearAllEvent();
+    this._clearAllEvents();
     this._renderAllEvents();
   }
 
@@ -74,15 +74,15 @@ export default class TripEventsPresenter {
     render(this._tripEventsContainer, this._eventsListComponent, RenderPosition.BEFORE_END);
   }
 
-  _clearAllEvent() {
-    this._eventPresenter.forEach((presenter) => presenter.destroy());
-    this._eventPresenter.clear();
+  _clearAllEvents() {
+    this._eventPresenters.forEach((presenter) => presenter.destroy());
+    this._eventPresenters.clear();
   }
 
   _renderEvent(event) {
     const eventPresenter = new EventPresenter(this._eventsListComponent, this._handleEventPointChange, this._handleViewModeChange);
     eventPresenter.init(event);
-    this._eventPresenter.set(event.id, eventPresenter);
+    this._eventPresenters.set(event.id, eventPresenter);
   }
 
   _renderAllEvents() {

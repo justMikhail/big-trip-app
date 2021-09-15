@@ -69,7 +69,7 @@ const getMockEvent = () => {
   const randomDateTo = getDate(randomDateFrom, getRandomInteger(MIN_EVENT_DURATION, MAX_MINUTES_GAP));
   const randomPlace = getRandomElementFromArray(Object.values(Destinations));
   const randomDestinationInfo = getRandomInfoForOneDestination(randomPlace, allDestinationInfo);
-  const randomIndex = nanoid();
+  const randomId = nanoid();
   const randomCheckedOffers = getRandomCheckedOffers(MOCK_OFFERS, randomType);
 
   return {
@@ -78,7 +78,7 @@ const getMockEvent = () => {
     dateFrom: randomDateFrom.format(DATE_FORMAT),
     dateTo: randomDateTo.format(DATE_FORMAT),
     destination: randomDestinationInfo,
-    id: randomIndex,
+    id: randomId,
     isFavorite: Boolean(getRandomInteger()),
     offers: randomCheckedOffers,
   };
