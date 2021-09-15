@@ -228,7 +228,7 @@ export default class EventForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this._formSubmitHandler(this._callback.formSubmit);
+    this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
   _setInnerHandlers() {
