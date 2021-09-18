@@ -1,4 +1,5 @@
 import {nanoid} from 'nanoid';
+import he from 'he';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {capitalizeString, replaceSpaceToUnderscore, getOffersByType, findDestination, checkDescriptionExist, checkPhotosExist} from '../utils/utils';
@@ -161,7 +162,7 @@ const createEventFormTemplate = (event) => {
             id="event-destination-1"
             type="text"
             name="event-destination"
-            value="${destination.name}"
+            value="${he.encode(destination.name)}"
             list="destination-list-1"
           >
             <datalist id="destination-list-1">
@@ -184,7 +185,14 @@ const createEventFormTemplate = (event) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input
+            class="event__input  event__input--price"
+            id="event-price-1"
+            type="number"
+            min="0"
+            step="10"
+            name="event-price"
+            value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
