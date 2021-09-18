@@ -41,19 +41,22 @@ export default class TripEventsPresenter {
 
   _getEvents() {
     this._filterType = this._filterModel.getFilter();
-    const points = this._eventsModel.getEvents();
-    const filteredPoints = filter[this._filterType](points);
+    console.log(this._filterType);
+    const allEvents = this._eventsModel.getEvents();
+    console.log(allEvents);
+    const filteredEvents = filter[this._filterType](allEvents);
+    console.log(filteredEvents);
 
     switch (this._currentSortType) {
       case SortType.DEFAULT:
-        return filteredPoints.sort(sortByDate);
+        return filteredEvents.sort(sortByDate);
       case SortType.DURATION_DOWN:
-        return filteredPoints.sort(sortByDuration);
+        return filteredEvents.sort(sortByDuration);
       case SortType.PRICE_DOWN:
-        return filteredPoints.sort(sortByPrice);
+        return filteredEvents.sort(sortByPrice);
     }
 
-    return filteredPoints;
+    return filteredEvents;
   }
 
   createNewEvent() {
