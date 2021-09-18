@@ -9,7 +9,6 @@ import TripEventsPresenter from './presenter/trip-events-presenter';
 
 const events = mockEventItems;
 
-// HeaderUI
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainInfoContainer = pageHeaderContainer.querySelector('.trip-main');
 const tripNavMenuContainer = pageHeaderContainer.querySelector('.trip-controls__navigation');
@@ -21,7 +20,6 @@ const renderUI = () => {
 };
 renderUI();
 
-// MainPage
 const pageMainContainer = document.querySelector('.page-main');
 const eventsContainer = pageMainContainer.querySelector('.trip-events');
 const tripEventsPresenter = new TripEventsPresenter(eventsContainer);

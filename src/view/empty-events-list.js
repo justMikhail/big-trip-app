@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import AbstractView from '../abstract/abstract';
 
 const createEmptyEventsListTemplate = () => (
   '<p class="trip-events__msg">Click New Event to create your first point</p>'

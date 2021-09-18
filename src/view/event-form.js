@@ -3,14 +3,14 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {capitalizeString, replaceSpaceToUnderscore, getOffersByType, findDestination, checkDescriptionExist, checkPhotosExist} from '../utils/utils';
 import {formatDate, getRecentDate} from '../utils/date';
-import {Types, dateFormat, CALENDAR_SETTINGS} from '../const/const';
-import SmartView from './smart';
+import {EventType, dateFormat, CALENDAR_SETTINGS} from '../const/const';
+import SmartView from '../abstract/abstract-smart';
 
 import {MOCK_OFFERS, Destinations} from '../mock/mock-const';
 import {allDestinationInfo} from '../mock/mock-event-data';
 
 const BLANK_EVENT = {
-  type: Types.TAXI,
+  type: EventType.TAXI,
   destination: {
     name: '',
     description: '',
@@ -127,7 +127,7 @@ const createEventFormTemplate = (event) => {
     isPhotos,
   } = event;
 
-  const arrayOfTypes = Object.values(Types);
+  const arrayOfTypes = Object.values(EventType);
 
   const eventTypesList = createEventTypesList(type, arrayOfTypes);
   const destinationList = createDestinationsList(Destinations);
