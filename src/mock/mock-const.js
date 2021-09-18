@@ -2,10 +2,11 @@ export const EVENTS_ITEM_COUNT = 20;
 export const EVENT_MIN_PRICE = 20;
 export const EVENT_MAX_PRICE = 1000;
 export const MAX_PHOTOS_COUNT = 5;
-export const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
-export const MAX_MINUTES_GAP = 7 * 24 * 60;
 export const MIN_FRAGMENTS_COUNT = 1;
 export const MAX_FRAGMENTS_COUNT = 5;
+export const MAX_DAYS_GAP = 15;
+export const MAX_MINUTE_GAP_GAP = 30;
+export const MAX_HOUR_GAP = 12;
 
 export const FRAGMENTS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',

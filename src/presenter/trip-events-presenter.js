@@ -41,11 +41,8 @@ export default class TripEventsPresenter {
 
   _getEvents() {
     this._filterType = this._filterModel.getFilter();
-    console.log(this._filterType);
     const allEvents = this._eventsModel.getEvents();
-    console.log(allEvents);
-    const filteredEvents = filter[this._filterType](allEvents); // need to fix
-    console.log(filteredEvents);
+    const filteredEvents = filter[this._filterType](allEvents);
 
     switch (this._currentSortType) {
       case SortType.DEFAULT:
