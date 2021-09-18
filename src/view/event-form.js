@@ -2,7 +2,7 @@ import {nanoid} from 'nanoid';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {capitalizeString, replaceSpaceToUnderscore, getOffersByType, findDestination, checkDescriptionExist, checkPhotosExist} from '../utils/utils';
-import {formatDate, getRecentDate} from '../utils/date';
+import {formatDate, getToDayDate} from '../utils/date';
 import {EventType, dateFormat, CALENDAR_SETTINGS} from '../const/const';
 import SmartView from '../abstract/abstract-smart';
 
@@ -17,8 +17,8 @@ const BLANK_EVENT = {
     pictures: [],
   },
   offers: [],
-  dateFrom: getRecentDate(),
-  dateTo: getRecentDate(),
+  dateFrom: getToDayDate(),
+  dateTo: getToDayDate(),
   basePrice: 0,
   isFavorite: false,
   id: nanoid(),
@@ -210,6 +210,8 @@ export default class EventForm extends SmartView {
     this._changeTypeHandler = this._changeTypeHandler.bind(this);
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._changePriceHandler = this._changePriceHandler.bind(this);
+    this._hideFormClickHandler = this._hideFormClickHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
 
     this._timeFromHandler = this._timeFromHandler.bind(this);
     this._timeToHandler = this._timeToHandler.bind(this);
@@ -229,6 +231,8 @@ export default class EventForm extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setHideFormClickHandler(this._callback.hideFormClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setInnerHandlers() {
@@ -308,6 +312,26 @@ export default class EventForm extends SmartView {
   _changePriceHandler(evt) {
     evt.preventDefault();
     this.updateState({basePrice: evt.target.value}, true);
+  }
+
+  _hideFormClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.hideFormClick();
+  }
+
+  setHideFormClickHandler(callback) {
+    this._callback.hideFormClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._hideFormClickHandler);
+  }
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EventForm.parseStateToEvent(this._state));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
   }
 
   _formSubmitHandler(evt) {

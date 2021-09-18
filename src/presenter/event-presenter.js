@@ -2,22 +2,24 @@ import EventPointView from '../view/event-point';
 import EventFormView from '../view/event-form';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {isEscEvent} from '../utils/utils';
-import {ViewMode} from '../const/const';
+import {UpdateType, UserAction, ViewMode} from '../const/const';
 
 export default class EventPresenter {
-  constructor(eventListContainer, changeData, changeMode) {
-    this._eventListContainer = eventListContainer;
+  constructor(eventsListContainer, changeData, changeViewMode) {
+    this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;
-    this._changeMode = changeMode;
+    this._changeViewMode = changeViewMode;
 
     this._eventPointComponent = null;
     this._eventFormComponent = null;
     this._viewMode = ViewMode.DEFAULT;
 
-    this._handleShowEventFormButtonClick = this._handleShowEventFormButtonClick.bind(this);
+    this._handleShowFormButtonClick = this._handleShowFormButtonClick.bind(this);
+    this._handleHideFormButtonClick = this._handleHideFormButtonClick.bind(this);
     this._handleEventFormSubmit = this._handleEventFormSubmit.bind(this);
-    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
   init(event) {
@@ -28,9 +30,13 @@ export default class EventPresenter {
 
     this._eventPointComponent = new EventPointView(this._event);
     this._eventFormComponent = new EventFormView(this._event);
-    this._eventPointComponent.setShowFormClickHandler(this._handleShowEventFormButtonClick);
-    this._eventFormComponent.setFormSubmitHandler(this._handleEventFormSubmit);
+
+    this._eventPointComponent.setShowFormClickHandler(this._handleShowFormButtonClick);
     this._eventPointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._eventFormComponent.setHideFormClickHandler(this._handleHideFormButtonClick);
+    this._eventFormComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._eventFormComponent.setFormSubmitHandler(this._handleEventFormSubmit);
+
 
     if (prevEventPointComponent === null || prevEventFormComponent === null) {
       this._renderEventPoint();
@@ -51,7 +57,7 @@ export default class EventPresenter {
 
   resetViewMode() {
     if (this._viewMode !== ViewMode.DEFAULT) {
-      this._replaceFormToPont();
+      this._replaceFormToPoint();
     }
   }
 
@@ -63,11 +69,11 @@ export default class EventPresenter {
   _replacePointToForm() {
     replace(this._eventFormComponent, this._eventPointComponent);
     document.addEventListener('keydown', this._escKeyDownHandler);
-    this._changeMode();
+    this._changeViewMode();
     this._viewMode = ViewMode.SHOWING_FORM;
   }
 
-  _replaceFormToPont() {
+  _replaceFormToPoint() {
     replace(this._eventPointComponent, this._eventFormComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
     this._viewMode = ViewMode.DEFAULT;
@@ -81,28 +87,41 @@ export default class EventPresenter {
     }
   }
 
-  _handleShowEventFormButtonClick() {
+  _handleShowFormButtonClick() {
     this._replacePointToForm();
   }
 
-  _handleEventFormSubmit(event) {
-    this._changeData(event);
-    this._replaceFormToPont();
+  _handleHideFormButtonClick() {
+    this._eventFormComponent.reset(this._event);
+    this._replaceFormToPoint();
   }
 
   _handleFavoriteClick() {
     this._changeData(
-      Object.assign(
-        {},
-        this._event,
-        {
-          isFavorite: !this._event.isFavorite,
-        },
-      ),
+      UserAction.UPDATE_EVENT,
+      UpdateType.PATCH,
+      {...this._event, isFavorite: !this._event.isFavorite},
+    );
+  }
+
+  _handleEventFormSubmit(event) {
+    this._changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      event,
+    );
+    this._replaceFormToPoint();
+  }
+
+  _handleDeleteClick(event) {
+    this._changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MAJOR,
+      event,
     );
   }
 
   _renderEventPoint() {
-    render(this._eventListContainer, this._eventPointComponent, RenderPosition.BEFORE_END);
+    render(this._eventsListContainer, this._eventPointComponent, RenderPosition.BEFORE_END);
   }
 }
