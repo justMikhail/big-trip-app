@@ -115,7 +115,7 @@ export default class EventPresenter {
 
   _handleDeleteClick(event) {
     this._changeData(
-      UserAction.UPDATE_EVENT,
+      UserAction.DELETE_EVENT,
       UpdateType.MAJOR,
       event,
     );

@@ -11,7 +11,6 @@ export default class NewEventPresenter {
     this._eventFormComponent = null;
 
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-    this._handleHideFormButtonClick = this._handleHideFormButtonClick.bind(this);
     this._handleSubmitClick = this._handleSubmitClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
@@ -22,21 +21,20 @@ export default class NewEventPresenter {
     }
 
     this._eventFormComponent = new EventFormView();
-    this._eventFormComponent.setHideFormClickHandler(this._handleHideFormButtonClick);
     this._eventFormComponent.setFormSubmitHandler(this._handleSubmitClick);
     this._eventFormComponent.setDeleteClickHandler(this._handleDeleteClick);
 
-    render(this._eventsListContainer, this._editPointComponent, RenderPosition.AFTER_BEGIN);
+    render(this._eventsListContainer, this._eventFormComponent, RenderPosition.AFTER_BEGIN);
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   destroy() {
-    if (this._editPointComponent === null) {
+    if (this._eventFormComponent === null) {
       return;
     }
 
-    remove(this._editPointComponent);
-    this._editPointComponent = null;
+    remove(this._eventFormComponent);
+    this._eventFormComponent = null;
 
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
@@ -48,21 +46,17 @@ export default class NewEventPresenter {
     }
   }
 
-  _handleSubmitClick(point) {
+  _handleSubmitClick(event) {
     this._changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      {...point, id: nanoid()},
+      {...event, id: nanoid()},
     );
 
     this.destroy();
   }
 
   _handleDeleteClick() {
-    this.destroy();
-  }
-
-  _handleHideFormButtonClick() {
     this.destroy();
   }
 }

@@ -52,7 +52,7 @@ const createOffers = (currentType, allOffers, checkedOffers, isOffers) => (
   `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers ${isOffers ? '' : 'visually-hidden'}">Offers</h3>
     <div class="event__available-offers">
-      ${createOffersList(currentType, allOffers, checkedOffers)}
+      ${createOffersList(currentType, allOffers, checkedOffers).join('')}
     </div>
   </section>`
 );
