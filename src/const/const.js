@@ -1,4 +1,4 @@
-export const Types = {
+export const EventType = {
   TAXI: 'taxi',
   BUS: 'bus',
   TRAIN: 'train',
@@ -10,7 +10,29 @@ export const Types = {
   RESTAURANT: 'restaurant',
 };
 
-export const MIN_EVENT_DURATION = 10;
+export const FilterType = {
+  ALL: 'all',
+  PAST: 'past',
+  FUTURE: 'future',
+};
+
+export const SortType = {
+  DEFAULT: 'day-down',
+  PRICE_DOWN: 'price-down',
+  DURATION_DOWN: 'duration-down',
+};
+
+export const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
 
 export const dateFormat = {
   HOURS_MINUTES: 'HH:mm',
@@ -23,12 +45,6 @@ export const ViewMode = {
   SHOWING_FORM: 'SHOWING_FORM',
 };
 
-export const SortType = {
-  DEFAULT: 'day-down',
-  PRICE_DOWN: 'price-down',
-  DURATION_DOWN: 'duration-down',
-};
-
 export const CALENDAR_SETTINGS = {
   altInput: true,
   altFormat: 'd/m/y H:i',
@@ -36,3 +52,5 @@ export const CALENDAR_SETTINGS = {
   enableTime: true,
   'time_24hr': true,
 };
+
+export const MIN_EVENT_DURATION = 10;

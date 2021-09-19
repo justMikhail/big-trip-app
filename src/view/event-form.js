@@ -1,24 +1,25 @@
 import {nanoid} from 'nanoid';
+import he from 'he';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-import {capitalizeString, replaceSpaceToUnderscore, getOffersByType, getDestination, getIsDescription, getIsPictures} from '../utils/utils';
-import {formatDate, getRecentDate} from '../utils/date';
-import {Types, dateFormat, CALENDAR_SETTINGS} from '../const/const';
-import SmartView from './smart';
+import {capitalizeString, replaceSpaceToUnderscore, getOffersByType, findDestination, checkDescriptionExist, checkPhotosExist} from '../utils/utils';
+import {formatDate, getToDayDate} from '../utils/date';
+import {EventType, dateFormat, CALENDAR_SETTINGS} from '../const/const';
+import SmartView from '../abstract/abstract-smart';
 
 import {MOCK_OFFERS, Destinations} from '../mock/mock-const';
 import {allDestinationInfo} from '../mock/mock-event-data';
 
 const BLANK_EVENT = {
-  type: Types.TAXI,
+  type: EventType.TAXI,
   destination: {
     name: '',
     description: '',
     pictures: [],
   },
   offers: [],
-  dateFrom: getRecentDate(),
-  dateTo: getRecentDate(),
+  dateFrom: getToDayDate(),
+  dateTo: getToDayDate(),
   basePrice: 0,
   isFavorite: false,
   id: nanoid(),
@@ -29,17 +30,17 @@ const createOffersList = (currentType, allOffers, checkedOffers) => {
 
   return offersByCurrentType.map((offerByCurrentType, index) => {
     const isOfferSelected = checkedOffers.some((checkedOffer) => offerByCurrentType.title === checkedOffer.title);
-    const offerTitleWithoutSpace = replaceSpaceToUnderscore(offerByCurrentType.title);
+    const underscoredOfferTitle = replaceSpaceToUnderscore(offerByCurrentType.title);
 
     return `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox  visually-hidden"
-        id="event-offer-${offerTitleWithoutSpace}-${index}"
+        id="event-offer-${underscoredOfferTitle}-${index}"
         type="checkbox"
-        name="event-offer-${offerTitleWithoutSpace}"
+        name="event-offer-${underscoredOfferTitle}"
         ${isOfferSelected ? 'checked' : ''}
       >
-      <label class="event__offer-label" for="event-offer-${offerTitleWithoutSpace}-${index}">
+      <label class="event__offer-label" for="event-offer-${underscoredOfferTitle}-${index}">
         <span class="event__offer-title">${offerByCurrentType.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offerByCurrentType.price}</span>
@@ -52,17 +53,18 @@ const createOffers = (currentType, allOffers, checkedOffers, isOffers) => (
   `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers ${isOffers ? '' : 'visually-hidden'}">Offers</h3>
     <div class="event__available-offers">
-      ${createOffersList(currentType, allOffers, checkedOffers)}
+      ${createOffersList(currentType, allOffers, checkedOffers).join('')}
     </div>
   </section>`
 );
 
 const createPhotosList = (destination) => {
-  const photosCount = destination.pictures.length;
-  const photosArray = destination.pictures;
+  const photos = destination.pictures;
+  const photosCount = photos.length;
+
   let photosTemplate = '';
 
-  photosArray.forEach((photo) => {
+  photos.forEach((photo) => {
     photosTemplate +=
       `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   });
@@ -126,7 +128,7 @@ const createEventFormTemplate = (event) => {
     isPhotos,
   } = event;
 
-  const arrayOfTypes = Object.values(Types);
+  const arrayOfTypes = Object.values(EventType);
 
   const eventTypesList = createEventTypesList(type, arrayOfTypes);
   const destinationList = createDestinationsList(Destinations);
@@ -160,7 +162,7 @@ const createEventFormTemplate = (event) => {
             id="event-destination-1"
             type="text"
             name="event-destination"
-            value="${destination.name}"
+            value="${he.encode(destination.name)}"
             list="destination-list-1"
           >
             <datalist id="destination-list-1">
@@ -183,11 +185,21 @@ const createEventFormTemplate = (event) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input
+            class="event__input  event__input--price"
+            id="event-price-1"
+            type="number"
+            min="0"
+            step="10"
+            name="event-price"
+            value="${basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>
       </header>
       <section class="event__details">
         ${offersForCurrentEventType}
@@ -209,6 +221,8 @@ export default class EventForm extends SmartView {
     this._changeTypeHandler = this._changeTypeHandler.bind(this);
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._changePriceHandler = this._changePriceHandler.bind(this);
+    this._hideFormClickHandler = this._hideFormClickHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
 
     this._timeFromHandler = this._timeFromHandler.bind(this);
     this._timeToHandler = this._timeToHandler.bind(this);
@@ -227,7 +241,9 @@ export default class EventForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this._formSubmitHandler(this._callback.formSubmit);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setHideFormClickHandler(this._callback.hideFormClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setInnerHandlers() {
@@ -255,9 +271,9 @@ export default class EventForm extends SmartView {
   _changeDestinationHandler(evt) {
     evt.preventDefault();
     this.updateState({
-      destination: getDestination(evt.target.value, allDestinationInfo),
-      isDescription: getIsDescription(evt.target.value, allDestinationInfo),
-      isPhotos: getIsPictures(evt.target.value, allDestinationInfo),
+      destination: findDestination(evt.target.value, allDestinationInfo),
+      isDescription: checkDescriptionExist(evt.target.value, allDestinationInfo),
+      isPhotos: checkPhotosExist(evt.target.value, allDestinationInfo),
     }, false);
   }
 
@@ -309,6 +325,26 @@ export default class EventForm extends SmartView {
     this.updateState({basePrice: evt.target.value}, true);
   }
 
+  _hideFormClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.hideFormClick();
+  }
+
+  setHideFormClickHandler(callback) {
+    this._callback.hideFormClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._hideFormClickHandler);
+  }
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EventForm.parseStateToEvent(this._state));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
@@ -323,16 +359,16 @@ export default class EventForm extends SmartView {
     return {
       ...event,
       isOffers: Boolean(event.offers.length),
-      isPhotos: Boolean(event.destination.pictures.length),
       isDescription: Boolean(event.destination.description),
+      isPhotos: Boolean(event.destination.pictures.length),
     };
   }
 
   static parseStateToEvent(state) {
     state = {...state};
     delete state.isOffers;
-    delete state.isPhotos;
     delete state.isDescription;
+    delete state.isPhotos;
 
     return state;
   }

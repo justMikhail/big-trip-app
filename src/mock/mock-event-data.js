@@ -7,15 +7,16 @@ import {
   EVENT_MAX_PRICE,
   EVENT_MIN_PRICE,
   MAX_PHOTOS_COUNT,
-  MAX_MINUTES_GAP,
-  DATE_FORMAT,
   FRAGMENTS,
   MIN_FRAGMENTS_COUNT,
   MAX_FRAGMENTS_COUNT,
+  MAX_MINUTE_GAP_GAP,
+  MAX_HOUR_GAP,
+  MAX_DAYS_GAP,
   Destinations
 } from './mock-const';
 
-import {Types, MIN_EVENT_DURATION} from '../const/const';
+import {EventType} from '../const/const';
 
 const getRandomDescription = (placeName) => {
   const randomFragmentsCount = getRandomInteger(MIN_FRAGMENTS_COUNT, MAX_FRAGMENTS_COUNT);
@@ -29,8 +30,6 @@ const getRandomPhotos = () => new Array(getRandomInteger(0, MAX_PHOTOS_COUNT)).f
   src: `https://picsum.photos/300/200?r=${Math.random()}`,
   description: 'Photo description',
 }));
-
-const getDate = (from, gap) => dayjs(from).add (gap, 'minute');
 
 const getRandomPrice = (min, max) => Math.round((getRandomInteger(min, max) / 10) * 10);
 
@@ -61,24 +60,33 @@ const getRandomInfoForOneDestination = (destinationName, allDestination) => {
   }
 };
 
+const generateDateFrom = (maxDaysGap, maxMinuteGap, maxHourGap) => {
+
+  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+  const minuteGap = getRandomInteger(-maxMinuteGap, maxMinuteGap);
+  const hourGap = getRandomInteger(-maxHourGap, maxHourGap);
+
+  return dayjs().add(daysGap, 'day').add(hourGap, 'hour').add(minuteGap, 'minute').toDate();
+};
+
 const getMockEvent = () => {
 
-  const randomType = getRandomElementFromArray(Object.values(Types));
+  const randomType = getRandomElementFromArray(Object.values(EventType));
   const randomBasePrice = getRandomPrice(EVENT_MIN_PRICE, EVENT_MAX_PRICE);
-  const randomDateFrom = getDate(dayjs(), getRandomInteger(-MAX_MINUTES_GAP, MAX_MINUTES_GAP));
-  const randomDateTo = getDate(randomDateFrom, getRandomInteger(MIN_EVENT_DURATION, MAX_MINUTES_GAP));
+  const randomDateFrom = generateDateFrom(MAX_DAYS_GAP, MAX_MINUTE_GAP_GAP, MAX_HOUR_GAP);
+  const randomDateTo = dayjs(randomDateFrom).add(getRandomInteger(15, 1140), 'minute').toDate();
   const randomPlace = getRandomElementFromArray(Object.values(Destinations));
   const randomDestinationInfo = getRandomInfoForOneDestination(randomPlace, allDestinationInfo);
-  const randomIndex = nanoid();
+  const randomId = nanoid();
   const randomCheckedOffers = getRandomCheckedOffers(MOCK_OFFERS, randomType);
 
   return {
     type: randomType,
     basePrice: randomBasePrice,
-    dateFrom: randomDateFrom.format(DATE_FORMAT),
-    dateTo: randomDateTo.format(DATE_FORMAT),
+    dateFrom: randomDateFrom,
+    dateTo: randomDateTo,
     destination: randomDestinationInfo,
-    id: randomIndex,
+    id: randomId,
     isFavorite: Boolean(getRandomInteger()),
     offers: randomCheckedOffers,
   };

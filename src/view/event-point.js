@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import {formatDate, getDateDuration} from '../utils/date';
 import {dateFormat} from '../const/const';
-import AbstractView from './abstract';
+import AbstractView from '../abstract/abstract';
 
 dayjs.extend(duration);
 
