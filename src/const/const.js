@@ -11,9 +11,9 @@ export const EventType = {
 };
 
 export const FilterType = {
-  ALL: 'all',
-  PAST: 'past',
+  ALL: 'EVERYTHING',
   FUTURE: 'future',
+  PAST: 'past',
 };
 
 export const SortType = {

@@ -83,7 +83,7 @@ export default class EventPresenter {
     if (isEscEvent(evt)) {
       evt.preventDefault();
       this._eventFormComponent.reset(this._event);
-      this._replaceFormToPont();
+      this._replaceFormToPoint();
     }
   }
 
