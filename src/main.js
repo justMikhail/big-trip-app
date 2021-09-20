@@ -1,28 +1,28 @@
 import TripInfoView from './view/trip-info';
-import TripControlsView from './view/trip-controls';
+import TripNavView from './view/trip-nav';
 
 import EventsModel from './model/events-model';
 import EventsFilterModel from './model/events-filter-model';
 
-import {render, RenderPosition} from './utils/render';
-
-import {mockEventItems} from './mock/mock-event-data';
 import TripEventsPresenter from './presenter/trip-events-presenter';
 import EventsFilterPresenter from './presenter/events-filter-presenter';
+import {render, RenderPosition} from './utils/render';
+import {NavMenuItem} from './const/const';
 
+import {mockEventItems} from './mock/mock-event-data';
 const events = mockEventItems;
 
 const eventsModel = new EventsModel();
 eventsModel.setEvents(events);
-
 const eventsFilterModel = new EventsFilterModel();
 
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainInfoContainer = pageHeaderContainer.querySelector('.trip-main');
 const tripNavMenuContainer = pageHeaderContainer.querySelector('.trip-controls__navigation');
 const eventsFilterContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
+const tripNavMenu = new TripNavView();
 render(tripMainInfoContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
-render(tripNavMenuContainer, new TripControlsView(), RenderPosition.BEFORE_END);
+render(tripNavMenuContainer, tripNavMenu, RenderPosition.BEFORE_END);
 
 const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
 eventsFilterPresenter.init();
@@ -36,3 +36,18 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   evt.preventDefault();
   tripEventsPresenter.createNewEvent();
 });
+
+const handleAppMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case NavMenuItem.TABLE:
+      tripEventsPresenter.init();
+      // Скрыть статистику
+      break;
+    case NavMenuItem.STATS:
+      tripEventsPresenter.destroy();
+      // Показать статистику
+      break;
+  }
+};
+
+tripNavMenu.setNavMenuClickHandler(handleAppMenuClick);

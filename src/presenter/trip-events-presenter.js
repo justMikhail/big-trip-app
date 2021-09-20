@@ -84,7 +84,6 @@ export default class TripEventsPresenter {
     render(this._tripEventsContainer, this._sortComponent, RenderPosition.AFTER_BEGIN);
   }
 
-
   _renderEmptyEventsList() {
     this._emptyEventsListComponent = new EmptyEventsListView(this._filterType);
     render(this._tripEventsContainer, this._emptyEventsListComponent, RenderPosition.BEFORE_END);
@@ -149,6 +148,16 @@ export default class TripEventsPresenter {
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
     }
+  }
+
+  destroy() {
+    this._clearTripEvents({resetSortType: true});
+
+    remove(this._eventsListComponent);
+    remove(this._tripEventsContainer);
+
+    this._eventsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _renderTripEvents() {

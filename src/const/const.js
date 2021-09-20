@@ -10,6 +10,11 @@ export const EventType = {
   RESTAURANT: 'restaurant',
 };
 
+export const NavMenuItem = {
+  TABLE: 'Table',
+  STATS: 'Stats',
+};
+
 export const FilterType = {
   ALL: 'EVERYTHING',
   FUTURE: 'future',
