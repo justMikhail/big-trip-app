@@ -20,7 +20,7 @@ export default class TripEventsPresenter {
     this._eventPresenters = new Map();
 
     this._sortComponent = null;
-    this._messageComponent = null;
+    this._emptyEventsListComponent = null;
     this._eventsListComponent = new EventsListView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -142,8 +142,8 @@ export default class TripEventsPresenter {
 
     remove(this._sortComponent);
 
-    if (this._messageComponent) {
-      remove(this._messageComponent);
+    if (this._emptyEventsListComponent) {
+      remove(this._emptyEventsListComponent);
     }
 
     if (resetSortType) {
