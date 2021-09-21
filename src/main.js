@@ -33,7 +33,6 @@ eventsFilterPresenter.init();
 
 const pageMain = document.querySelector('.page-main');
 const pageMainContainer = pageMain.querySelector('.page-body__container');
-const eventsContainer = pageMainContainer.querySelector('.trip-events');
 const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel);
 tripEventsPresenter.init();
 

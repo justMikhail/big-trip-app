@@ -2,12 +2,13 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AbstractSmartView from '../abstract/abstract-smart';
 import {calculateMoney, calculateType, calculateTime} from '../utils/stats.js';
-import {diffToString} from '../utils/date.js';
+import {getFormattedEventDuration} from '../utils/date.js';
+import {Color} from '../const/const';
 
 const BAR_HEIGHT = 55;
 
-const renderMoneyChart = (ctx, points) => {
-  const money = calculateMoney(points);
+const renderMoneyChart = (ctx, events) => {
+  const money = calculateMoney(events);
   const labels = [...money.keys()].map((type) => type.toUpperCase());
   const data = [...money.values()];
   ctx.height = BAR_HEIGHT * labels.length;
@@ -19,8 +20,8 @@ const renderMoneyChart = (ctx, points) => {
       labels,
       datasets: [{
         data,
-        backgroundColor: '#ffffff',
-        hoverBackgroundColor: '#078ff0',
+        backgroundColor: Color.BASIC_WHITE,
+        hoverBackgroundColor: Color.PRIMARY_COLOR,
         anchor: 'start',
       }],
     },
@@ -30,7 +31,7 @@ const renderMoneyChart = (ctx, points) => {
           font: {
             size: 13,
           },
-          color: '#000000',
+          color: Color.BASIC_BLACK,
           anchor: 'end',
           align: 'start',
           formatter: (val) => `€ ${val}`,
@@ -39,14 +40,14 @@ const renderMoneyChart = (ctx, points) => {
       title: {
         display: true,
         text: 'MONEY',
-        fontColor: '#000000',
+        fontColor: Color.BASIC_BLACK,
         fontSize: 23,
         position: 'left',
       },
       scales: {
         yAxes: [{
           ticks: {
-            fontColor: '#000000',
+            fontColor: Color.BASIC_BLACK,
             padding: 5,
             fontSize: 13,
           },
@@ -78,8 +79,8 @@ const renderMoneyChart = (ctx, points) => {
   });
 };
 
-const renderTypeChart = (ctx, points) => {
-  const types = calculateType(points);
+const renderTypeChart = (ctx, events) => {
+  const types = calculateType(events);
   const labels = [...types.keys()].map((type) => type.toUpperCase());
   const data = [...types.values()];
   ctx.height = BAR_HEIGHT * labels.length;
@@ -91,8 +92,8 @@ const renderTypeChart = (ctx, points) => {
       labels,
       datasets: [{
         data,
-        backgroundColor: '#ffffff',
-        hoverBackgroundColor: '#078ff0',
+        backgroundColor: Color.BASIC_WHITE,
+        hoverBackgroundColor: Color.PRIMARY_COLOR,
         anchor: 'start',
       }],
     },
@@ -102,7 +103,7 @@ const renderTypeChart = (ctx, points) => {
           font: {
             size: 13,
           },
-          color: '#000000',
+          color: Color.BASIC_BLACK,
           anchor: 'end',
           align: 'start',
           formatter: (val) => `${val}x`,
@@ -111,14 +112,14 @@ const renderTypeChart = (ctx, points) => {
       title: {
         display: true,
         text: 'TYPE',
-        fontColor: '#000000',
+        fontColor: Color.BASIC_BLACK,
         fontSize: 23,
         position: 'left',
       },
       scales: {
         yAxes: [{
           ticks: {
-            fontColor: '#000000',
+            fontColor: Color.BASIC_BLACK,
             padding: 5,
             fontSize: 13,
           },
@@ -150,8 +151,8 @@ const renderTypeChart = (ctx, points) => {
   });
 };
 
-const renderTimeSpendChart = (ctx, points)=> {
-  const times = calculateTime(points);
+const renderTimeSpendChart = (ctx, events)=> {
+  const times = calculateTime(events);
   const labels = [...times.keys()].map((type) => type.toUpperCase());
   const data = [...times.values()];
   ctx.height = BAR_HEIGHT * labels.length;
@@ -163,8 +164,8 @@ const renderTimeSpendChart = (ctx, points)=> {
       labels,
       datasets: [{
         data,
-        backgroundColor: '#ffffff',
-        hoverBackgroundColor: '#078ff0',
+        backgroundColor: Color.BASIC_WHITE,
+        hoverBackgroundColor: Color.PRIMARY_COLOR,
         anchor: 'start',
       }],
     },
@@ -174,23 +175,23 @@ const renderTimeSpendChart = (ctx, points)=> {
           font: {
             size: 13,
           },
-          color: '#000000',
+          color: Color.BASIC_BLACK,
           anchor: 'end',
           align: 'start',
-          formatter: (val) => `${diffToString(val)}`,
+          formatter: (val) => `${getFormattedEventDuration(val)}`,
         },
       },
       title: {
         display: true,
         text: 'TIME',
-        fontColor: '#000000',
+        fontColor: Color.BASIC_BLACK,
         fontSize: 23,
         position: 'left',
       },
       scales: {
         yAxes: [{
           ticks: {
-            fontColor: '#000000',
+            fontColor: Color.BASIC_BLACK,
             padding: 5,
             fontSize: 13,
           },
@@ -241,9 +242,9 @@ const createStatsTemplate = () => (
 );
 
 export default class TripStats extends AbstractSmartView {
-  constructor(points) {
+  constructor(events) {
     super();
-    this._points = points;
+    this._events = events;
 
     this._moneyChart = null;
     this._typeChart = null;
@@ -281,8 +282,8 @@ export default class TripStats extends AbstractSmartView {
     const typeCtx = this.getElement().querySelector('#type');
     const timeCtx = this.getElement().querySelector('#time-spend');
 
-    this._moneyChart = renderMoneyChart(moneyCtx, this._points);
-    this._typeChart = renderTypeChart(typeCtx, this._points);
-    this._timeChart = renderTimeSpendChart(timeCtx, this._points);
+    this._moneyChart = renderMoneyChart(moneyCtx, this._events);
+    this._typeChart = renderTypeChart(typeCtx, this._events);
+    this._timeChart = renderTimeSpendChart(timeCtx, this._events);
   }
 }

@@ -3,8 +3,6 @@ import {FilterType} from '../const/const';
 
 export const formatDate = (dueDate, format) => dayjs(dueDate).format(format);
 
-export const getDateDuration = (start, end) => dayjs(start).diff(dayjs(end));
-
 export const getToDayDate = () => dayjs().toDate();
 const toDayDate = getToDayDate();
 
@@ -18,18 +16,19 @@ export const filter = {
   [FilterType.PAST]: (events) => [...getPastEvents(events), ...getActiveEvents(events)],
 };
 
-//======================
-const getZeroSubStr = (number) => (number < 10) ? `0${number}` : `${number}`;
+export const getDateDuration = (start, end) => dayjs(end).diff(dayjs(start));
 
-export const gapToString = ({days, hours, minutes}) => {
+export const getFormattedEventDuration = (eventDuration) => {
+  const days = dayjs.duration(eventDuration).days().toString().padStart(2, '0');
+  const hours = dayjs.duration(eventDuration).hours().toString().padStart(2, '0');
+  const minutes = dayjs.duration(eventDuration).minutes().toString().padStart(2, '0');
+
+  let dateString = `${minutes}M`;
   if (days > 0) {
-    return `${getZeroSubStr(days)}D ${getZeroSubStr(hours)}H ${getZeroSubStr(minutes)}M`;
+    dateString = `${days}D ${hours}H ${minutes}M`;
   } else if (hours > 0) {
-    return `${getZeroSubStr(hours)}H ${getZeroSubStr(minutes)}M`;
-  } else {
-    return `${getZeroSubStr(minutes)}M`;
+    dateString = `${hours}H ${minutes}M`;
   }
+
+  return dateString;
 };
-
-
-export const diffToString = (diff) => gapToString(dayjs.duration(diff).$d);

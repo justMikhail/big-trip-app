@@ -57,3 +57,9 @@ export const CALENDAR_SETTINGS = {
   enableTime: true,
   'time_24hr': true,
 };
+
+export const Color = {
+  BASIC_WHITE: '#ffffff',
+  BASIC_BLACK: '#000000',
+  PRIMARY_COLOR: '#078ff0',
+};

@@ -1,27 +1,10 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {formatDate, getDateDuration} from '../utils/date';
+import {formatDate, getDateDuration, getFormattedEventDuration} from '../utils/date';
 import {dateFormat} from '../const/const';
 import AbstractView from '../abstract/abstract';
 
 dayjs.extend(duration);
-
-const createEventDuration = (dateStart, dateEnd) => {
-  const eventDuration = getDateDuration(dateStart, dateEnd);
-
-  const days = dayjs.duration(eventDuration).days().toString().padStart(2, '0');
-  const hours = dayjs.duration(eventDuration).hours().toString().padStart(2, '0');
-  const minutes = dayjs.duration(eventDuration).minutes().toString().padStart(2, '0');
-
-  let dateString = `${minutes}M`;
-  if (days > 0) {
-    dateString = `${days}D ${hours}H ${minutes}M`;
-  } else if (hours > 0) {
-    dateString = `${hours}H ${minutes}M`;
-  }
-
-  return dateString;
-};
 
 const createOneCheckedOffer = (offer) => (
   `<li class="event__offer">
@@ -49,7 +32,8 @@ const createEventPointTemplate = (event) => {
   } = event;
 
   const checkedOffers = createCheckedOffers(offers);
-  const eventDuration = createEventDuration(dateTo, dateFrom);
+  const eventDuration = getDateDuration(dateFrom, dateTo);
+  const formattedEventDuration = getFormattedEventDuration(eventDuration);
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn  event__favorite-btn--active'
@@ -74,7 +58,7 @@ const createEventPointTemplate = (event) => {
             ${formatDate(dateTo, dateFormat.HOURS_MINUTES)}
           </time>
         </p>
-        <p class="event__duration">${eventDuration}</p>
+        <p class="event__duration">${formattedEventDuration}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
