@@ -1,4 +1,4 @@
-export const EVENTS_ITEM_COUNT = 10;
+export const EVENTS_ITEM_COUNT = 3;
 export const EVENT_MIN_PRICE = 20;
 export const EVENT_MAX_PRICE = 1000;
 export const MAX_PHOTOS_COUNT = 5;

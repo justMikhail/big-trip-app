@@ -20,7 +20,7 @@ const AUTHORIZATION = 'Basic 4upMo2jqcHn3jgN9g9aX8';
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
-api.getEvents().then((event) => {
+api.getEvents().then((events) => {
   console.log(events);
 });
 
