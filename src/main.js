@@ -10,6 +10,7 @@ import {render, RenderPosition} from './utils/render';
 import {NavMenuItem} from './const/const';
 
 import {mockEventItems} from './mock/mock-event-data';
+import NewEventButton from './view/new-event-button';
 const events = mockEventItems;
 
 const eventsModel = new EventsModel();
@@ -18,11 +19,13 @@ const eventsFilterModel = new EventsFilterModel();
 
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainInfoContainer = pageHeaderContainer.querySelector('.trip-main');
-const tripNavMenuContainer = pageHeaderContainer.querySelector('.trip-controls__navigation');
+const tripNavMenuContainer = pageHeaderContainer.querySelector('.trip-controls');
 const eventsFilterContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
-const tripNavMenu = new TripNavView();
+const tripNavMenuComponent = new TripNavView();
+const newEventButtonComponent = new NewEventButton();
 render(tripMainInfoContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
-render(tripNavMenuContainer, tripNavMenu, RenderPosition.BEFORE_END);
+render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
+render(tripMainInfoContainer, newEventButtonComponent, RenderPosition.BEFORE_END);
 
 const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
 eventsFilterPresenter.init();
@@ -32,22 +35,29 @@ const eventsContainer = pageMainContainer.querySelector('.trip-events');
 const tripEventsPresenter = new TripEventsPresenter(eventsContainer, eventsModel, eventsFilterModel);
 tripEventsPresenter.init();
 
+const handleEventNewFormClose = () => {
+  newEventButtonComponent.getElement().disabled = false;
+};
+
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
-  tripEventsPresenter.createNewEvent();
+  tripEventsPresenter.createNewEvent(handleEventNewFormClose);
+  newEventButtonComponent.getElement().disabled = true;
 });
 
 const handleAppMenuClick = (menuItem) => {
   switch (menuItem) {
     case NavMenuItem.TABLE:
       tripEventsPresenter.init();
-      // Скрыть статистику
+      tripNavMenuComponent.setNavMenuItem(menuItem);
+      newEventButtonComponent.getElement().disabled = false;
       break;
     case NavMenuItem.STATS:
       tripEventsPresenter.destroy();
-      // Показать статистику
+      tripNavMenuComponent.setNavMenuItem(menuItem);
+      newEventButtonComponent.getElement().disabled = true;
       break;
   }
 };
 
-tripNavMenu.setNavMenuClickHandler(handleAppMenuClick);
+tripNavMenuComponent.setNavMenuClickHandler(handleAppMenuClick);

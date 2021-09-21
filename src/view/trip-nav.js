@@ -35,7 +35,7 @@ export default class TripNav extends AbstractView {
     const activeMenuItem = this.getElement().querySelector(`[data-value=${menuItem}]`);
     // console.log(activeMenuItem);
     const menuItems = this.getElement().querySelectorAll('.trip-tabs__btn');
-    menuItems.array.forEach((item) => item.classList.remove('trip-tabs__btn--active'));
+    menuItems.forEach((item) => item.classList.remove('trip-tabs__btn--active'));
     // console.log(menuItems);
     activeMenuItem.classList.add('trip-tabs__btn--active');
   }

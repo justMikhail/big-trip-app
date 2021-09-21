@@ -28,14 +28,18 @@ export default class TripEventsPresenter {
     this._handleViewModeChange = this._handleViewModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._eventsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
+    //this._eventsModel.addObserver(this._handleModelEvent);
+    //this._filterModel.addObserver(this._handleModelEvent);
 
     this._newEventPresenter = new NewEventPresenter(this._eventsListComponent, this._handleViewAction);
   }
 
   init() {
     render(this._tripEventsContainer, this._eventsListComponent, RenderPosition.BEFORE_END);
+
+    this._eventsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderTripEvents();
   }
 
