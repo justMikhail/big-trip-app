@@ -51,9 +51,11 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 const handleAppMenuClick = (menuItem) => {
   switch (menuItem) {
     case NavMenuItem.TABLE:
+      tripEventsPresenter.destroy();
       tripEventsPresenter.init();
       tripNavMenuComponent.setNavMenuItem(menuItem);
       remove(tripStatsComponent);
+      pageMainContainer.classList.remove('no-after');
       eventsFilterPresenter.removeDisabled();
       newEventButtonComponent.getElement().disabled = false;
       break;
@@ -61,6 +63,7 @@ const handleAppMenuClick = (menuItem) => {
       tripEventsPresenter.destroy();
       tripStatsComponent = new TripStats(eventsModel.getEvents());
       render(pageMainContainer, tripStatsComponent, RenderPosition.BEFORE_END);
+      pageMainContainer.classList.add('no-after'); // todo Убираю стили для "after" у контейнера.
       tripNavMenuComponent.setNavMenuItem(menuItem);
       newEventButtonComponent.getElement().disabled = true;
       break;
