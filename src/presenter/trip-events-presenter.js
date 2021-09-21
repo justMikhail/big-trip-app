@@ -60,10 +60,10 @@ export default class TripEventsPresenter {
     return filteredEvents;
   }
 
-  createNewEvent() {
+  createNewEvent(callback) {
     this._currentSortType = SortType.DEFAULT;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
-    this._newEventPresenter.init();
+    this._newEventPresenter.init(callback);
   }
 
   _renderEvent(event) {
