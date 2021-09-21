@@ -47,4 +47,14 @@ export default class EventsFilterPresenter {
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
+
+  setDisabled() {
+    const filters = document.querySelectorAll('.trip-filters__filter-input');
+    filters.forEach((item) => item.setAttribute('disabled', 'disabled'));
+  }
+
+  removeDisabled() {
+    const filters = document.querySelectorAll('.trip-filters__filter-input');
+    filters.forEach((item) => item.removeAttribute('disabled'));
+  }
 }

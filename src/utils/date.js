@@ -17,3 +17,19 @@ export const filter = {
   [FilterType.FUTURE]: (events) => [...getActiveEvents(events), ...getFutureEvents(events)],
   [FilterType.PAST]: (events) => [...getPastEvents(events), ...getActiveEvents(events)],
 };
+
+//======================
+const getZeroSubStr = (number) => (number < 10) ? `0${number}` : `${number}`;
+
+export const gapToString = ({days, hours, minutes}) => {
+  if (days > 0) {
+    return `${getZeroSubStr(days)}D ${getZeroSubStr(hours)}H ${getZeroSubStr(minutes)}M`;
+  } else if (hours > 0) {
+    return `${getZeroSubStr(hours)}H ${getZeroSubStr(minutes)}M`;
+  } else {
+    return `${getZeroSubStr(minutes)}M`;
+  }
+};
+
+
+export const diffToString = (diff) => gapToString(dayjs.duration(diff).$d);

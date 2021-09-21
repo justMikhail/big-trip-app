@@ -1,12 +1,13 @@
 import TripInfoView from './view/trip-info';
 import TripNavView from './view/trip-nav';
+import TripStats from './view/trip-stats';
 
 import EventsModel from './model/events-model';
 import EventsFilterModel from './model/events-filter-model';
 
 import TripEventsPresenter from './presenter/trip-events-presenter';
 import EventsFilterPresenter from './presenter/events-filter-presenter';
-import {render, RenderPosition} from './utils/render';
+import {render, remove, RenderPosition} from './utils/render';
 import {NavMenuItem} from './const/const';
 
 import {mockEventItems} from './mock/mock-event-data';
@@ -30,10 +31,13 @@ render(tripMainInfoContainer, newEventButtonComponent, RenderPosition.BEFORE_END
 const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
 eventsFilterPresenter.init();
 
-const pageMainContainer = document.querySelector('.page-main');
+const pageMain = document.querySelector('.page-main');
+const pageMainContainer = pageMain.querySelector('.page-body__container');
 const eventsContainer = pageMainContainer.querySelector('.trip-events');
-const tripEventsPresenter = new TripEventsPresenter(eventsContainer, eventsModel, eventsFilterModel);
+const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel);
 tripEventsPresenter.init();
+
+let tripStatsComponent = null;
 
 const handleEventNewFormClose = () => {
   newEventButtonComponent.getElement().disabled = false;
@@ -50,10 +54,14 @@ const handleAppMenuClick = (menuItem) => {
     case NavMenuItem.TABLE:
       tripEventsPresenter.init();
       tripNavMenuComponent.setNavMenuItem(menuItem);
+      remove(tripStatsComponent);
+      eventsFilterPresenter.removeDisabled();
       newEventButtonComponent.getElement().disabled = false;
       break;
     case NavMenuItem.STATS:
       tripEventsPresenter.destroy();
+      tripStatsComponent = new TripStats(eventsModel.getEvents());
+      render(pageMainContainer, tripStatsComponent, RenderPosition.BEFORE_END);
       tripNavMenuComponent.setNavMenuItem(menuItem);
       newEventButtonComponent.getElement().disabled = true;
       break;
