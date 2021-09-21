@@ -6,8 +6,9 @@ export default class EventsModel extends AbstractObserver {
     this._events = [];
   }
 
-  setEvents(events) {
+  setEvents(updateType, events) {
     this._events = [...events];
+    this._notify(updateType);
   }
 
   getEvents() {
