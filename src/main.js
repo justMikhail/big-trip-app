@@ -1,17 +1,29 @@
+import Api from './api/api';
 import TripInfoView from './view/trip-info';
 import TripNavView from './view/trip-nav';
-import TripStats from './view/trip-stats';
+import TripStatsView from './view/trip-stats';
 
 import EventsModel from './model/events-model';
 import EventsFilterModel from './model/events-filter-model';
 
 import TripEventsPresenter from './presenter/trip-events-presenter';
 import EventsFilterPresenter from './presenter/events-filter-presenter';
+
 import {render, remove, RenderPosition} from './utils/render';
 import {NavMenuItem} from './const/const';
 
 import {mockEventItems} from './mock/mock-event-data';
 import NewEventButton from './view/new-event-button';
+
+const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';
+const AUTHORIZATION = 'Basic 4upMo2jqcHn3jgN9g9aX8';
+
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getEvents().then((event) => {
+  console.log(events);
+});
+
 const events = mockEventItems;
 
 const eventsModel = new EventsModel();
@@ -22,8 +34,12 @@ const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainInfoContainer = pageHeaderContainer.querySelector('.trip-main');
 const tripNavMenuContainer = pageHeaderContainer.querySelector('.trip-controls');
 const eventsFilterContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
+const pageMain = document.querySelector('.page-main');
+const pageMainContainer = pageMain.querySelector('.page-body__container');
+
 const tripNavMenuComponent = new TripNavView();
 const newEventButtonComponent = new NewEventButton();
+
 render(tripMainInfoContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
 render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
 render(tripMainInfoContainer, newEventButtonComponent, RenderPosition.BEFORE_END);
@@ -31,8 +47,6 @@ render(tripMainInfoContainer, newEventButtonComponent, RenderPosition.BEFORE_END
 const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
 eventsFilterPresenter.init();
 
-const pageMain = document.querySelector('.page-main');
-const pageMainContainer = pageMain.querySelector('.page-body__container');
 const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel);
 tripEventsPresenter.init();
 
@@ -53,7 +67,6 @@ const handleAppMenuClick = (menuItem) => {
     case NavMenuItem.TABLE:
       tripEventsPresenter.destroy();
       tripEventsPresenter.init();
-      //tripNavMenuComponent.setNavMenuItem(menuItem);
       remove(tripStatsComponent);
       pageMainContainer.classList.remove('no-after');
       eventsFilterPresenter.removeDisabled();
@@ -61,10 +74,10 @@ const handleAppMenuClick = (menuItem) => {
       break;
     case NavMenuItem.STATS:
       tripEventsPresenter.destroy();
-      tripStatsComponent = new TripStats(eventsModel.getEvents());
+      tripStatsComponent = new TripStatsView(eventsModel.getEvents());
       render(pageMainContainer, tripStatsComponent, RenderPosition.BEFORE_END);
       pageMainContainer.classList.add('no-after');
-      //tripNavMenuComponent.setNavMenuItem(menuItem);
+      eventsFilterPresenter.setDisabled();
       newEventButtonComponent.getElement().disabled = true;
       break;
   }
