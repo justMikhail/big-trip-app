@@ -53,7 +53,7 @@ const handleAppMenuClick = (menuItem) => {
     case NavMenuItem.TABLE:
       tripEventsPresenter.destroy();
       tripEventsPresenter.init();
-      tripNavMenuComponent.setNavMenuItem(menuItem);
+      //tripNavMenuComponent.setNavMenuItem(menuItem);
       remove(tripStatsComponent);
       pageMainContainer.classList.remove('no-after');
       eventsFilterPresenter.removeDisabled();
@@ -63,8 +63,8 @@ const handleAppMenuClick = (menuItem) => {
       tripEventsPresenter.destroy();
       tripStatsComponent = new TripStats(eventsModel.getEvents());
       render(pageMainContainer, tripStatsComponent, RenderPosition.BEFORE_END);
-      pageMainContainer.classList.add('no-after'); // todo Убираю стили для "after" у контейнера.
-      tripNavMenuComponent.setNavMenuItem(menuItem);
+      pageMainContainer.classList.add('no-after');
+      //tripNavMenuComponent.setNavMenuItem(menuItem);
       newEventButtonComponent.getElement().disabled = true;
       break;
   }

@@ -29,7 +29,7 @@ const createOffersList = (currentType, allOffers, checkedOffers) => {
   const offersByCurrentType = getOffersByType(currentType, allOffers);
 
   return offersByCurrentType.map((offerByCurrentType, index) => {
-    const isOfferSelected = checkedOffers.some((checkedOffer) => offerByCurrentType.title === checkedOffer.title);
+    const isOfferChecked = checkedOffers.some((checkedOffer) => offerByCurrentType.title === checkedOffer.title);
     const underscoredOfferTitle = replaceSpaceToUnderscore(offerByCurrentType.title);
 
     return `<div class="event__offer-selector">
@@ -38,7 +38,9 @@ const createOffersList = (currentType, allOffers, checkedOffers) => {
         id="event-offer-${underscoredOfferTitle}-${index}"
         type="checkbox"
         name="event-offer-${underscoredOfferTitle}"
-        ${isOfferSelected ? 'checked' : ''}
+        data-title = "${offerByCurrentType.title}"
+        data-price = "${offerByCurrentType.price}"
+        ${isOfferChecked ? 'checked' : ''}
       >
       <label class="event__offer-label" for="event-offer-${underscoredOfferTitle}-${index}">
         <span class="event__offer-title">${offerByCurrentType.title}</span>
@@ -218,11 +220,12 @@ export default class EventForm extends SmartView {
     this._datepickerEnd = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._hideFormClickHandler = this._hideFormClickHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._changeTypeHandler = this._changeTypeHandler.bind(this);
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._changePriceHandler = this._changePriceHandler.bind(this);
-    this._hideFormClickHandler = this._hideFormClickHandler.bind(this);
-    this._deleteClickHandler = this._deleteClickHandler.bind(this);
+    this._changeOffersHandler = this._changeOffersHandler.bind(this);
 
     this._timeFromHandler = this._timeFromHandler.bind(this);
     this._timeToHandler = this._timeToHandler.bind(this);
@@ -256,6 +259,9 @@ export default class EventForm extends SmartView {
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('input', this._changePriceHandler);
+    this.getElement()
+      .querySelector('.event__section--offers')
+      .addEventListener('change', this._changeOffersHandler);
     this._setDatePicker();
   }
 
@@ -275,6 +281,15 @@ export default class EventForm extends SmartView {
       isDescription: checkDescriptionExist(evt.target.value, allDestinationInfo),
       isPhotos: checkPhotosExist(evt.target.value, allDestinationInfo),
     }, false);
+  }
+
+  _changeOffersHandler(evt) {
+    const {price, title} = evt.target.dataset;
+    this.updateState({
+      offers: evt.target.checked
+        ? [...this._state.offers, {title, price: Number(price)}]
+        : [...this._state.offers.filter((offer) => offer.title !== title)],
+    });
   }
 
   _checkResetDatePicker() {
@@ -322,7 +337,7 @@ export default class EventForm extends SmartView {
 
   _changePriceHandler(evt) {
     evt.preventDefault();
-    this.updateState({basePrice: evt.target.value}, true);
+    this.updateState({basePrice: Number(evt.target.value)}, true);
   }
 
   _hideFormClickHandler(evt) {
