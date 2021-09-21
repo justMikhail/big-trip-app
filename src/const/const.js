@@ -10,10 +10,15 @@ export const EventType = {
   RESTAURANT: 'restaurant',
 };
 
+export const NavMenuItem = {
+  TABLE: 'Table',
+  STATS: 'Stats',
+};
+
 export const FilterType = {
-  ALL: 'all',
-  PAST: 'past',
+  ALL: 'EVERYTHING',
   FUTURE: 'future',
+  PAST: 'past',
 };
 
 export const SortType = {
@@ -53,4 +58,8 @@ export const CALENDAR_SETTINGS = {
   'time_24hr': true,
 };
 
-export const MIN_EVENT_DURATION = 10;
+export const Color = {
+  BASIC_WHITE: '#ffffff',
+  BASIC_BLACK: '#000000',
+  PRIMARY_COLOR: '#078ff0',
+};

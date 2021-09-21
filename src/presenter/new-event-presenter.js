@@ -9,13 +9,16 @@ export default class NewEventPresenter {
     this._changeData = changeData;
 
     this._eventFormComponent = null;
+    this._destroyCallback = null;
 
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleSubmitClick = this._handleSubmitClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
-  init() {
+  init(callback) {
+    this._destroyCallback = callback;
+
     if (this._eventFormComponent !== null) {
       return;
     }
@@ -31,6 +34,10 @@ export default class NewEventPresenter {
   destroy() {
     if (this._eventFormComponent === null) {
       return;
+    }
+
+    if (this._destroyCallback !== null) {
+      this._destroyCallback();
     }
 
     remove(this._eventFormComponent);

@@ -31,14 +31,14 @@ const createEventsSortTemplate = () => (
 );
 
 export default class EventsSort extends AbstractView {
-  constructor() {
+  constructor(currentSortType) {
     super();
-
+    this._currentSortType = currentSortType;
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createEventsSortTemplate();
+    return createEventsSortTemplate(this._currentSortType);
   }
 
   _sortTypeChangeHandler(evt) {
