@@ -111,9 +111,10 @@ export default class TripEventsPresenter {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._api.updateEvent(update).then((response) => {
-          this._eventsModel.updateEvent(updateType, response);
-        });
+        this._api.updateEvent(update)
+          .then((response) => {
+            this._eventsModel.updateEvent(updateType, response);
+          });
         break;
       case UserAction.ADD_EVENT:
         this._eventsModel.addEvent(updateType, update);

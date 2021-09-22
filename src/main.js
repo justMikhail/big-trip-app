@@ -80,7 +80,6 @@ api.getData()
   .then(([events, offers, destinations]) => {
     offersModel.setOffers(offers);
     destinationsModel.setDestinations(destinations);
-    console.log(destinationsModel.getDestinations());
     eventsModel.setEvents(UpdateType.INIT, events);
   })
   .then(() => {

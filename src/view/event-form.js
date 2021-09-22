@@ -1,4 +1,3 @@
-import {nanoid} from 'nanoid';
 import he from 'he';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -6,8 +5,6 @@ import {capitalizeString, replaceSpaceToUnderscore, getOffersByType, findDestina
 import {formatDate, getToDayDate} from '../utils/date';
 import {EventType, dateFormat, CALENDAR_SETTINGS} from '../const/const';
 import SmartView from '../abstract/abstract-smart';
-
-import {MOCK_OFFERS} from '../mock/mock-const';
 
 const BLANK_EVENT = {
   type: EventType.TAXI,
@@ -139,7 +136,7 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isNewEvent, event) => {
 
   const eventTypesList = createEventTypesList(type, arrayOfTypes);
   const destinationsList = createDestinationsList(DESTINATIONS);
-  const offersForCurrentEventType = createOffers(type, MOCK_OFFERS, offers, isOffers);
+  const offersForCurrentEventType = createOffers(type, OFFERS, offers, isOffers);
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
   const hideEventFormButton = createHideEventFormButton();
 
