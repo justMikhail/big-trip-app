@@ -62,7 +62,7 @@ export default class NewEventPresenter {
     this._changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      {...event, id: nanoid()},
+      event,
     );
 
     this.destroy();

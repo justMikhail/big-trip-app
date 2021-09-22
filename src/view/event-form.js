@@ -20,40 +20,41 @@ const BLANK_EVENT = {
   isFavorite: false,
 };
 
-const createOffersList = (currentType, allOffers, checkedOffers) => {
-  const offersByCurrentType = getOffersByType(currentType, allOffers);
+const createOffersList = (offersByCurrentType, checkedOffers) => offersByCurrentType.map((offerByCurrentType, index) => {
+  const isOfferChecked = checkedOffers.some((checkedOffer) => offerByCurrentType.title === checkedOffer.title);
+  const underscoredOfferTitle = replaceSpaceToUnderscore(offerByCurrentType.title);
 
-  return offersByCurrentType.map((offerByCurrentType, index) => {
-    const isOfferChecked = checkedOffers.some((checkedOffer) => offerByCurrentType.title === checkedOffer.title);
-    const underscoredOfferTitle = replaceSpaceToUnderscore(offerByCurrentType.title);
-
-    return `<div class="event__offer-selector">
-      <input
-        class="event__offer-checkbox  visually-hidden"
-        id="event-offer-${underscoredOfferTitle}-${index}"
-        type="checkbox"
-        name="event-offer-${underscoredOfferTitle}"
-        data-title = "${offerByCurrentType.title}"
-        data-price = "${offerByCurrentType.price}"
-        ${isOfferChecked ? 'checked' : ''}
-      >
-      <label class="event__offer-label" for="event-offer-${underscoredOfferTitle}-${index}">
-        <span class="event__offer-title">${offerByCurrentType.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offerByCurrentType.price}</span>
-      </label>
+  return `<div class="event__offer-selector">
+    <input
+      class="event__offer-checkbox  visually-hidden"
+      id="event-offer-${underscoredOfferTitle}-${index}"
+      type="checkbox"
+      name="event-offer-${underscoredOfferTitle}"
+      data-title = "${offerByCurrentType.title}"
+      data-price = "${offerByCurrentType.price}"
+      ${isOfferChecked ? 'checked' : ''}
+    >
+    <label class="event__offer-label" for="event-offer-${underscoredOfferTitle}-${index}">
+      <span class="event__offer-title">${offerByCurrentType.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offerByCurrentType.price}</span>
+    </label>
     </div>`;
-  });
-};
+});
 
-const createOffers = (currentType, allOffers, checkedOffers, isOffers) => (
-  `<section class="event__section  event__section--offers">
-    <h3 class="event__section-title  event__section-title--offers ${isOffers ? '' : 'visually-hidden'}">Offers</h3>
-    <div class="event__available-offers">
-      ${createOffersList(currentType, allOffers, checkedOffers).join('')}
-    </div>
-  </section>`
-);
+const createOffers = (currentType, allOffers, checkedOffers) => {
+  const offersByCurrentType = getOffersByType(currentType, allOffers);
+  const offersByCurrentTypeTemplate = createOffersList(offersByCurrentType, checkedOffers);
+
+  return offersByCurrentType
+    ? `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+      <div class="event__available-offers">
+        ${offersByCurrentTypeTemplate.join('')}
+      </div>
+    </section>`
+    : '';
+};
 
 const createPhotosList = (destination) => {
   const photos = destination.pictures;
@@ -127,7 +128,6 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isNewEvent, event) => {
     dateTo,
     destination,
     offers,
-    isOffers,
     isDescription,
     isPhotos,
   } = event;
@@ -136,7 +136,7 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isNewEvent, event) => {
 
   const eventTypesList = createEventTypesList(type, arrayOfTypes);
   const destinationsList = createDestinationsList(DESTINATIONS);
-  const offersForCurrentEventType = createOffers(type, OFFERS, offers, isOffers);
+  const offersForCurrentEventType = createOffers(type, OFFERS, offers);
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
   const hideEventFormButton = createHideEventFormButton();
 
@@ -278,7 +278,6 @@ export default class EventForm extends SmartView {
     this.updateState({
       type: evt.target.value,
       offers: [],
-      isOffers: Boolean(getOffersByType(evt.target.value, this._destinations).length),
     }, false);
   }
 
@@ -381,7 +380,6 @@ export default class EventForm extends SmartView {
   static parsEventToState(event) {
     return {
       ...event,
-      isOffers: Boolean(event.offers.length),
       isDescription: Boolean(event.destination.description),
       isPhotos: Boolean(event.destination.pictures.length),
     };
@@ -389,7 +387,6 @@ export default class EventForm extends SmartView {
 
   static parseStateToEvent(state) {
     state = {...state};
-    delete state.isOffers;
     delete state.isDescription;
     delete state.isPhotos;
 
