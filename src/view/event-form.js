@@ -7,7 +7,7 @@ import {formatDate, getToDayDate} from '../utils/date';
 import {EventType, dateFormat, CALENDAR_SETTINGS} from '../const/const';
 import SmartView from '../abstract/abstract-smart';
 
-import {MOCK_OFFERS, Destinations} from '../mock/mock-const';
+import {MOCK_OFFERS} from '../mock/mock-const';
 
 const BLANK_EVENT = {
   type: EventType.TAXI,
@@ -112,7 +112,9 @@ const createEventTypesList = (currentType, allTypes) => {
   return eventTypesTemplate;
 };
 
-const createDestinationsList = (destinationsList) => Object.values(destinationsList).map((destination) => `<option value="${destination}"></option>`).join('');
+const createDestination = (destinationItem) =>  `<option value="${destinationItem}"></option>`;
+
+const createDestinationsList = (destinations) => destinations.map((destination) => destination.name).map(createDestination).join('');
 
 const createHideEventFormButton = () => (
   `<button class="event__rollup-btn" type="button">
@@ -137,10 +139,12 @@ const createEventFormTemplate = (event, OFFERS, DESTINATIONS, isNewEvent) => {
   const arrayOfTypes = Object.values(EventType);
 
   const eventTypesList = createEventTypesList(type, arrayOfTypes);
-  const destinationList = createDestinationsList(Destinations);
+  const destinationsList = createDestinationsList(DESTINATIONS);
   const offersForCurrentEventType = createOffers(type, MOCK_OFFERS, offers, isOffers);
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
   const hideEventFormButton = createHideEventFormButton();
+  //console.log(DESTINATIONS);
+  //console.log(OFFERS);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -171,9 +175,10 @@ const createEventFormTemplate = (event, OFFERS, DESTINATIONS, isNewEvent) => {
             name="event-destination"
             value="${he.encode(destination.name)}"
             list="destination-list-1"
+            value="${he.encode(destination.name)}"
           >
             <datalist id="destination-list-1">
-              ${destinationList}
+              ${destinationsList}
             </datalist>
         </div>
 

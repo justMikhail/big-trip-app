@@ -7,7 +7,7 @@ export default class DestinationsModel extends AbstractObserver {
   }
 
   setDestinations(destinations) {
-    this._destinations = destinations;
+    this._destinations = [...destinations];
     this._notify();
   }
 
