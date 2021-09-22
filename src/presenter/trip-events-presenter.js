@@ -182,7 +182,11 @@ export default class TripEventsPresenter {
     this._eventPresenters.forEach((presenter) => presenter.destroy());
     this._eventPresenters.clear();
 
-    remove(this._sortComponent);
+    if (this._sortComponent) {
+      remove(this._sortComponent);
+    }
+
+    remove(this._loaderComponent);
 
     if (this._emptyEventsListComponent) {
       remove(this._emptyEventsListComponent);

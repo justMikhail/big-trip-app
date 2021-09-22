@@ -214,7 +214,7 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
             id="event-price-1"
             type="number"
             min="0"
-            step="10"
+            step="1"
             name="event-price"
             value="${basePrice}"
             ${isDisabled ? 'disabled' : ''}>
