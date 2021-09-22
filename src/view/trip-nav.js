@@ -23,6 +23,7 @@ export default class TripNav extends AbstractView {
 
   _navMenuClickHandler(evt) {
     evt.preventDefault();
+    this._setActiveNavMenuItem(evt.target);
     this._callback.navMenuClick(evt.target.dataset.value);
   }
 
@@ -31,12 +32,9 @@ export default class TripNav extends AbstractView {
     this.getElement().addEventListener('click', this._navMenuClickHandler);
   }
 
-  setNavMenuItem(menuItem) {
-    const activeMenuItem = this.getElement().querySelector(`[data-value=${menuItem}]`);
-    // console.log(activeMenuItem);
+  _setActiveNavMenuItem(activeMenuItem) {
     const menuItems = this.getElement().querySelectorAll('.trip-tabs__btn');
     menuItems.forEach((item) => item.classList.remove('trip-tabs__btn--active'));
-    // console.log(menuItems);
     activeMenuItem.classList.add('trip-tabs__btn--active');
   }
 }

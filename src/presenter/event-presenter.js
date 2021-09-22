@@ -2,13 +2,15 @@ import EventPointView from '../view/event-point';
 import EventFormView from '../view/event-form';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {isEscEvent} from '../utils/utils';
-import {UpdateType, UserAction, ViewMode} from '../const/const';
+import {UpdateType, UserAction, ViewMode, ButtonState} from '../const/const';
 
 export default class EventPresenter {
-  constructor(eventsListContainer, changeData, changeViewMode) {
+  constructor(eventsListContainer, changeData, changeViewMode, offersModel, destinationsModel) {
     this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;
     this._changeViewMode = changeViewMode;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
 
     this._eventPointComponent = null;
     this._eventFormComponent = null;
@@ -28,8 +30,11 @@ export default class EventPresenter {
     const prevEventPointComponent = this._eventPointComponent;
     const prevEventFormComponent = this._eventFormComponent;
 
+    const offers = this._offersModel.getOffers();
+    const destinations = this._destinationsModel.getDestinations();
+
     this._eventPointComponent = new EventPointView(this._event);
-    this._eventFormComponent = new EventFormView(this._event);
+    this._eventFormComponent = new EventFormView(offers, destinations, true, this._event);
 
     this._eventPointComponent.setShowFormClickHandler(this._handleShowFormButtonClick);
     this._eventPointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
@@ -48,7 +53,8 @@ export default class EventPresenter {
     }
 
     if (this._viewMode === ViewMode.SHOWING_FORM) {
-      replace(this._eventFormComponent, prevEventFormComponent);
+      replace(this._eventPointComponent, prevEventFormComponent);
+      this._mode = ViewMode.DEFAULT;
     }
 
     remove(prevEventPointComponent);
@@ -58,6 +64,39 @@ export default class EventPresenter {
   resetViewMode() {
     if (this._viewMode !== ViewMode.DEFAULT) {
       this._replaceFormToPoint();
+    }
+  }
+
+  setViewState(state) {
+    if (this._mode === ViewMode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => {
+      this._eventFormComponent.updateState({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case ButtonState.SAVING:
+        this._eventFormComponent.updateState({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case ButtonState.DELETING:
+        this._eventFormComponent.updateState({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case ButtonState.ABORTING:
+        this._eventPointComponent.shake(resetFormState);
+        this._eventFormComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -110,7 +149,6 @@ export default class EventPresenter {
       UpdateType.MINOR,
       event,
     );
-    this._replaceFormToPoint();
   }
 
   _handleDeleteClick(event) {

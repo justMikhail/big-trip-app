@@ -37,6 +37,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const dateFormat = {
@@ -63,3 +64,11 @@ export const Color = {
   BASIC_BLACK: '#000000',
   PRIMARY_COLOR: '#078ff0',
 };
+
+export const ButtonState = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};
+
+export const SHAKE_TIMEOUT = 600;

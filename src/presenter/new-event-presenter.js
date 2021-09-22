@@ -1,12 +1,13 @@
 import EventFormView from '../view/event-form';
-import {nanoid} from 'nanoid';
 import {remove, render, RenderPosition} from '../utils/render';
 import {UserAction, UpdateType} from '../const/const';
 
 export default class NewEventPresenter {
-  constructor(eventsListContainer, changeData) {
+  constructor(eventsListContainer, changeData, offersModel, destinationsModel) {
     this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
 
     this._eventFormComponent = null;
     this._destroyCallback = null;
@@ -23,7 +24,10 @@ export default class NewEventPresenter {
       return;
     }
 
-    this._eventFormComponent = new EventFormView();
+    const offers = this._offersModel.getOffers();
+    const destinations = this._destinationsModel.getDestinations();
+    this._eventFormComponent = new EventFormView(offers, destinations, false);
+
     this._eventFormComponent.setFormSubmitHandler(this._handleSubmitClick);
     this._eventFormComponent.setDeleteClickHandler(this._handleDeleteClick);
 
@@ -46,6 +50,25 @@ export default class NewEventPresenter {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._eventFormComponent.updateState({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._eventFormComponent.updateState({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._eventFormComponent.shake(resetFormState);
+  }
+
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
@@ -57,7 +80,7 @@ export default class NewEventPresenter {
     this._changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      {...event, id: nanoid()},
+      event,
     );
 
     this.destroy();

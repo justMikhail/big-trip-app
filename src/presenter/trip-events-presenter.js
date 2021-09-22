@@ -2,6 +2,7 @@ import TripEventsView from '../view/trip-events';
 import EventsSortView from '../view/events-sort';
 import EventsListView from '../view/events-list';
 import EmptyEventsListView from '../view/empty-events-list';
+import LoaderView from '../view/loader';
 
 import EventPresenter from './event-presenter';
 import NewEventPresenter from './new-event-presenter';
@@ -9,28 +10,33 @@ import NewEventPresenter from './new-event-presenter';
 import {render, remove, RenderPosition} from '../utils/render';
 import {filter} from '../utils/date';
 import {sortByDate, sortByDuration, sortByPrice} from '../utils/sort';
-import {FilterType, SortType, UpdateType, UserAction} from '../const/const';
+import {FilterType, SortType, UpdateType, UserAction, ButtonState as EventPresenterViewState} from '../const/const';
 
 export default class TripEventsPresenter {
-  constructor(tripEventsContainer, eventsModel, filterModel) {
+  constructor(tripEventsContainer, eventsModel, filterModel, offersModel, destinationsModel, api) {
     this._tripEventsContainer = tripEventsContainer;
-    this._eventsModel = eventsModel;
     this._filterModel = filterModel;
+    this._eventsModel = eventsModel;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._filterType = FilterType.ALL;
     this._currentSortType = SortType.DEFAULT;
     this._eventPresenters = new Map();
+    this._isLoading = true;
+    this._api = api;
 
     this._tripEventsComponent = new TripEventsView();
     this._eventsListComponent = new EventsListView();
     this._sortComponent = null;
     this._emptyEventsListComponent = null;
+    this._loaderComponent = new LoaderView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleViewModeChange = this._handleViewModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._newEventPresenter = new NewEventPresenter(this._eventsListComponent, this._handleViewAction);
+    this._newEventPresenter = new NewEventPresenter(this._eventsListComponent, this._handleViewAction, offersModel, destinationsModel);
   }
 
   init() {
@@ -67,7 +73,12 @@ export default class TripEventsPresenter {
   }
 
   _renderEvent(event) {
-    const eventPresenter = new EventPresenter(this._eventsListComponent, this._handleViewAction, this._handleViewModeChange);
+    const eventPresenter = new EventPresenter(
+      this._eventsListComponent,
+      this._handleViewAction,
+      this._handleViewModeChange,
+      this._offersModel,
+      this._destinationsModel);
     eventPresenter.init(event);
     this._eventPresenters.set(event.id, eventPresenter);
   }
@@ -88,6 +99,10 @@ export default class TripEventsPresenter {
     render(this._tripEventsComponent, this._sortComponent, RenderPosition.AFTER_BEGIN);
   }
 
+  _renderLoader() {
+    render(this._tripEventsComponent, this._loaderComponent, RenderPosition.BEFORE_END);
+  }
+
   _renderEmptyEventsList() {
     this._emptyEventsListComponent = new EmptyEventsListView(this._filterType);
     render(this._tripEventsComponent, this._emptyEventsListComponent, RenderPosition.BEFORE_END);
@@ -96,13 +111,32 @@ export default class TripEventsPresenter {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, update);
+        this._eventPresenters.get(update.id).setViewState(EventPresenterViewState.SAVING);
+        this._api.updateEvent(update)
+          .then((response) => {
+            this._eventsModel.updateEvent(updateType, response);
+          })
+          .catch(() => {
+            this._eventPresenters.get(update.id).setViewState(EventPresenterViewState.ABORTING);
+          });
         break;
       case UserAction.ADD_EVENT:
-        this._eventsModel.addEvent(updateType, update);
+        this._newEventPresenter.setSaving();
+        this._api.addEvent(update).then((response) => {
+          this._eventsModel.addEvent(updateType, response);
+        })
+          .catch(() => {
+            this._newEventPresenter.setAborting();
+          });
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteEvent(updateType, update);
+        this._eventPresenters.get(update.id).setViewState(EventPresenterViewState.DELETING);
+        this._api.deleteEvent(update).then(() => {
+          this._eventsModel.deleteEvent(updateType, update);
+        })
+          .catch(() => {
+            this._eventPresenters.get(update.id).setViewState(EventPresenterViewState.ABORTING);
+          });
         break;
     }
   }
@@ -118,6 +152,11 @@ export default class TripEventsPresenter {
         break;
       case UpdateType.MAJOR:
         this._clearTripEvents({resetSortType: true});
+        this._renderTripEvents();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loaderComponent);
         this._renderTripEvents();
         break;
     }
@@ -143,7 +182,11 @@ export default class TripEventsPresenter {
     this._eventPresenters.forEach((presenter) => presenter.destroy());
     this._eventPresenters.clear();
 
-    remove(this._sortComponent);
+    if (this._sortComponent) {
+      remove(this._sortComponent);
+    }
+
+    remove(this._loaderComponent);
 
     if (this._emptyEventsListComponent) {
       remove(this._emptyEventsListComponent);
@@ -165,6 +208,11 @@ export default class TripEventsPresenter {
   }
 
   _renderTripEvents() {
+    if (this._isLoading) {
+      this._renderLoader();
+      return;
+    }
+
     if (!this._getEvents().length) {
       this._renderEmptyEventsList();
       return;

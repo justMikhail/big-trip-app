@@ -1,39 +1,46 @@
-import TripInfoView from './view/trip-info';
+import Api from './api/api';
 import TripNavView from './view/trip-nav';
-import TripStats from './view/trip-stats';
+import TripStatsView from './view/trip-stats';
+import NewEventButton from './view/new-event-button';
 
 import EventsModel from './model/events-model';
 import EventsFilterModel from './model/events-filter-model';
+import OffersModel from './model/offers';
+import DestinationsModel from './model/destinations';
 
 import TripEventsPresenter from './presenter/trip-events-presenter';
 import EventsFilterPresenter from './presenter/events-filter-presenter';
+
 import {render, remove, RenderPosition} from './utils/render';
-import {NavMenuItem} from './const/const';
+import {UpdateType, NavMenuItem} from './const/const';
 
-import {mockEventItems} from './mock/mock-event-data';
-import NewEventButton from './view/new-event-button';
-const events = mockEventItems;
-
-const eventsModel = new EventsModel();
-eventsModel.setEvents(events);
-const eventsFilterModel = new EventsFilterModel();
+const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';
+const AUTHORIZATION = 'Basic 4upMo2jqcHn3jgN9g9aX8';
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainInfoContainer = pageHeaderContainer.querySelector('.trip-main');
 const tripNavMenuContainer = pageHeaderContainer.querySelector('.trip-controls');
 const eventsFilterContainer = pageHeaderContainer.querySelector('.trip-controls__filters');
+const pageMain = document.querySelector('.page-main');
+const pageMainContainer = pageMain.querySelector('.page-body__container');
+
+const eventsModel = new EventsModel();
+const eventsFilterModel = new EventsFilterModel();
+const offersModel = new OffersModel();
+const destinationsModel = new DestinationsModel();
+
+const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
+const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel, offersModel, destinationsModel, api);
+
 const tripNavMenuComponent = new TripNavView();
 const newEventButtonComponent = new NewEventButton();
-render(tripMainInfoContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
+newEventButtonComponent.getElement().disabled = true;
+
 render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
 render(tripMainInfoContainer, newEventButtonComponent, RenderPosition.BEFORE_END);
 
-const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
 eventsFilterPresenter.init();
-
-const pageMain = document.querySelector('.page-main');
-const pageMainContainer = pageMain.querySelector('.page-body__container');
-const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel);
 tripEventsPresenter.init();
 
 let tripStatsComponent = null;
@@ -48,12 +55,11 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   newEventButtonComponent.getElement().disabled = true;
 });
 
-const handleAppMenuClick = (menuItem) => {
+const handleNavMenuClick = (menuItem) => {
   switch (menuItem) {
     case NavMenuItem.TABLE:
       tripEventsPresenter.destroy();
       tripEventsPresenter.init();
-      tripNavMenuComponent.setNavMenuItem(menuItem);
       remove(tripStatsComponent);
       pageMainContainer.classList.remove('no-after');
       eventsFilterPresenter.removeDisabled();
@@ -61,13 +67,29 @@ const handleAppMenuClick = (menuItem) => {
       break;
     case NavMenuItem.STATS:
       tripEventsPresenter.destroy();
-      tripStatsComponent = new TripStats(eventsModel.getEvents());
+      tripStatsComponent = new TripStatsView(eventsModel.getEvents());
       render(pageMainContainer, tripStatsComponent, RenderPosition.BEFORE_END);
-      pageMainContainer.classList.add('no-after'); // todo Убираю стили для "after" у контейнера.
-      tripNavMenuComponent.setNavMenuItem(menuItem);
+      pageMainContainer.classList.add('no-after');
+      eventsFilterPresenter.setDisabled();
       newEventButtonComponent.getElement().disabled = true;
       break;
   }
 };
 
-tripNavMenuComponent.setNavMenuClickHandler(handleAppMenuClick);
+api.getData()
+  .then(([events, offers, destinations]) => {
+    offersModel.setOffers(offers);
+    destinationsModel.setDestinations(destinations);
+    eventsModel.setEvents(UpdateType.INIT, events);
+  })
+  .then(() => {
+    newEventButtonComponent.getElement().disabled = false;
+    render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
+    tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
+  })
+  .catch(() => {
+    newEventButtonComponent.getElement().disabled = false;
+    render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
+    tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
+    eventsModel.setEvents(UpdateType.INIT, []);
+  });
