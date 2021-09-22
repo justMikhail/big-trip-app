@@ -72,6 +72,14 @@ export default class EventPresenter {
       return;
     }
 
+    const resetFormState = () => {
+      this._eventFormComponent.updateState({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
     switch (state) {
       case ButtonState.SAVING:
         this._eventFormComponent.updateState({
@@ -84,6 +92,10 @@ export default class EventPresenter {
           isDisabled: true,
           isDeleting: true,
         });
+        break;
+      case ButtonState.ABORTING:
+        this._eventPointComponent.shake(resetFormState);
+        this._eventFormComponent.shake(resetFormState);
         break;
     }
   }

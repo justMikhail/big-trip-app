@@ -68,4 +68,7 @@ export const Color = {
 export const ButtonState = {
   SAVING: 'SAVING',
   DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
 };
+
+export const SHAKE_TIMEOUT = 600;
