@@ -5,10 +5,12 @@ import {isEscEvent} from '../utils/utils';
 import {UpdateType, UserAction, ViewMode} from '../const/const';
 
 export default class EventPresenter {
-  constructor(eventsListContainer, changeData, changeViewMode) {
+  constructor(eventsListContainer, changeData, changeViewMode, offersModel, destinationsModel) {
     this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;
     this._changeViewMode = changeViewMode;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
 
     this._eventPointComponent = null;
     this._eventFormComponent = null;
@@ -28,8 +30,11 @@ export default class EventPresenter {
     const prevEventPointComponent = this._eventPointComponent;
     const prevEventFormComponent = this._eventFormComponent;
 
+    const offers = this._offersModel.getOffers();
+    const destinations = this._destinationsModel.getDestinations();
+
     this._eventPointComponent = new EventPointView(this._event);
-    this._eventFormComponent = new EventFormView(this._event);
+    this._eventFormComponent = new EventFormView(this._event, offers, destinations, false);
 
     this._eventPointComponent.setShowFormClickHandler(this._handleShowFormButtonClick);
     this._eventPointComponent.setFavoriteClickHandler(this._handleFavoriteClick);

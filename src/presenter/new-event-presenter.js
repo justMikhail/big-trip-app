@@ -4,9 +4,11 @@ import {remove, render, RenderPosition} from '../utils/render';
 import {UserAction, UpdateType} from '../const/const';
 
 export default class NewEventPresenter {
-  constructor(eventsListContainer, changeData) {
+  constructor(eventsListContainer, changeData, offersModel, destinationsModel) {
     this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
 
     this._eventFormComponent = null;
     this._destroyCallback = null;
@@ -23,7 +25,10 @@ export default class NewEventPresenter {
       return;
     }
 
-    this._eventFormComponent = new EventFormView();
+    const offers = this._offersModel.getOffers();
+    const destinations = this._destinationsModel.getDestinations();
+    this._eventFormComponent = new EventFormView(offers, destinations);
+
     this._eventFormComponent.setFormSubmitHandler(this._handleSubmitClick);
     this._eventFormComponent.setDeleteClickHandler(this._handleDeleteClick);
 

@@ -32,7 +32,7 @@ const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
 
 const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
-const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel, api, offersModel, destinationsModel);
+const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel, offersModel, destinationsModel, api);
 
 const tripNavMenuComponent = new TripNavView();
 const newEventButtonComponent = new NewEventButton();

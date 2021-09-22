@@ -13,10 +13,12 @@ import {sortByDate, sortByDuration, sortByPrice} from '../utils/sort';
 import {FilterType, SortType, UpdateType, UserAction} from '../const/const';
 
 export default class TripEventsPresenter {
-  constructor(tripEventsContainer, eventsModel, filterModel, api) {
+  constructor(tripEventsContainer, eventsModel, filterModel, offersModel, destinationsModel, api) {
     this._tripEventsContainer = tripEventsContainer;
-    this._eventsModel = eventsModel;
     this._filterModel = filterModel;
+    this._eventsModel = eventsModel;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._filterType = FilterType.ALL;
     this._currentSortType = SortType.DEFAULT;
     this._eventPresenters = new Map();
@@ -34,7 +36,7 @@ export default class TripEventsPresenter {
     this._handleViewModeChange = this._handleViewModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._newEventPresenter = new NewEventPresenter(this._eventsListComponent, this._handleViewAction);
+    this._newEventPresenter = new NewEventPresenter(this._eventsListComponent, this._handleViewAction, offersModel, destinationsModel);
   }
 
   init() {
@@ -71,7 +73,12 @@ export default class TripEventsPresenter {
   }
 
   _renderEvent(event) {
-    const eventPresenter = new EventPresenter(this._eventsListComponent, this._handleViewAction, this._handleViewModeChange);
+    const eventPresenter = new EventPresenter(
+      this._eventsListComponent,
+      this._handleViewAction,
+      this._handleViewModeChange,
+      this._offersModel,
+      this._destinationsModel);
     eventPresenter.init(event);
     this._eventPresenters.set(event.id, eventPresenter);
   }
