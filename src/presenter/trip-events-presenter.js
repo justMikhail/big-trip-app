@@ -24,8 +24,6 @@ export default class TripEventsPresenter {
     this._eventPresenters = new Map();
     this._isLoading = true;
     this._api = api;
-    console.log(this._offersModel);
-    console.log(offersModel.getOffers());
 
     this._tripEventsComponent = new TripEventsView();
     this._eventsListComponent = new EventsListView();

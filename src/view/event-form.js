@@ -143,8 +143,6 @@ const createEventFormTemplate = (event, OFFERS, DESTINATIONS, isNewEvent) => {
   const offersForCurrentEventType = createOffers(type, MOCK_OFFERS, offers, isOffers);
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
   const hideEventFormButton = createHideEventFormButton();
-  //console.log(DESTINATIONS);
-  //console.log(OFFERS);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">

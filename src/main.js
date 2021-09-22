@@ -80,12 +80,10 @@ const handleNavMenuClick = (menuItem) => {
 
 api.getData()
   .then(([events, offers, destinations]) => {
-    eventsModel.setEvents(UpdateType.INIT, events);
+
     offersModel.setOffers(offers);
     destinationsModel.setDestinations(destinations);
-    console.log(eventsModel.getEvents());
-    console.log(offersModel.getOffers());
-    console.log(destinationsModel.getDestinations());
+    eventsModel.setEvents(UpdateType.INIT, events);
   })
   .then(() => {
     newEventButtonComponent.getElement().disabled = false;
