@@ -27,7 +27,7 @@ export default class NewEventPresenter {
 
     const offers = this._offersModel.getOffers();
     const destinations = this._destinationsModel.getDestinations();
-    this._eventFormComponent = new EventFormView(offers, destinations);
+    this._eventFormComponent = new EventFormView(offers, destinations, true);
 
     this._eventFormComponent.setFormSubmitHandler(this._handleSubmitClick);
     this._eventFormComponent.setDeleteClickHandler(this._handleDeleteClick);

@@ -12,8 +12,8 @@ import {MOCK_OFFERS} from '../mock/mock-const';
 const BLANK_EVENT = {
   type: EventType.TAXI,
   destination: {
-    name: '',
     description: '',
+    name: '',
     pictures: [],
   },
   offers: [],
@@ -21,7 +21,6 @@ const BLANK_EVENT = {
   dateTo: getToDayDate(),
   basePrice: 0,
   isFavorite: false,
-  id: nanoid(),
 };
 
 const createOffersList = (currentType, allOffers, checkedOffers) => {
@@ -122,7 +121,7 @@ const createHideEventFormButton = () => (
   </button>`
 );
 
-const createEventFormTemplate = (event, OFFERS, DESTINATIONS, isNewEvent) => {
+const createEventFormTemplate = (OFFERS, DESTINATIONS, isNewEvent, event) => {
 
   const {
     type,
@@ -218,7 +217,7 @@ const createEventFormTemplate = (event, OFFERS, DESTINATIONS, isNewEvent) => {
 };
 
 export default class EventForm extends SmartView {
-  constructor(event = BLANK_EVENT, OFFERS, DESTINATIONS, isNewEvent) {
+  constructor(OFFERS, DESTINATIONS, isNewEvent, event = BLANK_EVENT) {
     super();
     this._state = EventForm.parsEventToState(event);
     this._offers = OFFERS;
@@ -244,7 +243,7 @@ export default class EventForm extends SmartView {
   }
 
   getTemplate() {
-    return createEventFormTemplate(this._state, this._offers, this._destinations, this._isNewEvent);
+    return createEventFormTemplate(this._offers, this._destinations, this._isNewEvent, this._state);
   }
 
   reset(event) {

@@ -1,5 +1,4 @@
 import Api from './api/api';
-import TripInfoView from './view/trip-info';
 import TripNavView from './view/trip-nav';
 import TripStatsView from './view/trip-stats';
 import NewEventButton from './view/new-event-button';
@@ -38,7 +37,6 @@ const tripNavMenuComponent = new TripNavView();
 const newEventButtonComponent = new NewEventButton();
 newEventButtonComponent.getElement().disabled = true;
 
-render(tripMainInfoContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
 render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
 render(tripMainInfoContainer, newEventButtonComponent, RenderPosition.BEFORE_END);
 
@@ -80,9 +78,9 @@ const handleNavMenuClick = (menuItem) => {
 
 api.getData()
   .then(([events, offers, destinations]) => {
-
     offersModel.setOffers(offers);
     destinationsModel.setDestinations(destinations);
+    console.log(destinationsModel.getDestinations());
     eventsModel.setEvents(UpdateType.INIT, events);
   })
   .then(() => {
@@ -91,8 +89,8 @@ api.getData()
     tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
   })
   .catch(() => {
-    eventsModel.setEvents(UpdateType.INIT, []);
     newEventButtonComponent.getElement().disabled = false;
     render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
     tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
+    eventsModel.setEvents(UpdateType.INIT, []);
   });
