@@ -176,6 +176,7 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
             list="destination-list-1"
             value="${he.encode(destination.name)}"
             ${isDisabled ? 'disabled' : ''}
+            required
           >
             <datalist id="destination-list-1">
               ${destinationsList}
@@ -217,7 +218,8 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
             step="1"
             name="event-price"
             value="${basePrice}"
-            ${isDisabled ? 'disabled' : ''}>
+            ${isDisabled ? 'disabled' : ''}
+            required>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
