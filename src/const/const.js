@@ -64,3 +64,8 @@ export const Color = {
   BASIC_BLACK: '#000000',
   PRIMARY_COLOR: '#078ff0',
 };
+
+export const ButtonState = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+};

@@ -50,6 +50,13 @@ export default class NewEventPresenter {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._eventFormComponent.updateState({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();

@@ -216,8 +216,8 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
             min="0"
             step="10"
             name="event-price"
-            value="${basePrice}">
-            ${isDisabled ? 'disabled' : ''}
+            value="${basePrice}"
+            ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>

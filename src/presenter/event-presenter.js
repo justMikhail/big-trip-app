@@ -2,7 +2,7 @@ import EventPointView from '../view/event-point';
 import EventFormView from '../view/event-form';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {isEscEvent} from '../utils/utils';
-import {UpdateType, UserAction, ViewMode} from '../const/const';
+import {UpdateType, UserAction, ViewMode, ButtonState} from '../const/const';
 
 export default class EventPresenter {
   constructor(eventsListContainer, changeData, changeViewMode, offersModel, destinationsModel) {
@@ -53,7 +53,8 @@ export default class EventPresenter {
     }
 
     if (this._viewMode === ViewMode.SHOWING_FORM) {
-      replace(this._eventFormComponent, prevEventFormComponent);
+      replace(this._eventPointComponent, prevEventFormComponent);
+      this._mode = ViewMode.DEFAULT;
     }
 
     remove(prevEventPointComponent);
@@ -63,6 +64,27 @@ export default class EventPresenter {
   resetViewMode() {
     if (this._viewMode !== ViewMode.DEFAULT) {
       this._replaceFormToPoint();
+    }
+  }
+
+  setViewState(state) {
+    if (this._mode === ViewMode.DEFAULT) {
+      return;
+    }
+
+    switch (state) {
+      case ButtonState.SAVING:
+        this._eventFormComponent.updateState({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case ButtonState.DELETING:
+        this._eventFormComponent.updateState({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
     }
   }
 
