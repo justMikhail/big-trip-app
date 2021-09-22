@@ -13,22 +13,9 @@ import EventsFilterPresenter from './presenter/events-filter-presenter';
 import {render, remove, RenderPosition} from './utils/render';
 import {UpdateType, NavMenuItem} from './const/const';
 
-//import {mockEventItems} from './mock/mock-event-data';
-
 const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';
 const AUTHORIZATION = 'Basic 4upMo2jqcHn3jgN9g9aX8';
-
 const api = new Api(END_POINT, AUTHORIZATION);
-//
-// api.getEvents().then((events) => {
-//   console.log(events);
-// });
-
-//const events = mockEventItems;
-
-const eventsModel = new EventsModel();
-//eventsModel.setEvents(events);
-const eventsFilterModel = new EventsFilterModel();
 
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainInfoContainer = pageHeaderContainer.querySelector('.trip-main');
@@ -37,8 +24,11 @@ const eventsFilterContainer = pageHeaderContainer.querySelector('.trip-controls_
 const pageMain = document.querySelector('.page-main');
 const pageMainContainer = pageMain.querySelector('.page-body__container');
 
+const eventsModel = new EventsModel();
+const eventsFilterModel = new EventsFilterModel();
+
 const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
-const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel);
+const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel, api);
 
 const tripNavMenuComponent = new TripNavView();
 const newEventButtonComponent = new NewEventButton();
@@ -62,7 +52,7 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   newEventButtonComponent.getElement().disabled = true;
 });
 
-const handleAppMenuClick = (menuItem) => {
+const handleNavMenuClick = (menuItem) => {
   switch (menuItem) {
     case NavMenuItem.TABLE:
       tripEventsPresenter.destroy();
@@ -83,13 +73,15 @@ const handleAppMenuClick = (menuItem) => {
   }
 };
 
-tripNavMenuComponent.setNavMenuClickHandler(handleAppMenuClick);
-
 api.getEvents()
   .then((events) => {
     eventsModel.setEvents(UpdateType.INIT, events);
+    render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
+    tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
     console.log(events);
   })
   .catch(() => {
     eventsModel.setEvents(UpdateType.INIT, []);
+    render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
+    tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
   });
