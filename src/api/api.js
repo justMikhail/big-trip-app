@@ -21,10 +21,29 @@ export default class Api {
     return this._load({
       url: `points/${event.id}`,
       method: Method.PUT,
-      body: JSON.stringify(EventsModel.adaptToServer),
+      body: JSON.stringify(EventsModel.adaptToServer(event)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then(EventsModel.adaptToClient);
+  }
+
+  getDestinations() {
+    return this._load({
+      url: 'destinations',
+      method: Method.GET,
+    })
+      .then(Api.toJSON)
+      .then((destinations) => [...destinations]);
+  }
+
+  getOffers() {
+    return this._load({
+      url: 'offers',
+      method: Method.GET,
+    })
+      .then(Api.toJSON)
+      .then((offers) => [...offers]);
   }
 
   _load({

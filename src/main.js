@@ -6,6 +6,8 @@ import NewEventButton from './view/new-event-button';
 
 import EventsModel from './model/events-model';
 import EventsFilterModel from './model/events-filter-model';
+import OffersModel from './model/offers';
+import DestinationsModel from './model/destinations';
 
 import TripEventsPresenter from './presenter/trip-events-presenter';
 import EventsFilterPresenter from './presenter/events-filter-presenter';
@@ -26,12 +28,15 @@ const pageMainContainer = pageMain.querySelector('.page-body__container');
 
 const eventsModel = new EventsModel();
 const eventsFilterModel = new EventsFilterModel();
+const offersModel = new OffersModel();
+const destinationsModel = new DestinationsModel();
 
 const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
 const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel, api);
 
 const tripNavMenuComponent = new TripNavView();
 const newEventButtonComponent = new NewEventButton();
+newEventButtonComponent.getElement().disabled = true;
 
 render(tripMainInfoContainer, new TripInfoView, RenderPosition.AFTER_BEGIN);
 render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
@@ -76,12 +81,17 @@ const handleNavMenuClick = (menuItem) => {
 api.getEvents()
   .then((events) => {
     eventsModel.setEvents(UpdateType.INIT, events);
+    newEventButtonComponent.getElement().disabled = false;
     render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
     tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
     console.log(events);
   })
   .catch(() => {
     eventsModel.setEvents(UpdateType.INIT, []);
+    newEventButtonComponent.getElement().disabled = false;
     render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
     tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
   });
+
+api.getOffers().then((offers) => offersModel.setOffers(offers)).catch((err) => console.log(err));
+api.getDestinations().then((dest) => destinationsModel.setDestinations(dest)).catch((err) => console.log(err));
