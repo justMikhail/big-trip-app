@@ -149,7 +149,6 @@ export default class EventPresenter {
       UpdateType.MINOR,
       event,
     );
-    this._replaceFormToPoint();
   }
 
   _handleDeleteClick(event) {

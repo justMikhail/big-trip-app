@@ -66,7 +66,7 @@ export default class NewEventPresenter {
       });
     };
 
-    this._editPointComponent.shake(resetFormState);
+    this._eventFormComponent.shake(resetFormState);
   }
 
   _escKeyDownHandler(evt) {
