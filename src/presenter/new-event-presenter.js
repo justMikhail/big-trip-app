@@ -1,5 +1,4 @@
 import EventFormView from '../view/event-form';
-import {nanoid} from 'nanoid';
 import {remove, render, RenderPosition} from '../utils/render';
 import {UserAction, UpdateType} from '../const/const';
 
@@ -27,7 +26,7 @@ export default class NewEventPresenter {
 
     const offers = this._offersModel.getOffers();
     const destinations = this._destinationsModel.getDestinations();
-    this._eventFormComponent = new EventFormView(offers, destinations, true);
+    this._eventFormComponent = new EventFormView(offers, destinations, false);
 
     this._eventFormComponent.setFormSubmitHandler(this._handleSubmitClick);
     this._eventFormComponent.setDeleteClickHandler(this._handleDeleteClick);

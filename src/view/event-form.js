@@ -119,7 +119,7 @@ const createHideEventFormButton = () => (
   </button>`
 );
 
-const createEventFormTemplate = (OFFERS, DESTINATIONS, isNewEvent, event) => {
+const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
 
   const {
     type,
@@ -202,8 +202,8 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isNewEvent, event) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">${isNewEvent ? 'Cancel' : 'Delete'}</button>
-        ${isNewEvent ? '' : hideEventFormButton}
+        <button class="event__reset-btn" type="reset">${isEditEvent ? 'Delete' : 'Cancel'}</button>
+        ${isEditEvent ? hideEventFormButton : ''}
       </header>
       <section class="event__details">
         ${offersForCurrentEventType}
@@ -214,12 +214,12 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isNewEvent, event) => {
 };
 
 export default class EventForm extends SmartView {
-  constructor(OFFERS, DESTINATIONS, isNewEvent, event = BLANK_EVENT) {
+  constructor(OFFERS, DESTINATIONS, isEditEvent, event = BLANK_EVENT) {
     super();
     this._state = EventForm.parsEventToState(event);
     this._offers = OFFERS;
     this._destinations = DESTINATIONS;
-    this._isNewEvent = isNewEvent;
+    this._isEditEvent = isEditEvent;
 
     this._datepickerStart = null;
     this._datepickerEnd = null;
@@ -240,7 +240,7 @@ export default class EventForm extends SmartView {
   }
 
   getTemplate() {
-    return createEventFormTemplate(this._offers, this._destinations, this._isNewEvent, this._state);
+    return createEventFormTemplate(this._offers, this._destinations, this._isEditEvent, this._state);
   }
 
   reset(event) {
@@ -249,7 +249,7 @@ export default class EventForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    if (this._isNewEvent) {
+    if (this._isEditEvent) {
       this.setHideFormClickHandler(this._callback.hideFormClick);
     }
     this.setFormSubmitHandler(this._callback.formSubmit);

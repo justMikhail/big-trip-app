@@ -34,7 +34,7 @@ export default class EventPresenter {
     const destinations = this._destinationsModel.getDestinations();
 
     this._eventPointComponent = new EventPointView(this._event);
-    this._eventFormComponent = new EventFormView(offers, destinations, false, this._event);
+    this._eventFormComponent = new EventFormView(offers, destinations, true, this._event);
 
     this._eventPointComponent.setShowFormClickHandler(this._handleShowFormButtonClick);
     this._eventPointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
