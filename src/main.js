@@ -32,7 +32,7 @@ const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
 
 const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
-const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel, api);
+const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel, api, offersModel, destinationsModel);
 
 const tripNavMenuComponent = new TripNavView();
 const newEventButtonComponent = new NewEventButton();
@@ -78,13 +78,16 @@ const handleNavMenuClick = (menuItem) => {
   }
 };
 
-api.getEvents()
-  .then((events) => {
+api.getData()
+  .then(([events, offers, destinations]) => {
     eventsModel.setEvents(UpdateType.INIT, events);
+    offersModel.setOffers(offers);
+    destinationsModel.setDestinations(destinations);
+  })
+  .then(() => {
     newEventButtonComponent.getElement().disabled = false;
     render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
     tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
-    console.log(events);
   })
   .catch(() => {
     eventsModel.setEvents(UpdateType.INIT, []);
@@ -92,6 +95,3 @@ api.getEvents()
     render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
     tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
   });
-
-api.getOffers().then((offers) => offersModel.setOffers(offers)).catch((err) => console.log(err));
-api.getDestinations().then((dest) => destinationsModel.setDestinations(dest)).catch((err) => console.log(err));
