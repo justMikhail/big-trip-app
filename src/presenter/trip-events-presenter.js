@@ -2,6 +2,7 @@ import TripEventsView from '../view/trip-events';
 import EventsSortView from '../view/events-sort';
 import EventsListView from '../view/events-list';
 import EmptyEventsListView from '../view/empty-events-list';
+import LoaderView from '../view/loader';
 
 import EventPresenter from './event-presenter';
 import NewEventPresenter from './new-event-presenter';
@@ -19,11 +20,13 @@ export default class TripEventsPresenter {
     this._filterType = FilterType.ALL;
     this._currentSortType = SortType.DEFAULT;
     this._eventPresenters = new Map();
+    this._isLoading = true;
 
     this._tripEventsComponent = new TripEventsView();
     this._eventsListComponent = new EventsListView();
     this._sortComponent = null;
     this._emptyEventsListComponent = null;
+    this._loaderComponent = new LoaderView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -88,6 +91,10 @@ export default class TripEventsPresenter {
     render(this._tripEventsComponent, this._sortComponent, RenderPosition.AFTER_BEGIN);
   }
 
+  _renderLoader() {
+    render(this._tripEventsComponent, this._loaderComponent, RenderPosition.BEFORE_END);
+  }
+
   _renderEmptyEventsList() {
     this._emptyEventsListComponent = new EmptyEventsListView(this._filterType);
     render(this._tripEventsComponent, this._emptyEventsListComponent, RenderPosition.BEFORE_END);
@@ -118,6 +125,11 @@ export default class TripEventsPresenter {
         break;
       case UpdateType.MAJOR:
         this._clearTripEvents({resetSortType: true});
+        this._renderTripEvents();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loaderComponent);
         this._renderTripEvents();
         break;
     }
@@ -165,6 +177,11 @@ export default class TripEventsPresenter {
   }
 
   _renderTripEvents() {
+    if (this._isLoading) {
+      this._renderLoader();
+      return;
+    }
+
     if (!this._getEvents().length) {
       this._renderEmptyEventsList();
       return;
