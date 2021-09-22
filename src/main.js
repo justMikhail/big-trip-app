@@ -83,6 +83,9 @@ api.getData()
     eventsModel.setEvents(UpdateType.INIT, events);
     offersModel.setOffers(offers);
     destinationsModel.setDestinations(destinations);
+    console.log(events);
+    console.log(offers);
+    console.log(destinations);
   })
   .then(() => {
     newEventButtonComponent.getElement().disabled = false;

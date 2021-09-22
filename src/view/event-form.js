@@ -8,7 +8,6 @@ import {EventType, dateFormat, CALENDAR_SETTINGS} from '../const/const';
 import SmartView from '../abstract/abstract-smart';
 
 import {MOCK_OFFERS, Destinations} from '../mock/mock-const';
-import {allDestinationInfo} from '../mock/mock-event-data';
 
 const BLANK_EVENT = {
   type: EventType.TAXI,
@@ -115,7 +114,13 @@ const createEventTypesList = (currentType, allTypes) => {
 
 const createDestinationsList = (destinationsList) => Object.values(destinationsList).map((destination) => `<option value="${destination}"></option>`).join('');
 
-const createEventFormTemplate = (event) => {
+const createHideEventFormButton = () => (
+  `<button class="event__rollup-btn" type="button">
+    <span class="visually-hidden">Open event</span>
+  </button>`
+);
+
+const createEventFormTemplate = (event, OFFERS, DESTINATIONS, isNewEvent) => {
 
   const {
     type,
@@ -123,7 +128,6 @@ const createEventFormTemplate = (event) => {
     dateFrom,
     dateTo,
     destination,
-    //id,
     offers,
     isOffers,
     isDescription,
@@ -136,6 +140,7 @@ const createEventFormTemplate = (event) => {
   const destinationList = createDestinationsList(Destinations);
   const offersForCurrentEventType = createOffers(type, MOCK_OFFERS, offers, isOffers);
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
+  const hideEventFormButton = createHideEventFormButton();
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -198,10 +203,8 @@ const createEventFormTemplate = (event) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
+        <button class="event__reset-btn" type="reset">${isNewEvent ? 'Cancel' : 'Delete'}</button>
+        ${isNewEvent ? '' : hideEventFormButton}
       </header>
       <section class="event__details">
         ${offersForCurrentEventType}
@@ -212,9 +215,12 @@ const createEventFormTemplate = (event) => {
 };
 
 export default class EventForm extends SmartView {
-  constructor(event = BLANK_EVENT) {
+  constructor(event = BLANK_EVENT, OFFERS, DESTINATIONS, isNewEvent) {
     super();
     this._state = EventForm.parsEventToState(event);
+    this._offers = OFFERS;
+    this._destinations = DESTINATIONS;
+    this._isNewEvent = isNewEvent;
 
     this._datepickerStart = null;
     this._datepickerEnd = null;
@@ -235,7 +241,7 @@ export default class EventForm extends SmartView {
   }
 
   getTemplate() {
-    return createEventFormTemplate(this._state);
+    return createEventFormTemplate(this._state, this._offers, this._destinations, this._isNewEvent);
   }
 
   reset(event) {
@@ -244,6 +250,9 @@ export default class EventForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    if (this._isNewEvent) {
+      this.setHideFormClickHandler(this._callback.hideFormClick);
+    }
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setHideFormClickHandler(this._callback.hideFormClick);
     this.setDeleteClickHandler(this._callback.deleteClick);
@@ -270,16 +279,16 @@ export default class EventForm extends SmartView {
     this.updateState({
       type: evt.target.value,
       offers: [],
-      isOffers: Boolean(getOffersByType(evt.target.value, MOCK_OFFERS).length),
+      isOffers: Boolean(getOffersByType(evt.target.value, this._destinations).length),
     }, false);
   }
 
   _changeDestinationHandler(evt) {
     evt.preventDefault();
     this.updateState({
-      destination: findDestination(evt.target.value, allDestinationInfo),
-      isDescription: checkDescriptionExist(evt.target.value, allDestinationInfo),
-      isPhotos: checkPhotosExist(evt.target.value, allDestinationInfo),
+      destination: findDestination(evt.target.value, this._destinations),
+      isDescription: checkDescriptionExist(evt.target.value, this._destinations),
+      isPhotos: checkPhotosExist(evt.target.value, this._destinations),
     }, false);
   }
 
