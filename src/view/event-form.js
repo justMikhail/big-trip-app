@@ -276,7 +276,6 @@ export default class EventForm extends SmartView {
       this.setHideFormClickHandler(this._callback.hideFormClick);
     }
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setHideFormClickHandler(this._callback.hideFormClick);
     this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
