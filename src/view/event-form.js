@@ -137,9 +137,9 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
     isDeleting,
   } = event;
 
-  const arrayOfTypes = Object.values(EventType);
+  const EventTypes = Object.values(EventType);
 
-  const eventTypesList = createEventTypesList(type, arrayOfTypes);
+  const eventTypesList = createEventTypesList(type, EventTypes);
   const destinationsList = createDestinationsList(DESTINATIONS);
   const offersForCurrentEventType = createOffers(type, OFFERS, offers);
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);

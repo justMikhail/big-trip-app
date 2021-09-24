@@ -1,7 +1,7 @@
 import AbstractObserver from '../abstract/abstract-observer';
 import {FilterType} from '../const/const';
 
-export default class EventsFilter extends AbstractObserver {
+export default class EventsFilterModel extends AbstractObserver {
   constructor() {
     super();
     this._activeFilter = FilterType.ALL;
