@@ -3,13 +3,13 @@ import TripNavView from './view/trip-nav';
 import TripStatsView from './view/trip-stats';
 import NewEventButton from './view/new-event-button';
 
-import EventsModel from './model/events-model';
-import EventsFilterModel from './model/events-filter-model';
+import Events from './model/events';
+import EventsFilterModel from './model/events-filter';
 import OffersModel from './model/offers';
 import DestinationsModel from './model/destinations';
 
-import TripEventsPresenter from './presenter/trip-events-presenter';
-import EventsFilterPresenter from './presenter/events-filter-presenter';
+import TripEventsPresenter from './presenter/trip-events';
+import EventsFilterPresenter from './presenter/events-filter';
 
 import {render, remove, RenderPosition} from './utils/render';
 import {UpdateType, NavMenuItem} from './const/const';
@@ -25,7 +25,7 @@ const eventsFilterContainer = pageHeaderContainer.querySelector('.trip-controls_
 const pageMain = document.querySelector('.page-main');
 const pageMainContainer = pageMain.querySelector('.page-body__container');
 
-const eventsModel = new EventsModel();
+const eventsModel = new Events();
 const eventsFilterModel = new EventsFilterModel();
 const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();

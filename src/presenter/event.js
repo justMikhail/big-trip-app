@@ -4,7 +4,7 @@ import {render, RenderPosition, replace, remove} from '../utils/render';
 import {isEscEvent} from '../utils/utils';
 import {UpdateType, UserAction, ViewMode, ButtonState} from '../const/const';
 
-export default class EventPresenter {
+export default class Event {
   constructor(eventsListContainer, changeData, changeViewMode, offersModel, destinationsModel) {
     this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;

@@ -4,15 +4,15 @@ import EventsListView from '../view/events-list';
 import EmptyEventsListView from '../view/empty-events-list';
 import LoaderView from '../view/loader';
 
-import EventPresenter from './event-presenter';
-import NewEventPresenter from './new-event-presenter';
+import Event from './event';
+import NewEvent from './new-event';
 
 import {render, remove, RenderPosition} from '../utils/render';
 import {filter} from '../utils/date';
 import {sortByDate, sortByDuration, sortByPrice} from '../utils/sort';
 import {FilterType, SortType, UpdateType, UserAction, ButtonState as EventPresenterViewState} from '../const/const';
 
-export default class TripEventsPresenter {
+export default class TripEvents {
   constructor(tripEventsContainer, eventsModel, filterModel, offersModel, destinationsModel, api) {
     this._tripEventsContainer = tripEventsContainer;
     this._filterModel = filterModel;
@@ -36,7 +36,7 @@ export default class TripEventsPresenter {
     this._handleViewModeChange = this._handleViewModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._newEventPresenter = new NewEventPresenter(this._eventsListComponent, this._handleViewAction, offersModel, destinationsModel);
+    this._newEventPresenter = new NewEvent(this._eventsListComponent, this._handleViewAction, offersModel, destinationsModel);
   }
 
   init() {
@@ -73,7 +73,7 @@ export default class TripEventsPresenter {
   }
 
   _renderEvent(event) {
-    const eventPresenter = new EventPresenter(
+    const eventPresenter = new Event(
       this._eventsListComponent,
       this._handleViewAction,
       this._handleViewModeChange,
