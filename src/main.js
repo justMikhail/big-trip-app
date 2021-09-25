@@ -96,3 +96,8 @@ api.getData()
     tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
     eventsModel.setEvents(UpdateType.INIT, []);
   });
+
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('/service-worker.js');
+});
+
