@@ -1,4 +1,5 @@
 import Api from './api/api';
+
 import TripNavView from './view/trip-nav';
 import TripStatsView from './view/trip-stats';
 import NewEventButton from './view/new-event-button';
@@ -8,14 +9,14 @@ import EventsFilterModel from './model/events-filter';
 import OffersModel from './model/offers';
 import DestinationsModel from './model/destinations';
 
+import TripRouteInfoPresenter from './presenter/trip-route-info';
 import TripEventsPresenter from './presenter/trip-events';
 import EventsFilterPresenter from './presenter/events-filter';
 
 import {render, remove, RenderPosition} from './utils/render';
 import {UpdateType, NavMenuItem} from './const/const';
+import {END_POINT, AUTHORIZATION} from './const/api-const';
 
-const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';
-const AUTHORIZATION = 'Basic 4upMo2jqcHn3jgN9g9aX8';
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const pageHeaderContainer = document.querySelector('.page-header');
@@ -30,6 +31,7 @@ const eventsFilterModel = new EventsFilterModel();
 const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
 
+const tripRouteInfoPresenter = new TripRouteInfoPresenter(tripMainInfoContainer, eventsModel);
 const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
 const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel, offersModel, destinationsModel, api);
 
@@ -40,6 +42,7 @@ newEventButtonComponent.getElement().disabled = true;
 render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
 render(tripMainInfoContainer, newEventButtonComponent, RenderPosition.BEFORE_END);
 
+tripRouteInfoPresenter.init();
 eventsFilterPresenter.init();
 tripEventsPresenter.init();
 

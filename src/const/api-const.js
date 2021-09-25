@@ -10,3 +10,6 @@ export const SourceURL = {
   OFFERS: 'offers',
   DESTINATIONS: 'destinations',
 };
+
+export const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';
+export const AUTHORIZATION = 'Basic 4upMo2jqcHn3jgN9g9aX8';
