@@ -141,7 +141,7 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
 
   const EventTypes = Object.values(EventType);
 
-  const eventTypesList = createEventTypesList(type, EventTypes);
+  const eventTypesList = createEventTypesList(type, EventTypes, isDisabled);
   const destinationsList = createDestinationsList(DESTINATIONS);
   const offersForCurrentEventType = createOffers(type, OFFERS, offers);
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
@@ -177,7 +177,6 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
             name="event-destination"
             value="${he.encode(destination.name)}"
             list="destination-list-1"
-            value="${he.encode(destination.name)}"
             ${isDisabled ? 'disabled' : ''}
             required
           >
@@ -255,6 +254,7 @@ export default class EventForm extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._hideFormClickHandler = this._hideFormClickHandler.bind(this);
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
+    this._focusOnDestinationChangeHandler = this._focusOnDestinationChangeHandler.bind(this);
     this._changeTypeHandler = this._changeTypeHandler.bind(this);
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._changePriceHandler = this._changePriceHandler.bind(this);
@@ -291,6 +291,9 @@ export default class EventForm extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('change', this._changeDestinationHandler);
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('focus', this._focusOnDestinationChangeHandler);
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('input', this._changePriceHandler);
@@ -335,6 +338,12 @@ export default class EventForm extends SmartView {
       this._datepickerEnd.destroy();
       this._datepickerEnd = null;
     }
+  }
+
+  _focusOnDestinationChangeHandler(evt) {
+    evt.preventDefault();
+    evt.target.value = '';
+    this.getElement().querySelector('.event__section--destination').innerHTML = '';
   }
 
   _setDatePicker() {
