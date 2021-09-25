@@ -121,6 +121,8 @@ const createHideEventFormButton = (isDisabled) => (
   </button>`
 );
 
+const createEventTypeIcon = (type) => `<img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">`;
+
 const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
 
   const {
@@ -145,6 +147,7 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
   const hideEventFormButton = createHideEventFormButton();
   const getDeleteButtonStatus = (boolean) => boolean ? 'Deleting' : 'Delete';
+  const eventTypeIcon = createEventTypeIcon(type);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -152,7 +155,7 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+            ${eventTypeIcon}
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox"  ${isDisabled ? 'disabled' : ''}>
             <div class="event__type-list">
