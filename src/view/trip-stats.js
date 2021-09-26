@@ -253,6 +253,10 @@ export default class TripStats extends AbstractSmartView {
     this._setCharts();
   }
 
+  getTemplate() {
+    return createStatsTemplate();
+  }
+
   removeElement() {
     super.removeElement();
 
@@ -261,10 +265,6 @@ export default class TripStats extends AbstractSmartView {
       this._typeChart = null;
       this._timeChart = null;
     }
-  }
-
-  getTemplate() {
-    return createStatsTemplate();
   }
 
   restoreHandlers() {

@@ -121,6 +121,8 @@ const createHideEventFormButton = (isDisabled) => (
   </button>`
 );
 
+const createEventTypeIcon = (type) => `<img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">`;
+
 const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
 
   const {
@@ -137,14 +139,15 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
     isDeleting,
   } = event;
 
-  const arrayOfTypes = Object.values(EventType);
+  const EventTypes = Object.values(EventType);
 
-  const eventTypesList = createEventTypesList(type, arrayOfTypes);
+  const eventTypesList = createEventTypesList(type, EventTypes, isDisabled);
   const destinationsList = createDestinationsList(DESTINATIONS);
   const offersForCurrentEventType = createOffers(type, OFFERS, offers);
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
   const hideEventFormButton = createHideEventFormButton();
   const getDeleteButtonStatus = (boolean) => boolean ? 'Deleting' : 'Delete';
+  const eventTypeIcon = createEventTypeIcon(type);
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -152,7 +155,7 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+            ${eventTypeIcon}
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox"  ${isDisabled ? 'disabled' : ''}>
             <div class="event__type-list">
@@ -174,7 +177,6 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
             name="event-destination"
             value="${he.encode(destination.name)}"
             list="destination-list-1"
-            value="${he.encode(destination.name)}"
             ${isDisabled ? 'disabled' : ''}
             required
           >
@@ -214,7 +216,7 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
             class="event__input  event__input--price"
             id="event-price-1"
             type="number"
-            min="0"
+            min="1"
             step="1"
             name="event-price"
             value="${basePrice}"
@@ -252,6 +254,7 @@ export default class EventForm extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._hideFormClickHandler = this._hideFormClickHandler.bind(this);
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
+    this._focusOnDestinationChangeHandler = this._focusOnDestinationChangeHandler.bind(this);
     this._changeTypeHandler = this._changeTypeHandler.bind(this);
     this._changeDestinationHandler = this._changeDestinationHandler.bind(this);
     this._changePriceHandler = this._changePriceHandler.bind(this);
@@ -281,6 +284,21 @@ export default class EventForm extends SmartView {
     this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
+  }
+
+  setHideFormClickHandler(callback) {
+    this._callback.hideFormClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._hideFormClickHandler);
+  }
+
   _setInnerHandlers() {
     this.getElement()
       .querySelector('.event__type-group')
@@ -289,12 +307,35 @@ export default class EventForm extends SmartView {
       .querySelector('.event__input--destination')
       .addEventListener('change', this._changeDestinationHandler);
     this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('focus', this._focusOnDestinationChangeHandler);
+    this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('input', this._changePriceHandler);
     this.getElement()
       .querySelector('.event__section--offers')
       .addEventListener('change', this._changeOffersHandler);
     this._setDatePicker();
+  }
+
+  _setDatePicker() {
+    this._checkResetDatePicker();
+
+    this._datepickerStart = flatpickr(
+      this.getElement().querySelector('[name = "event-start-time"]'),
+      {
+        ...CALENDAR_SETTINGS,
+        onChange: this._timeFromHandler,
+      },
+    ),
+    this._datepickerEnd = flatpickr(
+      this.getElement().querySelector('[name = "event-end-time"]'),
+      {
+        ...CALENDAR_SETTINGS,
+        minDate: this._datepickerStart.input.value,
+        onChange: this._timeToHandler,
+      },
+    );
   }
 
   _changeTypeHandler(evt) {
@@ -334,24 +375,10 @@ export default class EventForm extends SmartView {
     }
   }
 
-  _setDatePicker() {
-    this._checkResetDatePicker();
-
-    this._datepickerStart = flatpickr(
-      this.getElement().querySelector('[name = "event-start-time"]'),
-      {
-        ...CALENDAR_SETTINGS,
-        onChange: this._timeFromHandler,
-      },
-    ),
-    this._datepickerEnd = flatpickr(
-      this.getElement().querySelector('[name = "event-end-time"]'),
-      {
-        ...CALENDAR_SETTINGS,
-        minDate: this._datepickerStart.input.value,
-        onChange: this._timeToHandler,
-      },
-    );
+  _focusOnDestinationChangeHandler(evt) {
+    evt.preventDefault();
+    evt.target.value = '';
+    this.getElement().querySelector('.event__section--destination').innerHTML = '';
   }
 
   _timeFromHandler([userDate]) {
@@ -376,29 +403,14 @@ export default class EventForm extends SmartView {
     this._callback.hideFormClick();
   }
 
-  setHideFormClickHandler(callback) {
-    this._callback.hideFormClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._hideFormClickHandler);
-  }
-
   _deleteClickHandler(evt) {
     evt.preventDefault();
     this._callback.deleteClick(EventForm.parseStateToEvent(this._state));
   }
 
-  setDeleteClickHandler(callback) {
-    this._callback.deleteClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
-  }
-
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
   static parsEventToState(event) {

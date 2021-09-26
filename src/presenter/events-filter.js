@@ -2,7 +2,7 @@ import EventsFilterView from '../view/events-filter';
 import {render, RenderPosition, replace, remove } from '../utils/render';
 import {FilterType, UpdateType} from '../const/const';
 
-export default class EventsFilterPresenter {
+export default class EventsFilter {
   constructor(filterContainer, filterModel, eventsModel) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
@@ -32,6 +32,16 @@ export default class EventsFilterPresenter {
     remove(prevFilterComponent);
   }
 
+  setDisabled() {
+    const filters = document.querySelectorAll('.trip-filters__filter-input');
+    filters.forEach((item) => item.setAttribute('disabled', 'disabled'));
+  }
+
+  removeDisabled() {
+    const filters = document.querySelectorAll('.trip-filters__filter-input');
+    filters.forEach((item) => item.removeAttribute('disabled'));
+  }
+
   _getFiltersType() {
     return Object.values(FilterType);
   }
@@ -46,15 +56,5 @@ export default class EventsFilterPresenter {
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-  }
-
-  setDisabled() {
-    const filters = document.querySelectorAll('.trip-filters__filter-input');
-    filters.forEach((item) => item.setAttribute('disabled', 'disabled'));
-  }
-
-  removeDisabled() {
-    const filters = document.querySelectorAll('.trip-filters__filter-input');
-    filters.forEach((item) => item.removeAttribute('disabled'));
   }
 }

@@ -2,7 +2,7 @@ import EventFormView from '../view/event-form';
 import {remove, render, RenderPosition} from '../utils/render';
 import {UserAction, UpdateType} from '../const/const';
 
-export default class NewEventPresenter {
+export default class NewEvent {
   constructor(eventsListContainer, changeData, offersModel, destinationsModel) {
     this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;
@@ -35,21 +35,6 @@ export default class NewEventPresenter {
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
-  destroy() {
-    if (this._eventFormComponent === null) {
-      return;
-    }
-
-    if (this._destroyCallback !== null) {
-      this._destroyCallback();
-    }
-
-    remove(this._eventFormComponent);
-    this._eventFormComponent = null;
-
-    document.removeEventListener('keydown', this._escKeyDownHandler);
-  }
-
   setSaving() {
     this._eventFormComponent.updateState({
       isDisabled: true,
@@ -67,6 +52,21 @@ export default class NewEventPresenter {
     };
 
     this._eventFormComponent.shake(resetFormState);
+  }
+
+  destroy() {
+    if (this._eventFormComponent === null) {
+      return;
+    }
+
+    if (this._destroyCallback !== null) {
+      this._destroyCallback();
+    }
+
+    remove(this._eventFormComponent);
+    this._eventFormComponent = null;
+
+    document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
   _escKeyDownHandler(evt) {
