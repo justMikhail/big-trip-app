@@ -4,23 +4,34 @@ export default class Store {
     this._storeKey = key;
   }
 
-  getItems() {
+  getStoreItems(sourceKey) {
+    if (!sourceKey) {
+      try {
+        return JSON.parse(this._storage.getItem(this._storeKey)) || {};
+      } catch (err) {
+        return {};
+      }
+    }
+
     try {
-      return JSON.parse(this._storage.getItem(this._storeKey)) || {};
+      const store = JSON.parse(this._storage.getItem(this._storeKey)) || {};
+      return store[sourceKey] ? store[sourceKey] : {};
     } catch (err) {
       return {};
     }
   }
 
-  setItems(items) {
+  setStoreItems(items, key) {
+    const prevStorage = this.getStoreItems();
+
     this._storage.setItem(
       this._storeKey,
-      JSON.stringify(items),
+      JSON.stringify({...prevStorage, [key]: items}),
     );
   }
 
-  setItem(key, value) {
-    const store = this.getItems();
+  setStoreItem(key, value) {
+    const store = this.getStoreItems();
 
     this._storage.setItem(
       this._storeKey,
@@ -28,8 +39,8 @@ export default class Store {
     );
   }
 
-  removeItem(key) {
-    const store = this.getItems();
+  removeStoreItem(key) {
+    const store = this.getStoreItems();
 
     delete store[key];
 
@@ -39,3 +50,4 @@ export default class Store {
     );
   }
 }
+

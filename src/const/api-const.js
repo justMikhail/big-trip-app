@@ -9,6 +9,7 @@ export const SourceURL = {
   POINTS: 'points',
   OFFERS: 'offers',
   DESTINATIONS: 'destinations',
+  SYNC: 'sync',
 };
 
 export const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';

@@ -71,7 +71,7 @@ export default class Api {
 
   sync(data) {
     return this._load({
-      url: 'points/sync',
+      url: `${SourceURL.POINTS}/sync`,
       method: Method.POST,
       body: JSON.stringify(data),
       headers: new Headers({'Content-Type': 'application/json'}),
