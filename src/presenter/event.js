@@ -5,7 +5,7 @@ import {isEscEvent, isOnline} from '../utils/utils';
 import {toast} from '../utils/toast';
 import {UpdateType, UserAction, ViewMode, ButtonState} from '../const/const';
 
-export default class Event {
+export default class EventPresenter {
   constructor(eventsListContainer, changeData, changeViewMode, offersModel, destinationsModel) {
     this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;

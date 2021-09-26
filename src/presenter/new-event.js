@@ -2,7 +2,7 @@ import EventFormView from '../view/event-form';
 import {remove, render, RenderPosition} from '../utils/render';
 import {UserAction, UpdateType} from '../const/const';
 
-export default class NewEvent {
+export default class NewEventPresenter {
   constructor(eventsListContainer, changeData, offersModel, destinationsModel) {
     this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;
