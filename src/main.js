@@ -6,7 +6,7 @@ import TripRouteInfoPresenter from './presenter/trip-route-info';
 import TripEventsPresenter from './presenter/trip-events';
 import EventsFilterPresenter from './presenter/events-filter';
 
-import Events from './model/events';
+import EventsModel from './model/events';
 import EventsFilterModel from './model/events-filter';
 import OffersModel from './model/offers';
 import DestinationsModel from './model/destinations';
@@ -18,7 +18,7 @@ import NewEventButton from './view/new-event-button';
 import {render, remove, RenderPosition} from './utils/render';
 import {isOnline} from './utils/utils';
 import {toast} from './utils/toast';
-import {UpdateType, NavMenuItem, Color, BackgroundImage} from './const/const';
+import {UpdateType, NavMenuItem, Color} from './const/const';
 import {END_POINT, AUTHORIZATION, STORE_NAME} from './const/api-const';
 
 const apiServer = new Api(END_POINT, AUTHORIZATION);
@@ -32,7 +32,7 @@ const eventsFilterContainer = pageHeaderContainer.querySelector('.trip-controls_
 const pageMain = document.querySelector('.page-main');
 const pageMainContainer = pageMain.querySelector('.page-body__container');
 
-const eventsModel = new Events();
+const eventsModel = new EventsModel();
 const eventsFilterModel = new EventsFilterModel();
 const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
@@ -117,7 +117,7 @@ window.addEventListener('online', () => {
   document.title = document.title.replace(' [offline]', '');
   newEventButtonComponent.getElement().disabled = false;
   pageHeaderContainer.style.backgroundColor = `${Color.PRIMARY_COLOR}`;
-  pageHeaderContainer.style.backgroundImage = `${BackgroundImage.ONLINE}`;
+  pageHeaderContainer.style.backgroundImage = 'url("../img/header-bg.png")';
   toast('ONLINE');
   api.sync();
 });
@@ -125,7 +125,7 @@ window.addEventListener('online', () => {
 window.addEventListener('offline', () => {
   document.title += ' [offline]';
   pageHeaderContainer.style.backgroundColor = `${Color.SECONDARY_COLOR}`;
-  pageHeaderContainer.style.backgroundImage = `${BackgroundImage.OFFLINE}`;
-  toast('OFFLINE');
+  pageHeaderContainer.style.backgroundImage = 'none';
+  toast('Connection lost. Please, check your internet connection');
 });
 

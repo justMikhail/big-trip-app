@@ -73,8 +73,3 @@ export const ButtonState = {
 };
 
 export const SHAKE_TIMEOUT = 600;
-
-export const BackgroundImage = {
-  ONLINE: 'url("../img/header-bg.png")',
-  OFFLINE: 'none',
-};
