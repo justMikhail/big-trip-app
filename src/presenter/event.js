@@ -1,7 +1,8 @@
 import EventPointView from '../view/event-point';
 import EventFormView from '../view/event-form';
 import {render, RenderPosition, replace, remove} from '../utils/render';
-import {isEscEvent} from '../utils/utils';
+import {isEscEvent, isOnline} from '../utils/utils';
+import {toast} from '../utils/toast';
 import {UpdateType, UserAction, ViewMode, ButtonState} from '../const/const';
 
 export default class Event {
@@ -127,6 +128,10 @@ export default class Event {
   }
 
   _handleShowFormButtonClick() {
+    if (!isOnline()) {
+      toast('You can\'t edit event for trip while you\'re offline');
+      return;
+    }
     this._replacePointToForm();
   }
 
@@ -144,6 +149,11 @@ export default class Event {
   }
 
   _handleEventFormSubmit(event) {
+    if (!isOnline()) {
+      toast('You can\'t edit event for trip while you\'re offline');
+      return;
+    }
+
     this._changeData(
       UserAction.UPDATE_EVENT,
       UpdateType.MINOR,
@@ -152,6 +162,11 @@ export default class Event {
   }
 
   _handleDeleteClick(event) {
+    if (!isOnline()) {
+      toast('You can\'t delete event for trip while you\'re offline');
+      return;
+    }
+
     this._changeData(
       UserAction.DELETE_EVENT,
       UpdateType.MAJOR,

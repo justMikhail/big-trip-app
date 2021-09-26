@@ -1,23 +1,29 @@
 import Api from './api/api';
+import Store from './api/store';
+import Provider from './api/provider';
 
-import TripNavView from './view/trip-nav';
-import TripStatsView from './view/trip-stats';
-import NewEventButton from './view/new-event-button';
+import TripRouteInfoPresenter from './presenter/trip-route-info';
+import TripEventsPresenter from './presenter/trip-events';
+import EventsFilterPresenter from './presenter/events-filter';
 
 import Events from './model/events';
 import EventsFilterModel from './model/events-filter';
 import OffersModel from './model/offers';
 import DestinationsModel from './model/destinations';
 
-import TripRouteInfoPresenter from './presenter/trip-route-info';
-import TripEventsPresenter from './presenter/trip-events';
-import EventsFilterPresenter from './presenter/events-filter';
+import TripNavView from './view/trip-nav';
+import TripStatsView from './view/trip-stats';
+import NewEventButton from './view/new-event-button';
 
 import {render, remove, RenderPosition} from './utils/render';
-import {UpdateType, NavMenuItem} from './const/const';
-import {END_POINT, AUTHORIZATION} from './const/api-const';
+import {isOnline} from './utils/utils';
+import {toast} from './utils/toast';
+import {UpdateType, NavMenuItem, Color, BackgroundImage} from './const/const';
+import {END_POINT, AUTHORIZATION, STORE_NAME} from './const/api-const';
 
-const api = new Api(END_POINT, AUTHORIZATION);
+const apiServer = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const api = new Provider(apiServer, store);
 
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainInfoContainer = pageHeaderContainer.querySelector('.trip-main');
@@ -53,6 +59,10 @@ const handleEventNewFormClose = () => {
 };
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  if (!isOnline()) {
+    toast('You can\'t create new event for trip while you\'re offline');
+    return;
+  }
   evt.preventDefault();
   tripEventsPresenter.createNewEvent(handleEventNewFormClose);
   newEventButtonComponent.getElement().disabled = true;
@@ -101,5 +111,21 @@ window.addEventListener('load', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js');
   }
+});
+
+window.addEventListener('online', () => {
+  document.title = document.title.replace(' [offline]', '');
+  newEventButtonComponent.getElement().disabled = false;
+  pageHeaderContainer.style.backgroundColor = `${Color.PRIMARY_COLOR}`;
+  pageHeaderContainer.style.backgroundImage = `${BackgroundImage.ONLINE}`;
+  toast(' ONLINE ');
+  api.sync();
+});
+
+window.addEventListener('offline', () => {
+  document.title += ' [offline]';
+  pageHeaderContainer.style.backgroundColor = `${Color.SECONDARY_COLOR}`;
+  pageHeaderContainer.style.backgroundImage = `${BackgroundImage.OFFLINE}`;
+  toast(' OFFLINE ');
 });
 

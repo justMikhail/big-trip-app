@@ -63,6 +63,7 @@ export const Color = {
   BASIC_WHITE: '#ffffff',
   BASIC_BLACK: '#000000',
   PRIMARY_COLOR: '#078ff0',
+  SECONDARY_COLOR: '#708090',
 };
 
 export const ButtonState = {
@@ -72,3 +73,8 @@ export const ButtonState = {
 };
 
 export const SHAKE_TIMEOUT = 600;
+
+export const BackgroundImage = {
+  ONLINE: 'url("../img/header-bg.png")',
+  OFFLINE: 'none',
+};

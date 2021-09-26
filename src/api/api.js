@@ -37,7 +37,7 @@ export default class Api {
   getEvents() {
     return this._load({url: SourceURL.POINTS})
       .then(Api.toJSON)
-      .then((points) => points.map(Events.adaptToClient));
+      .then((events) => events.map(Events.adaptToClient));
   }
 
   updateEvent(event) {
