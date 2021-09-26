@@ -43,7 +43,7 @@ export const UpdateType = {
 export const dateFormat = {
   HOURS_MINUTES: 'HH:mm',
   MONTH_DAY: 'MMM DD',
-  FULL: 'YY/MM/DD HH:mm',
+  FULL: 'MM/DD/YY HH:mm',
 };
 
 export const ViewMode = {
@@ -73,8 +73,3 @@ export const ButtonState = {
 };
 
 export const SHAKE_TIMEOUT = 600;
-
-export const BackgroundImage = {
-  ONLINE: 'url("../img/header-bg.png")',
-  OFFLINE: 'none',
-};

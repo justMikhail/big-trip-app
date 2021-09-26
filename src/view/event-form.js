@@ -123,7 +123,7 @@ const createHideEventFormButton = (isDisabled) => (
 
 const createEventTypeIcon = (type) => `<img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">`;
 
-const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
+const createEventFormTemplate = (allOffers, allDestinations, isEditEvent, event) => {
 
   const {
     type,
@@ -142,8 +142,8 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
   const EventTypes = Object.values(EventType);
 
   const eventTypesList = createEventTypesList(type, EventTypes, isDisabled);
-  const destinationsList = createDestinationsList(DESTINATIONS);
-  const offersForCurrentEventType = createOffers(type, OFFERS, offers);
+  const destinationsList = createDestinationsList(allDestinations);
+  const offersForCurrentEventType = createOffers(type, allOffers, offers);
   const infoAboutCurrentDestination = createDestinationInfo(destination, isDescription, isPhotos);
   const hideEventFormButton = createHideEventFormButton();
   const getDeleteButtonStatus = (boolean) => boolean ? 'Deleting' : 'Delete';
@@ -241,11 +241,11 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
 };
 
 export default class EventForm extends SmartView {
-  constructor(OFFERS, DESTINATIONS, isEditEvent, event = BLANK_EVENT) {
+  constructor(allOffers, allDestinations, isEditEvent, event = BLANK_EVENT) {
     super();
     this._state = EventForm.parsEventToState(event);
-    this._offers = OFFERS;
-    this._destinations = DESTINATIONS;
+    this._allOffers = allOffers;
+    this._allDestinations = allDestinations;
     this._isEditEvent = isEditEvent;
 
     this._datepickerStart = null;
@@ -268,7 +268,7 @@ export default class EventForm extends SmartView {
   }
 
   getTemplate() {
-    return createEventFormTemplate(this._offers, this._destinations, this._isEditEvent, this._state);
+    return createEventFormTemplate(this._allOffers, this._allDestinations, this._isEditEvent, this._state);
   }
 
   reset(event) {
@@ -338,6 +338,17 @@ export default class EventForm extends SmartView {
     );
   }
 
+  _checkResetDatePicker() {
+    if (this._datepickerStart) {
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
+    }
+    if (this._datepickerEnd) {
+      this._datepickerEnd.destroy();
+      this._datepickerEnd = null;
+    }
+  }
+
   _changeTypeHandler(evt) {
     evt.preventDefault();
     this.updateState({
@@ -349,9 +360,9 @@ export default class EventForm extends SmartView {
   _changeDestinationHandler(evt) {
     evt.preventDefault();
     this.updateState({
-      destination: findDestination(evt.target.value, this._destinations),
-      isDescription: checkDescriptionExist(evt.target.value, this._destinations),
-      isPhotos: checkPhotosExist(evt.target.value, this._destinations),
+      destination: findDestination(evt.target.value, this._allDestinations),
+      isDescription: checkDescriptionExist(evt.target.value, this._allDestinations),
+      isPhotos: checkPhotosExist(evt.target.value, this._allDestinations),
     }, false);
   }
 
@@ -362,17 +373,6 @@ export default class EventForm extends SmartView {
         ? [...this._state.offers, {title, price: Number(price)}]
         : [...this._state.offers.filter((offer) => offer.title !== title)],
     });
-  }
-
-  _checkResetDatePicker() {
-    if (this._datepickerStart) {
-      this._datepickerStart.destroy();
-      this._datepickerStart = null;
-    }
-    if (this._datepickerEnd) {
-      this._datepickerEnd.destroy();
-      this._datepickerEnd = null;
-    }
   }
 
   _focusOnDestinationChangeHandler(evt) {
