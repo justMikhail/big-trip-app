@@ -62,12 +62,6 @@ export default class Event {
     remove(prevEventFormComponent);
   }
 
-  resetViewMode() {
-    if (this._viewMode !== ViewMode.DEFAULT) {
-      this._replaceFormToPoint();
-    }
-  }
-
   setViewState(state) {
     if (this._mode === ViewMode.DEFAULT) {
       return;
@@ -101,9 +95,19 @@ export default class Event {
     }
   }
 
+  resetViewMode() {
+    if (this._viewMode !== ViewMode.DEFAULT) {
+      this._replaceFormToPoint();
+    }
+  }
+
   destroy() {
     remove(this._eventPointComponent);
     remove(this._eventFormComponent);
+  }
+
+  _renderEventPoint() {
+    render(this._eventsListContainer, this._eventPointComponent, RenderPosition.BEFORE_END);
   }
 
   _replacePointToForm() {
@@ -172,9 +176,5 @@ export default class Event {
       UpdateType.MAJOR,
       event,
     );
-  }
-
-  _renderEventPoint() {
-    render(this._eventsListContainer, this._eventPointComponent, RenderPosition.BEFORE_END);
   }
 }

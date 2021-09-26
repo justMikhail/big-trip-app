@@ -34,11 +34,11 @@ export default class TripRouteInfoPresenter {
     remove(prevTripRouteInfoComponent);
   }
 
-  _handleModelEvent() {
-    this.init();
-  }
-
   _getSortedEvents() {
     return this._eventsModel.getEvents().slice().sort(compareByStartTime);
+  }
+
+  _handleModelEvent() {
+    this.init();
   }
 }

@@ -35,21 +35,6 @@ export default class NewEvent {
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
-  destroy() {
-    if (this._eventFormComponent === null) {
-      return;
-    }
-
-    if (this._destroyCallback !== null) {
-      this._destroyCallback();
-    }
-
-    remove(this._eventFormComponent);
-    this._eventFormComponent = null;
-
-    document.removeEventListener('keydown', this._escKeyDownHandler);
-  }
-
   setSaving() {
     this._eventFormComponent.updateState({
       isDisabled: true,
@@ -67,6 +52,21 @@ export default class NewEvent {
     };
 
     this._eventFormComponent.shake(resetFormState);
+  }
+
+  destroy() {
+    if (this._eventFormComponent === null) {
+      return;
+    }
+
+    if (this._destroyCallback !== null) {
+      this._destroyCallback();
+    }
+
+    remove(this._eventFormComponent);
+    this._eventFormComponent = null;
+
+    document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
   _escKeyDownHandler(evt) {

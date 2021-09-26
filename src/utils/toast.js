@@ -15,3 +15,4 @@ export const toast = (message) => {
     toastItem.remove();
   }, SHOW_TIME);
 };
+

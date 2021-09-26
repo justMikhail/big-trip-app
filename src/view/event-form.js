@@ -216,7 +216,7 @@ const createEventFormTemplate = (OFFERS, DESTINATIONS, isEditEvent, event) => {
             class="event__input  event__input--price"
             id="event-price-1"
             type="number"
-            min="0"
+            min="1"
             step="1"
             name="event-price"
             value="${basePrice}"
@@ -284,6 +284,21 @@ export default class EventForm extends SmartView {
     this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
+  }
+
+  setHideFormClickHandler(callback) {
+    this._callback.hideFormClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._hideFormClickHandler);
+  }
+
   _setInnerHandlers() {
     this.getElement()
       .querySelector('.event__type-group')
@@ -301,6 +316,26 @@ export default class EventForm extends SmartView {
       .querySelector('.event__section--offers')
       .addEventListener('change', this._changeOffersHandler);
     this._setDatePicker();
+  }
+
+  _setDatePicker() {
+    this._checkResetDatePicker();
+
+    this._datepickerStart = flatpickr(
+      this.getElement().querySelector('[name = "event-start-time"]'),
+      {
+        ...CALENDAR_SETTINGS,
+        onChange: this._timeFromHandler,
+      },
+    ),
+    this._datepickerEnd = flatpickr(
+      this.getElement().querySelector('[name = "event-end-time"]'),
+      {
+        ...CALENDAR_SETTINGS,
+        minDate: this._datepickerStart.input.value,
+        onChange: this._timeToHandler,
+      },
+    );
   }
 
   _changeTypeHandler(evt) {
@@ -346,26 +381,6 @@ export default class EventForm extends SmartView {
     this.getElement().querySelector('.event__section--destination').innerHTML = '';
   }
 
-  _setDatePicker() {
-    this._checkResetDatePicker();
-
-    this._datepickerStart = flatpickr(
-      this.getElement().querySelector('[name = "event-start-time"]'),
-      {
-        ...CALENDAR_SETTINGS,
-        onChange: this._timeFromHandler,
-      },
-    ),
-    this._datepickerEnd = flatpickr(
-      this.getElement().querySelector('[name = "event-end-time"]'),
-      {
-        ...CALENDAR_SETTINGS,
-        minDate: this._datepickerStart.input.value,
-        onChange: this._timeToHandler,
-      },
-    );
-  }
-
   _timeFromHandler([userDate]) {
     this.updateState({
       dateFrom: userDate,
@@ -388,29 +403,14 @@ export default class EventForm extends SmartView {
     this._callback.hideFormClick();
   }
 
-  setHideFormClickHandler(callback) {
-    this._callback.hideFormClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._hideFormClickHandler);
-  }
-
   _deleteClickHandler(evt) {
     evt.preventDefault();
     this._callback.deleteClick(EventForm.parseStateToEvent(this._state));
   }
 
-  setDeleteClickHandler(callback) {
-    this._callback.deleteClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
-  }
-
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(EventForm.parseStateToEvent(this._state));
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
   static parsEventToState(event) {

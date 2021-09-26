@@ -118,7 +118,7 @@ window.addEventListener('online', () => {
   newEventButtonComponent.getElement().disabled = false;
   pageHeaderContainer.style.backgroundColor = `${Color.PRIMARY_COLOR}`;
   pageHeaderContainer.style.backgroundImage = `${BackgroundImage.ONLINE}`;
-  toast(' ONLINE ');
+  toast('ONLINE');
   api.sync();
 });
 
@@ -126,6 +126,6 @@ window.addEventListener('offline', () => {
   document.title += ' [offline]';
   pageHeaderContainer.style.backgroundColor = `${Color.SECONDARY_COLOR}`;
   pageHeaderContainer.style.backgroundImage = `${BackgroundImage.OFFLINE}`;
-  toast(' OFFLINE ');
+  toast('OFFLINE');
 });
 

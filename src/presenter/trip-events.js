@@ -49,6 +49,22 @@ export default class TripEvents {
     this._renderTripEvents();
   }
 
+  createNewEvent(callback) {
+    this._currentSortType = SortType.DEFAULT;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
+    this._newEventPresenter.init(callback);
+  }
+
+  destroy() {
+    this._clearTripEvents({resetSortType: true});
+
+    remove(this._eventsListComponent);
+    remove(this._tripEventsComponent);
+
+    this._eventsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
   _getEvents() {
     this._filterType = this._filterModel.getFilter();
     const allEvents = this._eventsModel.getEvents();
@@ -66,12 +82,6 @@ export default class TripEvents {
     return filteredEvents;
   }
 
-  createNewEvent(callback) {
-    this._currentSortType = SortType.DEFAULT;
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
-    this._newEventPresenter.init(callback);
-  }
-
   _renderEvent(event) {
     const eventPresenter = new Event(
       this._eventsListComponent,
@@ -81,6 +91,40 @@ export default class TripEvents {
       this._destinationsModel);
     eventPresenter.init(event);
     this._eventPresenters.set(event.id, eventPresenter);
+  }
+
+  _renderTripEvents() {
+    if (this._isLoading) {
+      this._renderLoader();
+      return;
+    }
+
+    if (!this._getEvents().length) {
+      this._renderEmptyEventsList();
+      return;
+    }
+    this._renderEventsSort();
+    this._renderEventsList();
+  }
+
+  _clearTripEvents({resetSortType = false} = {}) {
+    this._newEventPresenter.destroy();
+    this._eventPresenters.forEach((presenter) => presenter.destroy());
+    this._eventPresenters.clear();
+
+    if (this._sortComponent) {
+      remove(this._sortComponent);
+    }
+
+    remove(this._loaderComponent);
+
+    if (this._emptyEventsListComponent) {
+      remove(this._emptyEventsListComponent);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
   }
 
   _renderEventsList() {
@@ -175,49 +219,5 @@ export default class TripEvents {
     this._currentSortType = sortType;
     this._clearTripEvents();
     this._renderTripEvents();
-  }
-
-  _clearTripEvents({resetSortType = false} = {}) {
-    this._newEventPresenter.destroy();
-    this._eventPresenters.forEach((presenter) => presenter.destroy());
-    this._eventPresenters.clear();
-
-    if (this._sortComponent) {
-      remove(this._sortComponent);
-    }
-
-    remove(this._loaderComponent);
-
-    if (this._emptyEventsListComponent) {
-      remove(this._emptyEventsListComponent);
-    }
-
-    if (resetSortType) {
-      this._currentSortType = SortType.DEFAULT;
-    }
-  }
-
-  destroy() {
-    this._clearTripEvents({resetSortType: true});
-
-    remove(this._eventsListComponent);
-    remove(this._tripEventsComponent);
-
-    this._eventsModel.removeObserver(this._handleModelEvent);
-    this._filterModel.removeObserver(this._handleModelEvent);
-  }
-
-  _renderTripEvents() {
-    if (this._isLoading) {
-      this._renderLoader();
-      return;
-    }
-
-    if (!this._getEvents().length) {
-      this._renderEmptyEventsList();
-      return;
-    }
-    this._renderEventsSort();
-    this._renderEventsList();
   }
 }
