@@ -2,7 +2,7 @@ import EventsFilterView from '../view/events-filter';
 import {render, RenderPosition, replace, remove } from '../utils/render';
 import {FilterType, UpdateType} from '../const/const';
 
-export default class EventsFilter {
+export default class EventsFilterPresenter {
   constructor(filterContainer, filterModel, eventsModel) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;

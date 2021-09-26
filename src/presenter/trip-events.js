@@ -12,7 +12,7 @@ import {filter} from '../utils/date';
 import {sortByDate, sortByDuration, sortByPrice} from '../utils/sort';
 import {FilterType, SortType, UpdateType, UserAction, ButtonState as EventPresenterViewState} from '../const/const';
 
-export default class TripEvents {
+export default class TripEventsPresenter {
   constructor(tripEventsContainer, eventsModel, filterModel, offersModel, destinationsModel, api) {
     this._tripEventsContainer = tripEventsContainer;
     this._filterModel = filterModel;
