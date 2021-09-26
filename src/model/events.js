@@ -16,7 +16,7 @@ export default class Events extends AbstractObserver {
   }
 
   updateEvent(updateType, update) {
-    const index = this._events.findIndex((events) => events.id === events.id);
+    const index = this._events.findIndex((event) => event.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting point');
