@@ -6,13 +6,13 @@ export default class DestinationsModel extends AbstractObserver {
     this._destinations = [];
   }
 
+  getDestinations() {
+    return this._destinations;
+  }
+
   setDestinations(destinations) {
     this._destinations = [...destinations];
     this._notify();
-  }
-
-  getDestinations() {
-    return this._destinations;
   }
 }
 

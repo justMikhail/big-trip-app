@@ -1,18 +1,18 @@
 import AbstractObserver from '../abstract/abstract-observer';
 
-export default class EventsModel extends AbstractObserver {
+export default class Events extends AbstractObserver {
   constructor() {
     super();
     this._events = [];
   }
 
+  getEvents() {
+    return this._events;
+  }
+
   setEvents(updateType, events) {
     this._events = [...events];
     this._notify(updateType);
-  }
-
-  getEvents() {
-    return this._events;
   }
 
   updateEvent(updateType, update) {

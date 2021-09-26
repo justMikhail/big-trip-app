@@ -91,14 +91,14 @@ export default class EventPoint extends AbstractView {
     return createEventPointTemplate(this._event);
   }
 
-  _favoriteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoriteClick();
-  }
-
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  setShowFormClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._showFormClickHandler);
   }
 
   _showFormClickHandler(evt) {
@@ -106,8 +106,8 @@ export default class EventPoint extends AbstractView {
     this._callback.editClick();
   }
 
-  setShowFormClickHandler(callback) {
-    this._callback.editClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._showFormClickHandler);
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 }

@@ -1,10 +1,11 @@
 import EventPointView from '../view/event-point';
 import EventFormView from '../view/event-form';
 import {render, RenderPosition, replace, remove} from '../utils/render';
-import {isEscEvent} from '../utils/utils';
+import {isEscEvent, isOnline} from '../utils/utils';
+import {toast} from '../utils/toast';
 import {UpdateType, UserAction, ViewMode, ButtonState} from '../const/const';
 
-export default class EventPresenter {
+export default class Event {
   constructor(eventsListContainer, changeData, changeViewMode, offersModel, destinationsModel) {
     this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;
@@ -61,12 +62,6 @@ export default class EventPresenter {
     remove(prevEventFormComponent);
   }
 
-  resetViewMode() {
-    if (this._viewMode !== ViewMode.DEFAULT) {
-      this._replaceFormToPoint();
-    }
-  }
-
   setViewState(state) {
     if (this._mode === ViewMode.DEFAULT) {
       return;
@@ -100,9 +95,19 @@ export default class EventPresenter {
     }
   }
 
+  resetViewMode() {
+    if (this._viewMode !== ViewMode.DEFAULT) {
+      this._replaceFormToPoint();
+    }
+  }
+
   destroy() {
     remove(this._eventPointComponent);
     remove(this._eventFormComponent);
+  }
+
+  _renderEventPoint() {
+    render(this._eventsListContainer, this._eventPointComponent, RenderPosition.BEFORE_END);
   }
 
   _replacePointToForm() {
@@ -127,6 +132,10 @@ export default class EventPresenter {
   }
 
   _handleShowFormButtonClick() {
+    if (!isOnline()) {
+      toast('You can\'t edit event for trip while you\'re offline');
+      return;
+    }
     this._replacePointToForm();
   }
 
@@ -144,6 +153,11 @@ export default class EventPresenter {
   }
 
   _handleEventFormSubmit(event) {
+    if (!isOnline()) {
+      toast('You can\'t edit event for trip while you\'re offline');
+      return;
+    }
+
     this._changeData(
       UserAction.UPDATE_EVENT,
       UpdateType.MINOR,
@@ -152,14 +166,15 @@ export default class EventPresenter {
   }
 
   _handleDeleteClick(event) {
+    if (!isOnline()) {
+      toast('You can\'t delete event for trip while you\'re offline');
+      return;
+    }
+
     this._changeData(
       UserAction.DELETE_EVENT,
       UpdateType.MAJOR,
       event,
     );
-  }
-
-  _renderEventPoint() {
-    render(this._eventsListContainer, this._eventPointComponent, RenderPosition.BEFORE_END);
   }
 }

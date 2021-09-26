@@ -1,22 +1,29 @@
 import Api from './api/api';
+import Store from './api/store';
+import Provider from './api/provider';
+
+import TripRouteInfoPresenter from './presenter/trip-route-info';
+import TripEventsPresenter from './presenter/trip-events';
+import EventsFilterPresenter from './presenter/events-filter';
+
+import Events from './model/events';
+import EventsFilterModel from './model/events-filter';
+import OffersModel from './model/offers';
+import DestinationsModel from './model/destinations';
+
 import TripNavView from './view/trip-nav';
 import TripStatsView from './view/trip-stats';
 import NewEventButton from './view/new-event-button';
 
-import EventsModel from './model/events-model';
-import EventsFilterModel from './model/events-filter-model';
-import OffersModel from './model/offers';
-import DestinationsModel from './model/destinations';
-
-import TripEventsPresenter from './presenter/trip-events-presenter';
-import EventsFilterPresenter from './presenter/events-filter-presenter';
-
 import {render, remove, RenderPosition} from './utils/render';
-import {UpdateType, NavMenuItem} from './const/const';
+import {isOnline} from './utils/utils';
+import {toast} from './utils/toast';
+import {UpdateType, NavMenuItem, Color, BackgroundImage} from './const/const';
+import {END_POINT, AUTHORIZATION, STORE_NAME} from './const/api-const';
 
-const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';
-const AUTHORIZATION = 'Basic 4upMo2jqcHn3jgN9g9aX8';
-const api = new Api(END_POINT, AUTHORIZATION);
+const apiServer = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const api = new Provider(apiServer, store);
 
 const pageHeaderContainer = document.querySelector('.page-header');
 const tripMainInfoContainer = pageHeaderContainer.querySelector('.trip-main');
@@ -25,11 +32,12 @@ const eventsFilterContainer = pageHeaderContainer.querySelector('.trip-controls_
 const pageMain = document.querySelector('.page-main');
 const pageMainContainer = pageMain.querySelector('.page-body__container');
 
-const eventsModel = new EventsModel();
+const eventsModel = new Events();
 const eventsFilterModel = new EventsFilterModel();
 const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
 
+const tripRouteInfoPresenter = new TripRouteInfoPresenter(tripMainInfoContainer, eventsModel);
 const eventsFilterPresenter = new EventsFilterPresenter(eventsFilterContainer, eventsFilterModel, eventsModel);
 const tripEventsPresenter = new TripEventsPresenter(pageMainContainer, eventsModel, eventsFilterModel, offersModel, destinationsModel, api);
 
@@ -40,6 +48,7 @@ newEventButtonComponent.getElement().disabled = true;
 render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
 render(tripMainInfoContainer, newEventButtonComponent, RenderPosition.BEFORE_END);
 
+tripRouteInfoPresenter.init();
 eventsFilterPresenter.init();
 tripEventsPresenter.init();
 
@@ -50,6 +59,10 @@ const handleEventNewFormClose = () => {
 };
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  if (!isOnline()) {
+    toast('You can\'t create new event for trip while you\'re offline');
+    return;
+  }
   evt.preventDefault();
   tripEventsPresenter.createNewEvent(handleEventNewFormClose);
   newEventButtonComponent.getElement().disabled = true;
@@ -93,3 +106,26 @@ api.getData()
     tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
     eventsModel.setEvents(UpdateType.INIT, []);
   });
+
+window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+});
+
+window.addEventListener('online', () => {
+  document.title = document.title.replace(' [offline]', '');
+  newEventButtonComponent.getElement().disabled = false;
+  pageHeaderContainer.style.backgroundColor = `${Color.PRIMARY_COLOR}`;
+  pageHeaderContainer.style.backgroundImage = `${BackgroundImage.ONLINE}`;
+  toast('ONLINE');
+  api.sync();
+});
+
+window.addEventListener('offline', () => {
+  document.title += ' [offline]';
+  pageHeaderContainer.style.backgroundColor = `${Color.SECONDARY_COLOR}`;
+  pageHeaderContainer.style.backgroundImage = `${BackgroundImage.OFFLINE}`;
+  toast('OFFLINE');
+});
+

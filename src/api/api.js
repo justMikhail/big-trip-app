@@ -1,11 +1,5 @@
-import EventsModel from '../model/events-model';
-
-const Method = {
-  GET: 'GET',
-  PUT: 'PUT',
-  POST: 'POST',
-  DELETE: 'DELETE',
-};
+import Events from '../model/events';
+import {Method, SourceURL} from '../const/api-const';
 
 export default class Api {
   constructor(endPoint, authorization) {
@@ -24,42 +18,42 @@ export default class Api {
 
   addEvent(event) {
     return this._load({
-      url: 'points',
+      url: SourceURL.POINTS,
       method: Method.POST,
-      body: JSON.stringify(EventsModel.adaptToServer(event)),
+      body: JSON.stringify(Events.adaptToServer(event)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
-      .then(EventsModel.adaptToClient);
+      .then(Events.adaptToClient);
   }
 
   deleteEvent(event) {
     return this._load({
-      url: `points/${event.id}`,
+      url: `${SourceURL.POINTS}/${event.id}`,
       method: Method.DELETE,
     });
   }
 
   getEvents() {
-    return this._load({url: 'points'})
+    return this._load({url: SourceURL.POINTS})
       .then(Api.toJSON)
-      .then((points) => points.map(EventsModel.adaptToClient));
+      .then((events) => events.map(Events.adaptToClient));
   }
 
   updateEvent(event) {
     return this._load({
-      url: `points/${event.id}`,
+      url: `${SourceURL.POINTS}/${event.id}`,
       method: Method.PUT,
-      body: JSON.stringify(EventsModel.adaptToServer(event)),
+      body: JSON.stringify(Events.adaptToServer(event)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
-      .then(EventsModel.adaptToClient);
+      .then(Events.adaptToClient);
   }
 
   getDestinations() {
     return this._load({
-      url: 'destinations',
+      url: SourceURL.DESTINATIONS,
       method: Method.GET,
     })
       .then(Api.toJSON)
@@ -68,11 +62,21 @@ export default class Api {
 
   getOffers() {
     return this._load({
-      url: 'offers',
+      url: SourceURL.OFFERS,
       method: Method.GET,
     })
       .then(Api.toJSON)
       .then((offers) => [...offers]);
+  }
+
+  sync(data) {
+    return this._load({
+      url: `${SourceURL.POINTS}/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON);
   }
 
   _load({
