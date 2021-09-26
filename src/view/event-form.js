@@ -338,6 +338,17 @@ export default class EventForm extends SmartView {
     );
   }
 
+  _checkResetDatePicker() {
+    if (this._datepickerStart) {
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
+    }
+    if (this._datepickerEnd) {
+      this._datepickerEnd.destroy();
+      this._datepickerEnd = null;
+    }
+  }
+
   _changeTypeHandler(evt) {
     evt.preventDefault();
     this.updateState({
@@ -362,17 +373,6 @@ export default class EventForm extends SmartView {
         ? [...this._state.offers, {title, price: Number(price)}]
         : [...this._state.offers.filter((offer) => offer.title !== title)],
     });
-  }
-
-  _checkResetDatePicker() {
-    if (this._datepickerStart) {
-      this._datepickerStart.destroy();
-      this._datepickerStart = null;
-    }
-    if (this._datepickerEnd) {
-      this._datepickerEnd.destroy();
-      this._datepickerEnd = null;
-    }
   }
 
   _focusOnDestinationChangeHandler(evt) {

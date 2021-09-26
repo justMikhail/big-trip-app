@@ -43,7 +43,7 @@ export const UpdateType = {
 export const dateFormat = {
   HOURS_MINUTES: 'HH:mm',
   MONTH_DAY: 'MMM DD',
-  FULL: 'YY/MM/DD HH:mm',
+  FULL: 'MM/DD/YY HH:mm',
 };
 
 export const ViewMode = {
