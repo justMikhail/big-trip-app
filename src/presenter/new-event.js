@@ -13,7 +13,7 @@ export default class NewEvent {
     this._destroyCallback = null;
 
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-    this._handleSubmitClick = this._handleSubmitClick.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
@@ -26,9 +26,9 @@ export default class NewEvent {
 
     const offers = this._offersModel.getOffers();
     const destinations = this._destinationsModel.getDestinations();
-    this._eventFormComponent = new EventFormView(offers, destinations, false);
 
-    this._eventFormComponent.setFormSubmitHandler(this._handleSubmitClick);
+    this._eventFormComponent = new EventFormView(offers, destinations, false);
+    this._eventFormComponent.setFormSubmitHandler(this._formSubmitHandler);
     this._eventFormComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     render(this._eventsListContainer, this._eventFormComponent, RenderPosition.AFTER_BEGIN);
@@ -76,7 +76,7 @@ export default class NewEvent {
     }
   }
 
-  _handleSubmitClick(event) {
+  _formSubmitHandler(event) {
     this._changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,

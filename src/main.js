@@ -95,16 +95,13 @@ api.getData()
     destinationsModel.setDestinations(destinations);
     eventsModel.setEvents(UpdateType.INIT, events);
   })
-  .then(() => {
-    newEventButtonComponent.getElement().disabled = false;
-    render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
-    tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
-  })
   .catch(() => {
+    eventsModel.setEvents(UpdateType.INIT, []);
+  })
+  .finally(() => {
     newEventButtonComponent.getElement().disabled = false;
     render(tripNavMenuContainer, tripNavMenuComponent, RenderPosition.AFTER_BEGIN);
     tripNavMenuComponent.setNavMenuClickHandler(handleNavMenuClick);
-    eventsModel.setEvents(UpdateType.INIT, []);
   });
 
 window.addEventListener('load', () => {
