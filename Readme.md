@@ -1,52 +1,43 @@
-# Проект «Большое путешествие»
+# [Pet project](https://github.com/justMikhail/portfolio)
 
-* Студент: [Mikhail Sitnikov](https://up.htmlacademy.ru/ecmascript/15/user/1537799).
-* Наставник: [Евгений Алипкин](https://htmlacademy.ru/profile/ealipkin).
+![Flutter](https://img.shields.io/badge/status-release-<COLOR>)
 
----
+## **Описание проекта**
+«Большое путешествие» — современный сервис для настоящих путешественников. 
+Сервис помогает детально спланировать маршрут поездки, рассчитать стоимость путешествия и получить информацию о достопримечательностях. Минималистичный интерфейс не даст повода отвлечься и сфокусирует внимание на планировании путешествия. [здесь](https://justmikhail.github.io/portfolio/)
 
-_Не удаляйте и не изменяйте папки и файлы:_
-_`.editorconfig`, `.gitattributes`._
+Приложение состоит из двух экранов: «Маршрут поездки» и «Статистика».
 
----
+Новая точка маршрута создаётся нажатием на кнопку «New Event». После нажатия пользователь видит форму создания новой точки маршрута, где ему необходимо заполнить несколько полей.
 
-### Памятка
+Офлайн-режим. Реализована поддержка офлайн-режима.
 
-#### 1. Зарегистрируйтесь на Гитхабе
+## **Стек**
++ JavaScript (MVP Patter)
++ Webpack
 
-Если у вас ещё нет аккаунта на [github.com](https://github.com/join), скорее зарегистрируйтесь.
+## **Технологии**
++ SPA (Single-page application)
++ Use MVP Pattern
++ LocalStorage
++ Взаимодействие с Api
++ Use Service Worker
 
-#### 2. Создайте форк
-
-Откройте репозиторий и нажмите кнопку «Fork» в правом верхнем углу. Репозиторий из Академии будет скопирован в ваш аккаунт.
-
-<img width="769" alt="Press 'Fork'" src="https://cloud.githubusercontent.com/assets/259739/20264045/a1ddbf40-aa7a-11e6-9a1a-724a1c0123c8.png">
-
-Получится вот так:
-
-<img width="769" alt="Forked" src="https://cloud.githubusercontent.com/assets/259739/20264122/f63219a6-aa7a-11e6-945a-89818fc7c014.png">
-
-#### 3. Клонируйте репозиторий на свой компьютер
-
-Будьте внимательны: нужно клонировать свой репозиторий (форк), а не репозиторий Академии. Также обратите внимание, что клонировать репозиторий нужно через SSH, а не через HTTPS. Нажмите зелёную кнопку в правой части экрана, чтобы скопировать SSH-адрес вашего репозитория:
-
-<img width="769" alt="SSH" src="https://cloud.githubusercontent.com/assets/259739/20264180/42704126-aa7b-11e6-9ab4-73372b812a53.png">
-
-Клонировать репозиторий можно так:
-
+## **Установка**
+__Клонировать репозиторий__
 ```
-git clone SSH-адрес_вашего_форка
+git clone https://github.com/justMikhail/portfolio.git
 ```
 
-Команда клонирует репозиторий на ваш компьютер и подготовит всё необходимое для старта работы.
+__How to start (Gulp сборка проекта, запуск на "localhost" __
+```
+npm run start
+```
 
-#### 4. Начинайте обучение!
+__Build (Public Build собирается в директория "build" в корень проекта)__
+```
+npm run build
+```
 
----
-
-<a href="https://htmlacademy.ru/intensive/ecmascript"><img align="left" width="50" height="50" title="HTML Academy" src="https://up.htmlacademy.ru/static/img/intensive/ecmascript/logo-for-github.svg"></a>
-
-Репозиторий создан для обучения на профессиональном курсе «[JavaScript. Архитектура клиентских приложений](https://htmlacademy.ru/intensive/ecmascript)» от [HTML Academy](https://htmlacademy.ru).
-
-[check-image]: https://github.com/htmlacademy-ecmascript/1537799-big-trip-15/workflows/Project%20check/badge.svg?branch=master
-[check-url]: https://github.com/htmlacademy-ecmascript/1537799-big-trip-15/actions
+## **TO DO List**
++ Оптимизировать взаимодействие с "моделью"
