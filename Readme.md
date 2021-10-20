@@ -1,4 +1,4 @@
-# [Pet project](https://github.com/justMikhail/portfolio)
+# [Pet project](https://github.com/justMikhail/big-trip-app)
 
 ![Flutter](https://img.shields.io/badge/status-release-<COLOR>)
 
@@ -11,6 +11,8 @@
 Новая точка маршрута создаётся нажатием на кнопку «New Event». После нажатия пользователь видит форму создания новой точки маршрута, где ему необходимо заполнить несколько полей.
 
 Офлайн-режим. Реализована поддержка офлайн-режима.
+
+Посмотреть можно [здесь](https://big-trip-app-mu.vercel.app/)
 
 ## **Стек**
 + JavaScript (MVP Patter)
