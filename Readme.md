@@ -28,7 +28,7 @@
 ## **Установка**
 __Клонировать репозиторий__
 ```
-git clone https://github.com/justMikhail/portfolio.git
+git clone https://github.com/justMikhail/big-trip-app.git
 ```
 
 __How to start (Gulp сборка проекта, запуск на "localhost" __
